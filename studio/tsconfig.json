@@ -1,0 +1,11 @@
+{
+  "extends": "@somos/config/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM"],
+    "noEmit": true,
+    "allowJs": false
+  },
+  "include": ["**/*.ts", "**/*.tsx", "sanity.config.ts", "sanity.cli.ts"],
+  "exclude": ["node_modules", "dist"]
+}

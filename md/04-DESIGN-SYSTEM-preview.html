@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Somos United — Design Analyse (aus 04-DESIGN-SYSTEM.md)</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=supreme@400,500,600,700,800&display=swap">
+<style>
+  :root{
+    --primary:#5B21F0; --primary-bright:#7B3FFF; --primary-deep:#5B21F0; --primary-press:#4517C4; --primary-subdued:#EDE4FF;
+    --ink:#1B2430; --ink-secondary:#3E4A5A; --ink-mute:#6B7385; --on-primary:#FFFFFF;
+    --canvas:#FFFFFF; --canvas-soft:#F7F7FB; --canvas-peach:#FDEBDD; --canvas-lavender:#E8E4FF; --canvas-mint:#E3F5EE;
+    --hairline:#E7E7EF; --hairline-input:#C9D6E0;
+    --accent-coral:#FF5A36; --accent-coral-deep:#C93D1A; --accent-coral-bg:#FFE4DA;
+    --accent-teal:#12B3A8; --accent-teal-deep:#0B7A72;
+    --good-bg:#E4F7EC; --good-text:#1E7A45; --warn-bg:#FDF1DC; --warn-text:#97600A; --bad-bg:#FBE7E7; --bad-text:#B23434;
+    --r-xs:4px; --r-sm:6px; --r-md:8px; --r-lg:12px; --r-xl:16px; --r-pill:9999px;
+    --sp-xxs:2px; --sp-xs:4px; --sp-sm:8px; --sp-md:12px; --sp-lg:16px; --sp-xl:24px; --sp-xxl:32px; --sp-huge:64px;
+    --e1: 0 1px 3px rgba(27,36,48,.08);
+    --e2: 0 8px 24px rgba(27,36,48,.10), 0 2px 6px rgba(27,36,48,.05);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0 0 120px; background:var(--canvas-soft); color:var(--ink);
+    font-family:'Supreme', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+  .page-header{
+    padding:56px 24px 40px; background:var(--canvas);
+    border-bottom:1px solid var(--hairline);
+  }
+  .page-header .kicker{ color:var(--ink-mute); font-size:13px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; }
+  .page-header h1{ font-size:34px; font-weight:800; letter-spacing:-0.01em; margin:8px 0 10px; }
+  .page-header p{ max-width:760px; color:var(--ink-secondary); font-size:15px; line-height:1.6; margin:0; }
+  section{ max-width:1160px; margin:0 auto; padding:56px 24px 8px; }
+  .kicker-sm{ color:var(--ink-mute); font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  h2.section-title{ font-size:28px; font-weight:800; letter-spacing:-0.01em; margin:6px 0 8px; }
+  p.section-sub{ color:var(--ink-secondary); font-size:14.5px; line-height:1.6; margin:0 0 28px; max-width:680px; }
+
+  .grid{ display:grid; gap:var(--sp-lg); }
+  .grid-5{ grid-template-columns:repeat(5,1fr); }
+  .grid-4{ grid-template-columns:repeat(4,1fr); }
+  .grid-3{ grid-template-columns:repeat(3,1fr); }
+  .grid-2{ grid-template-columns:repeat(2,1fr); }
+  @media(max-width:980px){ .grid-5,.grid-4,.grid-3{ grid-template-columns:repeat(2,1fr);} }
+
+  .swatch-card{ border:1px solid var(--hairline); border-radius:var(--r-lg); overflow:hidden; background:var(--canvas); }
+  .swatch-fill{ height:88px; }
+  .swatch-meta{ padding:14px 16px; }
+  .swatch-meta .name{ font-weight:700; font-size:14px; }
+  .swatch-meta .hex{ font-size:12px; color:var(--ink-mute); font-variant-numeric:tabular-nums; margin:2px 0 6px; }
+  .swatch-meta .desc{ font-size:12.5px; color:var(--ink-secondary); line-height:1.4; }
+
+  .type-row{ display:grid; grid-template-columns:200px 1fr; gap:24px; padding:22px 0; border-bottom:1px solid var(--hairline); align-items:baseline; }
+  .type-row .tok{ font-family:ui-monospace,monospace; font-size:13px; font-weight:600; }
+  .type-row .spec{ font-size:12px; color:var(--ink-mute); margin-top:4px; font-variant-numeric:tabular-nums; }
+
+  .btn{ display:inline-flex; align-items:center; gap:6px; padding:11px 22px; border-radius:var(--r-pill); font-weight:600; font-size:15px; border:none; cursor:default; }
+  .btn-primary{ background:var(--primary-deep); color:var(--on-primary); }
+  .btn-secondary{ background:transparent; color:var(--primary-deep); border:1.5px solid var(--primary-deep); }
+  .btn-dark{ background:var(--ink); color:var(--on-primary); }
+  .comp-tile{ border:1px solid var(--hairline); border-radius:var(--r-lg); padding:24px; background:var(--canvas); }
+  .comp-tile .label{ font-size:12px; color:var(--ink-mute); margin-bottom:14px; font-family:ui-monospace,monospace; }
+
+  .chip{ display:inline-flex; padding:6px 14px; border-radius:var(--r-pill); font-size:12.5px; font-weight:600; }
+  .badge{ display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:var(--r-pill); font-size:12.5px; font-weight:700; }
+  .dot{ width:7px; height:7px; border-radius:50%; }
+
+  .plan-card{ border:1px solid var(--hairline); border-radius:var(--r-lg); padding:28px; background:var(--canvas); display:flex; flex-direction:column; }
+  .plan-card.featured{ background:var(--ink); color:var(--on-primary); border-color:var(--ink); }
+  .plan-card .plan-name{ font-size:14px; font-weight:700; color:var(--ink-mute); }
+  .plan-card.featured .plan-name{ color:#B9C0CE; }
+  .plan-card .plan-price{ font-size:38px; font-weight:800; margin:8px 0 4px; font-variant-numeric:tabular-nums; }
+  .plan-card .plan-desc{ font-size:13.5px; color:var(--ink-secondary); margin-bottom:18px; }
+  .plan-card.featured .plan-desc{ color:#C7CCD8; }
+  .plan-card ul{ list-style:none; padding:0; margin:0 0 24px; flex:1; }
+  .plan-card li{ font-size:13.5px; padding:9px 0; border-bottom:1px solid var(--hairline); }
+  .plan-card.featured li{ border-bottom:1px solid rgba(255,255,255,.12); }
+
+  .kpi-tile{ border:1px solid var(--hairline); border-radius:var(--r-lg); padding:20px; background:var(--canvas); }
+  .kpi-tile .kpi-label{ font-size:12.5px; color:var(--ink-mute); margin-bottom:6px; }
+  .kpi-tile .kpi-num{ font-size:26px; font-weight:800; font-variant-numeric:tabular-nums; }
+
+  .field label{ display:block; font-size:13px; font-weight:600; margin-bottom:6px; }
+  .field input, .field select, .field textarea{
+    width:100%; font-family:inherit; font-size:14px; padding:10px 12px; border-radius:var(--r-sm);
+    border:1px solid var(--hairline-input); background:var(--canvas); color:var(--ink);
+  }
+  .field textarea{ min-height:90px; resize:vertical; }
+
+  .sp-bar{ display:flex; align-items:flex-end; gap:20px; }
+  .sp-bar .bar-wrap{ text-align:center; font-size:11px; color:var(--ink-mute); font-family:ui-monospace,monospace; }
+  .sp-bar .bar{ background:var(--primary-deep); border-radius:4px; width:14px; margin:0 auto 8px; }
+
+  .rad-row{ display:flex; gap:20px; flex-wrap:wrap; }
+  .rad-item{ text-align:center; font-size:11px; color:var(--ink-mute); font-family:ui-monospace,monospace; }
+  .rad-box{ width:72px; height:72px; background:var(--primary-deep); margin-bottom:8px; }
+
+  .elev-row{ display:flex; gap:20px; padding:32px; background:var(--canvas-soft); border-radius:var(--r-xl); }
+  .elev-card{ flex:1; height:110px; background:var(--canvas); border-radius:var(--r-lg); display:flex; align-items:flex-end; padding:12px; font-size:11px; color:var(--ink-mute); }
+
+  .hero-mesh{
+    border-radius:var(--r-xl); padding:48px 40px; position:relative; overflow:hidden;
+    background: radial-gradient(circle at 15% 20%, var(--canvas-peach) 0%, transparent 45%),
+                radial-gradient(circle at 55% 10%, var(--canvas-lavender) 0%, transparent 55%),
+                radial-gradient(circle at 85% 60%, var(--canvas-mint) 0%, transparent 50%),
+                var(--canvas);
+  }
+  .glass-panel{
+    background:rgba(255,255,255,.6); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+    border:1px solid rgba(255,255,255,.7); border-radius:var(--r-lg); padding:18px 22px; display:inline-block;
+  }
+
+  .bento{ display:grid; grid-template-columns:repeat(4,1fr); grid-auto-rows:120px; gap:var(--sp-lg); }
+  .bento .b-card{ background:var(--canvas); border:1px solid var(--hairline); border-radius:var(--r-lg); padding:18px; display:flex; flex-direction:column; justify-content:flex-end; }
+  .bento .b-large{ grid-column:span 2; grid-row:span 2; background:var(--canvas-lavender); border-color:transparent; }
+  .bento .b-wide{ grid-column:span 2; }
+
+  .kiosk-btn{
+    display:flex; align-items:center; justify-content:center; height:120px; width:100%;
+    background:var(--primary-deep); color:#fff; border-radius:var(--r-xl); font-size:24px; font-weight:800;
+  }
+
+  table.bp{ width:100%; border-collapse:collapse; font-size:14px; }
+  table.bp th{ text-align:left; color:var(--ink-mute); font-size:12px; text-transform:uppercase; letter-spacing:.05em; padding:10px 0; border-bottom:1px solid var(--hairline); }
+  table.bp td{ padding:14px 0; border-bottom:1px solid var(--hairline); }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="kicker">Somos United · Design-Analyse</div>
+  <h1>Aus 04-DESIGN-SYSTEM.md gerendert</h1>
+  <p>Gleicher Aufbau wie die Benchmark-Analyse (Farben, Typografie, Komponenten, Foundations, Responsive), aber mit unseren eigenen, bereits bestätigten Werten: Supreme als Schrift, Farbrichtung C "Calm Clarity". Zur Kontrolle, bevor es in den Code geht.</p>
+</div>
+
+<section id="colors">
+  <div class="kicker-sm">01 — Farben</div>
+  <h2 class="section-title">Farbpalette</h2>
+  <p class="section-sub">Marke, Text- und Flächen-Tokens.</p>
+  <div class="grid grid-5">
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--primary);"></div><div class="swatch-meta"><div class="name">Primary</div><div class="hex">#5B21F0</div><div class="desc">Kräftig &amp; lesbar zugleich — Buttons, Links, Icons. AA 7.2:1 mit Weiss.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--primary-bright);"></div><div class="swatch-meta"><div class="name">Primary Bright</div><div class="hex">#7B3FFF</div><div class="desc">Dekorativ — grosse Flächen, Illustration, Gradient. Nicht für kleinen Text.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--ink);"></div><div class="swatch-meta"><div class="name">Ink</div><div class="hex">#1B2430</div><div class="desc">Standard-Textfarbe.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--canvas); border-bottom:1px solid var(--hairline);"></div><div class="swatch-meta"><div class="name">Canvas</div><div class="hex">#FFFFFF</div><div class="desc">Standard-Hintergrund.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--canvas-soft);"></div><div class="swatch-meta"><div class="name">Canvas Soft</div><div class="hex">#F7F7FB</div><div class="desc">Feature-Bänder.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--hairline);"></div><div class="swatch-meta"><div class="name">Hairline</div><div class="hex">#E7E7EF</div><div class="desc">1px-Rahmen auf Karten/Tabellen.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--ink-mute);"></div><div class="swatch-meta"><div class="name">Ink Mute</div><div class="hex">#6B7385</div><div class="desc">Hilfstext, Captions.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--accent-coral);"></div><div class="swatch-meta"><div class="name">Accent Coral</div><div class="hex">#FF5A36</div><div class="desc">Warmer Hauptakzent — Icons, Badges, Highlights.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--accent-teal);"></div><div class="swatch-meta"><div class="name">Accent Teal</div><div class="hex">#12B3A8</div><div class="desc">Zweiter Akzent, kühles Gegengewicht zu Coral.</div></div></div>
+  </div>
+
+  <div style="height:40px;"></div>
+  <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">Marke & Akzent (erweitert)</h3>
+  <div class="grid grid-5">
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--primary-press);"></div><div class="swatch-meta"><div class="name">Primary Press</div><div class="hex">#4517C4</div><div class="desc">Pressed-State.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--primary-subdued);"></div><div class="swatch-meta"><div class="name">Primary Subdued BG</div><div class="hex">#EDE4FF</div><div class="desc">Chip-/Tag-Hintergrund.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--accent-coral-deep);"></div><div class="swatch-meta"><div class="name">Accent Coral Deep</div><div class="hex">#C93D1A</div><div class="desc">Text-sichere Variante auf hellem Coral.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--canvas-peach);"></div><div class="swatch-meta"><div class="name">Canvas Peach</div><div class="hex">#FDEBDD</div><div class="desc">Gradient-Stop 1.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--canvas-lavender);"></div><div class="swatch-meta"><div class="name">Canvas Lavender</div><div class="hex">#E8E4FF</div><div class="desc">Gradient-Stop 2.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--canvas-mint);"></div><div class="swatch-meta"><div class="name">Canvas Mint</div><div class="hex">#E3F5EE</div><div class="desc">Gradient-Stop 3.</div></div></div>
+  </div>
+
+  <div style="height:40px;"></div>
+  <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">Ampelsystem (Admin-KPIs)</h3>
+  <div class="grid grid-3">
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--good-bg);"></div><div class="swatch-meta"><div class="name" style="color:var(--good-text);">Gut</div><div class="hex">BG #E4F7EC · Text #1E7A45</div><div class="desc">Zielwert erreicht.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--warn-bg);"></div><div class="swatch-meta"><div class="name" style="color:var(--warn-text);">Achtung</div><div class="hex">BG #FDF1DC · Text #97600A</div><div class="desc">Beobachten.</div></div></div>
+    <div class="swatch-card"><div class="swatch-fill" style="background:var(--bad-bg);"></div><div class="swatch-meta"><div class="name" style="color:var(--bad-text);">Kritisch</div><div class="hex">BG #FBE7E7 · Text #B23434</div><div class="desc">Handlungsbedarf.</div></div></div>
+  </div>
+</section>
+
+<section id="type">
+  <div class="kicker-sm">02 — Typografie</div>
+  <h2 class="section-title">Typografie-Skala</h2>
+  <p class="section-sub">Schrift: Supreme. Display-Ebene trägt Hero/Section, Body-Ebene trägt UI-Text.</p>
+
+  <div class="type-row"><div><div class="tok">display-hero</div><div class="spec">800 / 52px / 1.08</div></div><div style="font-size:52px; font-weight:800; letter-spacing:-.01em;">Stark ins Leben.</div></div>
+  <div class="type-row"><div><div class="tok">display-section</div><div class="spec">800 / 34px / 1.1</div></div><div style="font-size:34px; font-weight:800;">Unsere Module</div></div>
+  <div class="type-row"><div><div class="tok">heading-lg</div><div class="spec">700 / 23px / 1.3</div></div><div style="font-size:23px; font-weight:700;">Medienkompetenz für Jugendliche</div></div>
+  <div class="type-row"><div><div class="tok">heading-md</div><div class="spec">600 / 18px / 1.4</div></div><div style="font-size:18px; font-weight:600;">Was Eltern wissen sollten</div></div>
+  <div class="type-row"><div><div class="tok">body</div><div class="spec">400 / 16px / 1.5</div></div><div style="font-size:16px; font-weight:400; line-height:1.5; max-width:520px;">Kurse, die junge Menschen mental stärken — persönlich, sicher, nah begleitet von ausgebildeten Trainerinnen und Trainern.</div></div>
+  <div class="type-row"><div><div class="tok">body-tabular</div><div class="spec">400 / 14px / tabular-nums</div></div><div style="font-size:14px; font-variant-numeric:tabular-nums;">CHF 1'248.00 · 24 Teilnehmende</div></div>
+  <div class="type-row"><div><div class="tok">button</div><div class="spec">600 / 15px</div></div><div style="font-size:15px; font-weight:600;">Modul entdecken</div></div>
+  <div class="type-row" style="border-bottom:none;"><div><div class="tok">caption</div><div class="spec">500 / 12.5px</div></div><div style="font-size:12.5px; font-weight:500; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.05em;">Nächster Kurstermin</div></div>
+</section>
+
+<section id="components-buttons">
+  <div class="kicker-sm">03 — Komponenten</div>
+  <h2 class="section-title">Button-Varianten</h2>
+  <p class="section-sub">Primary, Secondary, Dark.</p>
+  <div class="grid grid-4">
+    <div class="comp-tile"><div class="label">button-primary-pill</div><span class="btn btn-primary">Modul entdecken</span></div>
+    <div class="comp-tile"><div class="label">button-accent (neu)</div><span class="btn" style="background:var(--accent-coral); color:#fff;">Jetzt anmelden</span></div>
+    <div class="comp-tile"><div class="label">button-secondary</div><span class="btn btn-secondary">Mehr erfahren</span></div>
+    <div class="comp-tile"><div class="label">button-on-dark</div><div style="background:var(--ink); padding:20px; border-radius:var(--r-lg); margin:-24px -24px -24px -24px;"><span class="btn btn-dark" style="background:var(--on-primary); color:var(--ink);">Anmelden</span></div></div>
+  </div>
+
+  <div style="height:32px;"></div>
+  <div class="grid grid-3">
+    <div class="comp-tile"><div class="label">category-chip</div>
+      <span class="chip" style="background:var(--primary-subdued); color:var(--primary); margin-right:8px;">Medienkompetenz</span>
+      <span class="chip" style="background:var(--accent-coral-bg); color:var(--accent-coral-deep); margin-right:8px;">Respekt</span>
+      <span class="chip" style="background:#DFF3EE; color:var(--accent-teal-deep);">Orientierung</span>
+    </div>
+    <div class="comp-tile"><div class="label">status-badge (Ampelsystem)</div>
+      <span class="badge" style="background:var(--good-bg); color:var(--good-text); margin-right:8px;"><span class="dot" style="background:var(--good-text);"></span>Auf Kurs</span>
+      <span class="badge" style="background:var(--warn-bg); color:var(--warn-text);"><span class="dot" style="background:var(--warn-text);"></span>Beobachten</span>
+    </div>
+    <div class="comp-tile"><div class="label">kpi-tile</div>
+      <div class="kpi-tile" style="border:none; padding:0;"><div class="kpi-label">Aktive Familien</div><div class="kpi-num">1'248</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="components-cards">
+  <h2 class="section-title" style="font-size:22px;">Karten-Beispiele — Abo-Pläne</h2>
+  <p class="section-sub">6x / 12x / 24x-Abo, mittlere Karte hervorgehoben (dunkle Umkehrung, wie im Benchmark).</p>
+  <div class="grid grid-3">
+    <div class="plan-card">
+      <div class="plan-name">6er-ABO</div>
+      <div class="plan-price">CHF 240</div>
+      <div class="plan-desc">Für den Einstieg — läuft ab Kaufdatum.</div>
+      <ul><li>6 Kurseinheiten</li><li>Frei wählbare Module</li><li>ICS-Kalender & Reminder</li></ul>
+      <span class="btn btn-secondary">6er wählen</span>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-name">12er-ABO</div>
+      <div class="plan-price">CHF 440</div>
+      <div class="plan-desc">Meistgewählt — beste Begleitung über ein Halbjahr.</div>
+      <ul><li>Alles aus 6er-Abo</li><li>Priorität bei Wartelisten</li><li>Trainer-Notizen laufend</li></ul>
+      <span class="btn" style="background:#fff; color:var(--ink);">12er wählen</span>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">24er-ABO</div>
+      <div class="plan-price">CHF 800</div>
+      <div class="plan-desc">Für die volle Journey über ein Jahr.</div>
+      <ul><li>Alles aus 12er-Abo</li><li>Persönliches Standortgespräch</li><li>Familien-Rabatt-fähig</li></ul>
+      <span class="btn btn-secondary">24er wählen</span>
+    </div>
+  </div>
+</section>
+
+<section id="components-forms">
+  <h2 class="section-title" style="font-size:22px;">Formular-Elemente</h2>
+  <p class="section-sub">Standard-Inputs mit Hairline-Rahmen, Fokus wechselt zu Primary Deep.</p>
+  <div class="grid grid-3">
+    <div class="field"><label>Vorname des Kindes</label><input placeholder="Mia"></div>
+    <div class="field"><label>E-Mail (Erziehungsberechtigte:r)</label><input placeholder="familie@beispiel.ch"></div>
+    <div class="field"><label>Modul</label><select><option>Medienkompetenz</option><option>Respekt</option><option>Gewaltprävention</option></select></div>
+  </div>
+  <div style="height:16px;"></div>
+  <div class="field" style="max-width:520px;"><label>Nahrungsunverträglichkeiten / Hinweise</label><textarea placeholder="z.B. Nussallergie"></textarea></div>
+</section>
+
+<section id="foundations">
+  <div class="kicker-sm">04 — Foundations</div>
+  <h2 class="section-title">Spacing-Skala</h2>
+  <p class="section-sub">8px-Basis, gleiche Struktur wie im Benchmark übernommen.</p>
+  <div class="sp-bar">
+    <div class="bar-wrap"><div class="bar" style="height:4px;"></div>xs·4</div>
+    <div class="bar-wrap"><div class="bar" style="height:8px;"></div>sm·8</div>
+    <div class="bar-wrap"><div class="bar" style="height:12px;"></div>md·12</div>
+    <div class="bar-wrap"><div class="bar" style="height:16px;"></div>lg·16</div>
+    <div class="bar-wrap"><div class="bar" style="height:24px;"></div>xl·24</div>
+    <div class="bar-wrap"><div class="bar" style="height:32px;"></div>xxl·32</div>
+    <div class="bar-wrap"><div class="bar" style="height:64px;"></div>huge·64</div>
+  </div>
+
+  <div style="height:40px;"></div>
+  <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">Radius-Skala</h3>
+  <div class="rad-row">
+    <div class="rad-item"><div class="rad-box" style="border-radius:4px;"></div>sm·4</div>
+    <div class="rad-item"><div class="rad-box" style="border-radius:8px;"></div>md·8</div>
+    <div class="rad-item"><div class="rad-box" style="border-radius:12px;"></div>lg·12</div>
+    <div class="rad-item"><div class="rad-box" style="border-radius:16px;"></div>xl·16</div>
+    <div class="rad-item"><div class="rad-box" style="border-radius:9999px;"></div>pill</div>
+  </div>
+
+  <div style="height:40px;"></div>
+  <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">Elevation & Tiefe</h3>
+  <div class="elev-row">
+    <div class="elev-card">L0 · Flach</div>
+    <div class="elev-card" style="box-shadow:var(--e1);">L1 · Karte</div>
+    <div class="elev-card" style="box-shadow:var(--e2);">L2 · Schwebendes Panel</div>
+  </div>
+</section>
+
+<section id="liquid">
+  <div class="kicker-sm">05 — Unser Zusatz (kein Benchmark-Äquivalent)</div>
+  <h2 class="section-title">Liquid-Glass & Gradient-Mesh</h2>
+  <p class="section-sub">iOS-27-Ästhetik: weicher Pastell-Verlauf + Glass-Panel-Tiefe. Ersetzt Stripes harte Indigo-Mesh.</p>
+  <div class="hero-mesh">
+    <div class="glass-panel">
+      <div style="font-size:13px; font-weight:600; color:var(--ink-secondary);">Willkommen zurück</div>
+      <div style="font-size:20px; font-weight:800; margin-top:4px;">Nächster Kurs: Freitag, 14:00</div>
+    </div>
+  </div>
+</section>
+
+<section id="bento">
+  <h2 class="section-title" style="font-size:22px;">Bento-Grid</h2>
+  <p class="section-sub">Modul-Übersicht, asymmetrisch.</p>
+  <div class="bento">
+    <div class="b-card b-large"><div style="font-weight:800; font-size:20px;">Medienkompetenz</div><div style="font-size:13px; color:var(--ink-secondary);">Ab 10 Jahren</div></div>
+    <div class="b-card"><div style="font-weight:700;">Respekt</div></div>
+    <div class="b-card"><div style="font-weight:700;">Orientierung</div></div>
+    <div class="b-card b-wide"><div style="font-weight:700;">Gewaltprävention — nächster Start: 3. Sept.</div></div>
+  </div>
+</section>
+
+<section id="kiosk">
+  <h2 class="section-title" style="font-size:22px;">Kiosk-Check-in-Button</h2>
+  <p class="section-sub">Grosses Touch-Target für das Tablet am Kursort, auf 2m Distanz lesbar.</p>
+  <div class="kiosk-btn">QR-Code scannen zum Einchecken</div>
+</section>
+
+<section id="responsive">
+  <div class="kicker-sm">06 — Responsive Verhalten</div>
+  <h2 class="section-title">Breakpoints</h2>
+  <table class="bp">
+    <tr><th>Name</th><th>Breite</th><th>Wichtigste Änderung</th></tr>
+    <tr><td>Wide</td><td>≥ 1440px</td><td>Volles Hero-Band, Bento 4-spaltig</td></tr>
+    <tr><td>Desktop</td><td>1024–1440px</td><td>Standard-Content-Breite</td></tr>
+    <tr><td>Tablet</td><td>768–1023px</td><td>Bento 2-spaltig</td></tr>
+    <tr><td>Mobile</td><td>&lt; 768px</td><td>Bento 1-spaltig, Hamburger-Nav</td></tr>
+  </table>
+  <div style="height:24px;"></div>
+  <p style="font-size:14px; color:var(--ink-secondary);"><strong>Touch-Targets:</strong> Pill-Buttons ≥ 44×44px auf Mobile. Kiosk-Check-in-Button ≥ 64×64px. WCAG-AA-Ziel für alle interaktiven Elemente.</p>
+</section>
+
+</body>
+</html>

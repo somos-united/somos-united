@@ -1,0 +1,9 @@
+@import "@somos/ui/tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-canvas-soft font-sans text-ink;
+}

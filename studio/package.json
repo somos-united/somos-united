@@ -1,0 +1,31 @@
+{
+  "name": "studio",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Somos United — Sanity Studio v3, i18n-fähig (de-CH default, en). Source: md/03-DATA-MODEL.md §1.",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo 'studio has no tests yet (Phase 0)'",
+    "clean": "rm -rf dist .turbo"
+  },
+  "dependencies": {
+    "@sanity/document-internationalization": "3.2.0",
+    "@sanity/icons": "3.5.0",
+    "@sanity/vision": "3.62.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "sanity": "3.62.3",
+    "styled-components": "6.1.13"
+  },
+  "devDependencies": {
+    "@somos/config": "workspace:*",
+    "@types/react": "18.3.5",
+    "eslint": "8.57.0",
+    "typescript": "5.5.4"
+  }
+}

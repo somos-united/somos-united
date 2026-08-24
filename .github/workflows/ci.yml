@@ -1,0 +1,84 @@
+name: CI
+
+# 02-DEPLOYMENT.md §4: on every PR, Turborepo builds only what changed,
+# lint/typecheck/test must be green, Snyk/Socket block on critical findings,
+# then Vercel creates its own preview deploy automatically (not this file's
+# job). Merging to `main` (once green) triggers the Staging deploy.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: "1"
+
+jobs:
+  lint-typecheck-test:
+    name: Lint, typecheck, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm turbo run lint
+
+      - name: Typecheck
+        run: pnpm turbo run typecheck
+
+      - name: Test
+        run: pnpm turbo run test
+
+      - name: Build
+        run: pnpm turbo run build
+
+  # -----------------------------------------------------------------------
+  # Security scans (01-ARCHITECTURE.md §9, 02-DEPLOYMENT.md §4): "Merge nach
+  # main blockiert bei kritischen Findings." Neither account exists yet
+  # (02-DEPLOYMENT.md §2 checklist) — these jobs are wired up but no-op
+  # (skipped, not failed) until SNYK_TOKEN / SOCKET_SECURITY_API_KEY are
+  # added as repo secrets, so CI never blocks on a missing account.
+  # -----------------------------------------------------------------------
+  snyk:
+    name: Snyk (dependency security scan)
+    runs-on: ubuntu-latest
+    if: ${{ secrets.SNYK_TOKEN != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Snyk
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=critical --all-projects
+
+  socket:
+    name: Socket (dependency security scan)
+    runs-on: ubuntu-latest
+    if: ${{ secrets.SOCKET_SECURITY_API_KEY != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Socket security scan
+        uses: SocketDev/socket-security-action@v1
+        env:
+          SOCKET_SECURITY_API_KEY: ${{ secrets.SOCKET_SECURITY_API_KEY }}

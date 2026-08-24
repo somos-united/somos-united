@@ -1,0 +1,22 @@
+{
+  "name": "@somos/types",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared TypeScript types: hand-authored Supabase Database type (mirrors supabase/migrations) + placeholder Sanity content types.",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts --max-warnings 0",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "echo '@somos/types has no tests yet (Phase 0)'",
+    "clean": "rm -rf dist .turbo"
+  },
+  "devDependencies": {
+    "@somos/config": "workspace:*",
+    "eslint": "8.57.0",
+    "typescript": "5.5.4"
+  }
+}
