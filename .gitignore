@@ -25,6 +25,7 @@ build/
 
 # Sanity
 studio/dist/
+studio/.sanity/
 
 # Testing / coverage
 coverage/
