@@ -12,7 +12,7 @@ test("redirects the unprefixed root to the default locale and renders the home p
   expect(response?.ok()).toBe(true);
   await expect(page).toHaveURL(/\/de$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Stark ins Leben.");
-  await expect(page.getByRole("button", { name: "Module entdecken" })).toBeVisible();
+  await expect(page.getByText("Verein Somos United, Schweiz")).toBeVisible();
 });
 
 test("switches to the English locale via the language link", async ({ page }) => {
