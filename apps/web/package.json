@@ -9,8 +9,9 @@
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "echo 'apps/web has no tests yet (Phase 0)'",
-    "clean": "rm -rf .next .turbo"
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "clean": "rm -rf .next .turbo playwright-report test-results"
   },
   "dependencies": {
     "@somos/ui": "workspace:*",
@@ -19,6 +20,7 @@
     "react-dom": "18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "1.62.1",
     "@somos/config": "workspace:*",
     "@types/node": "20.16.5",
     "@types/react": "18.3.5",
@@ -28,6 +30,8 @@
     "eslint-config-next": "14.2.15",
     "postcss": "8.4.47",
     "tailwindcss": "3.4.10",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
   }
 }

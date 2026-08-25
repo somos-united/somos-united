@@ -49,6 +49,50 @@ jobs:
         run: pnpm turbo run build
 
   # -----------------------------------------------------------------------
+  # E2E (apps/web only — 05-MODULE-BOOKING.md's booking/checkout flow doesn't
+  # exist yet, but the locale-redirect + home page already do, so this has
+  # real coverage rather than being deferred). Separate job from the one
+  # above: e2e needs a production build + a running server first, unit tests
+  # don't, and browser install is its own slow step worth isolating/caching
+  # independently. Runs in parallel with lint/typecheck/test/build, not
+  # chained after it — either failing blocks the merge the same way.
+  # -----------------------------------------------------------------------
+  e2e:
+    name: E2E (Playwright — apps/web)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Chromium only (apps/web/playwright.config.ts) — local/CI browser
+      # binaries only, no paid Playwright cloud service.
+      - name: Install Playwright browsers
+        run: pnpm --filter web exec playwright install --with-deps chromium
+
+      - name: Run e2e (build + serve + test)
+        run: pnpm turbo run e2e
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 14
+
+  # -----------------------------------------------------------------------
   # Security scans (01-ARCHITECTURE.md §9, 02-DEPLOYMENT.md §4): "Merge nach
   # main blockiert bei kritischen Findings." Neither account exists yet
   # (02-DEPLOYMENT.md §2 checklist) — these jobs are wired up but no-op

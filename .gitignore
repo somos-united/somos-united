@@ -30,6 +30,11 @@ studio/.sanity/
 # Testing / coverage
 coverage/
 
+# Playwright (apps/web e2e — .github/workflows/ci.yml, apps/web/playwright.config.ts)
+playwright-report/
+test-results/
+blob-report/
+
 # Logs
 *.log
 npm-debug.log*

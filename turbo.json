@@ -15,12 +15,23 @@
       "outputs": []
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      // Own "build" (not just "^build"): the three Next.js apps' tsconfig.json
+      // includes ".next/types/**/*.ts", which `next build` generates — without
+      // this, typecheck can race build and fail with "file not found" on a
+      // clean checkout (pre-existing Phase-0 gap, surfaced while wiring up
+      // Vitest/Playwright). Turbo's cache means the later explicit "build"
+      // task/step (see .github/workflows/ci.yml) is a cache hit, not double work.
+      "dependsOn": ["^build", "build"],
       "outputs": []
     },
     "test": {
       "dependsOn": ["^build"],
       "outputs": []
+    },
+    "e2e": {
+      "dependsOn": ["^build"],
+      "outputs": ["playwright-report/**", "test-results/**"],
+      "cache": false
     },
     "clean": {
       "cache": false

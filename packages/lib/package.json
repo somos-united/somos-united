@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts --max-warnings 0",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "echo '@somos/lib has no tests yet (Phase 0)'",
+    "test": "vitest run",
     "clean": "rm -rf dist .turbo"
   },
   "dependencies": {
@@ -20,6 +20,8 @@
   "devDependencies": {
     "@somos/config": "workspace:*",
     "eslint": "8.57.0",
-    "typescript": "5.5.4"
+    "typescript": "5.5.4",
+    "vite": "8.2.2",
+    "vitest": "4.1.11"
   }
 }
