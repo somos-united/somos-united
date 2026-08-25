@@ -102,27 +102,27 @@ jobs:
   snyk:
     name: Snyk (dependency security scan)
     runs-on: ubuntu-latest
-    if: ${{ secrets.SNYK_TOKEN != '' }}
+    env:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Run Snyk
+        if: ${{ env.SNYK_TOKEN != '' }}
         uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=critical --all-projects
 
   socket:
     name: Socket (dependency security scan)
     runs-on: ubuntu-latest
-    if: ${{ secrets.SOCKET_SECURITY_API_KEY != '' }}
+    env:
+      SOCKET_SECURITY_API_KEY: ${{ secrets.SOCKET_SECURITY_API_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Run Socket security scan
+        if: ${{ env.SOCKET_SECURITY_API_KEY != '' }}
         uses: SocketDev/socket-security-action@v1
-        env:
-          SOCKET_SECURITY_API_KEY: ${{ secrets.SOCKET_SECURITY_API_KEY }}
