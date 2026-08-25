@@ -14,7 +14,7 @@ Referenz: `md/02-DEPLOYMENT.md` Abschnitt 2 & 8. Diese Checkliste ist für Danny
 - [ ] **Bitwarden Free Organization** — 2 Personen (Danny + 1). Alle folgenden Zugangsdaten sofort hier eintragen, nicht in Notizen/Mail zwischenlagern.
 
 ### 2. Code & Hosting
-- [ ] **GitHub** — Organisation `somos-united` (nicht privates Repo)
+- [x] **GitHub** — Organisation `somos-united` (nicht privates Repo). Erledigt 2026-08-25: Org unter `github.com/somos-united`, Rechtsträger "Verein Somos United", Login `tech@somosunited.ch`. Repo `somos-united/somos-united` erstellt und gepusht, CI grün.
 - [ ] **Vercel** — Team-Account, mit GitHub-Org verknüpfen (ermöglicht automatische Preview-Deploys pro PR)
 
 ### 3. Daten & Content
