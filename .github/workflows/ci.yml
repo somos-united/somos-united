@@ -123,6 +123,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # TODO: SocketDev/socket-security-action does not exist on GitHub —
+      # wire up the real Socket integration once the account exists
+      # (docs/ACCOUNT-SETUP-CHECKLIST.md #6) and the correct action/setup is
+      # confirmed from Socket's own docs. Placeholder fails loudly instead of
+      # silently passing so this doesn't get forgotten.
       - name: Run Socket security scan
         if: ${{ env.SOCKET_SECURITY_API_KEY != '' }}
-        uses: SocketDev/socket-security-action@v1
+        run: |
+          echo "Socket security scan not yet wired up — see TODO above." >&2
+          exit 1
