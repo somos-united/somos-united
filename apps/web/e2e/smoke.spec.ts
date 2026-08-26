@@ -11,8 +11,11 @@ test("redirects the unprefixed root to the default locale and renders the home p
 
   expect(response?.ok()).toBe(true);
   await expect(page).toHaveURL(/\/de$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Stark ins Leben.");
-  await expect(page.getByText("Verein Somos United, Schweiz")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Somos");
+  await expect(page.getByRole("link", { name: /Schreib uns/ })).toHaveAttribute(
+    "href",
+    "mailto:tech@somosunited.ch",
+  );
 });
 
 test("switches to the English locale via the language link", async ({ page }) => {
@@ -21,5 +24,5 @@ test("switches to the English locale via the language link", async ({ page }) =>
   await page.getByRole("link", { name: "EN" }).click();
 
   await expect(page).toHaveURL(/\/en$/);
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Strong into life.");
+  await expect(page.getByRole("link", { name: /Drop us a line/ })).toBeVisible();
 });
