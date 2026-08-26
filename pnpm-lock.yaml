@@ -124,9 +124,6 @@ importers:
       '@somos/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      motion:
-        specifier: ^13.1.1
-        version: 13.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next:
         specifier: 14.2.15
         version: 14.2.15(@playwright/test@1.62.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
