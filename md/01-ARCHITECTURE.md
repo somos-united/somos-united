@@ -78,7 +78,7 @@ Wichtig als Experten-Hinweis: Screenshots technisch zuverlässig zu verhindern i
 ## 6. Mehrsprachigkeit — technische Basis
 
 - Sanity-Content ist von Anfang an lokalisiert aufgebaut (Locale-Feld pro Dokument bzw. Sanity-i18n-Plugin), Start mit `de-CH` (Standard) und `en`.
-- URL-Struktur: `/de/...` und `/en/...`, kein Locale-Präfix = Redirect auf Default (`de`).
+- URL-Struktur: `/de/...` und `/en/...`, kein Locale-Präfix = Redirect basierend auf Browser-Sprache (`Accept-Language`-Header), Fallback `de` wenn nicht erkennbar oder nicht unterstützt (Danny-Entscheidung 2026-08-26).
 - Datenmodell so offen gebaut, dass `fr-CH`/`it-CH` später als reine Content-Ergänzung möglich sind, ohne Schema- oder Code-Änderung. Timing dafür ist laut Master-Plan aktuell offen (Danny: "noch unklar").
 
 ## 8. Notion → Sanity Content-Sync

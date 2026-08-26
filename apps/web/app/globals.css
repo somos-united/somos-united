@@ -7,3 +7,13 @@
 body {
   @apply bg-canvas font-sans text-ink;
 }
+
+@keyframes gradient-drift {
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 0% 100%;
+  }
+}
