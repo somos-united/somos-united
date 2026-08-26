@@ -25,53 +25,6 @@
 create extension if not exists "pgcrypto"; -- gen_random_uuid()
 
 -- =============================================================================
--- Helper functions for RLS policies (SECURITY DEFINER so they can read
--- `profiles` without recursing into that table's own RLS policies).
--- =============================================================================
-
-create or replace function public.current_role()
-returns text
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select role from public.profiles where id = auth.uid();
-$$;
-
-create or replace function public.is_admin()
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.profiles
-    where id = auth.uid() and role in ('admin', 'superuser')
-  );
-$$;
-
--- superuser = "technisch wie admin, aber alle Permissions fix vergeben"
--- (01-ARCHITECTURE.md §4.1) — always passes a permission check.
-create or replace function public.has_permission(perm text)
-returns boolean
-language sql
-stable
-security definer
-set search_path = public
-as $$
-  select exists (
-    select 1 from public.profiles
-    where id = auth.uid()
-      and (
-        role = 'superuser'
-        or (role = 'admin' and perm = any(permissions))
-      )
-  );
-$$;
-
--- =============================================================================
 -- 2.1 Identität & Zugriff
 -- =============================================================================
 
@@ -547,6 +500,56 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- =============================================================================
+-- Helper functions for RLS policies (SECURITY DEFINER so they can read
+-- `profiles` without recursing into that table's own RLS policies). Defined
+-- here, after all tables exist — Postgres validates SQL-language function
+-- bodies against the schema at creation time, so these can't come before the
+-- tables they query (unlike plpgsql, which only checks at call time).
+-- =============================================================================
+
+create or replace function public.current_role()
+returns text
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select role from public.profiles where id = auth.uid();
+$$;
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid() and role in ('admin', 'superuser')
+  );
+$$;
+
+-- superuser = "technisch wie admin, aber alle Permissions fix vergeben"
+-- (01-ARCHITECTURE.md §4.1) — always passes a permission check.
+create or replace function public.has_permission(perm text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and (
+        role = 'superuser'
+        or (role = 'admin' and perm = any(permissions))
+      )
+  );
+$$;
 
 -- =============================================================================
 -- Row Level Security — deny-by-default on every table.
