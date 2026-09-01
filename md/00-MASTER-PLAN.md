@@ -66,7 +66,7 @@ somos-united/
 - **Notion** (neu) — Erfassungs-Tool für redaktionellen Content ausserhalb von Sanity Studio, gedacht für Team-Mitglieder, denen Notion vertrauter ist. Fliesst per Webhook automatisiert als Draft nach Sanity (nie direkt live), Details in `01-ARCHITECTURE.md` Abschnitt 8.
 - **Cloudflare** — DNS, WAF/Security-Layer vor Vercel, zusätzlich Access (Zero-Trust-Gate) vor Admin- und Trainer-App.
 - **Resend** — transaktionale E-Mails (Reminder, Bestätigungen, Magic Link Fallback).
-- **Twilio** (neu, 2026-08-18) — SMS-Versand (Buchungs-Reminder mit Opt-in, CRM-SMS-Alerts). Details/Abwägung gegenüber dem Schweizer Anbieter SMSup.ch in `07-MODULE-CRM.md` Abschnitt 3.
+- **Twilio** (Entscheidung 2026-08-18, bestätigt 2026-08-31) — SMS- und WhatsApp-Versand (Buchungs-Reminder mit Opt-in, CRM-Alerts). Pay-as-you-go, keine monatliche Gebühr. Details/Abwägung gegenüber dem Schweizer Anbieter SMSup.ch (SMS-only) in `07-MODULE-CRM.md` Abschnitt 3.
 - **Stripe** — Zahlungen/Abos.
 - **CYON** — nur MX/E-Mail-Hosting (bestehend, bleibt unangetastet).
 - **GitHub** — Repo + CI/CD-Trigger; **Snyk/Socket** — automatisierte Dependency-Security-Checks.

@@ -35,17 +35,20 @@ Eine Detailansicht pro Familie bündelt:
 
 - **Newsletter:** Versand über Resend an `families` mit `newsletter_opt_in = true`, gefiltert nach Segment (Abschnitt 1). Jeder Versand ein `newsletter_log`-Eintrag.
 - **SMS-Alerts:** Versand an `families` mit `sms_opt_in = true`. Jeder Versand ein `sms_log`-Eintrag.
-- **SMS-Provider: Twilio** (Entscheidung 2026-08-18). Kurzer Vergleich, den Danny angefragt hatte:
+- **SMS/WhatsApp-Provider: Twilio** (Entscheidung 2026-08-18, kurz zwischenzeitlich auf SMSup.ch umgestellt am 2026-08-31, dann am selben Tag zurück auf Twilio — siehe unten). Kurzer Vergleich, den Danny angefragt hatte:
 
   | | SMSup.ch | Twilio |
   |---|---|---|
   | Preis/SMS (CH) | CHF 0.087–0.114 je nach Volumen | ≈ CHF 0.07 (USD 0.0769) |
-  | Absender-Konfiguration | — | Alphanumerische Absender-ID ("SOMOS") kostenlos, keine Rufnummer nötig |
+  | WhatsApp-Unterstützung | Nein, nur SMS | Ja |
+  | Absender-Konfiguration | — | Alphanumerische Absender-ID ("SOMOSUnited") kostenlos, keine Rufnummer nötig |
   | Herkunft/Billing | Schweizer Anbieter, CHF | US-Anbieter, USD-Abrechnung (EU/Irland-Datenverarbeitungsoption vorhanden) |
+  | Abrechnungsmodell | Guthaben/Kredite, kein Abo | Pay-as-you-go-Guthaben, kein Abo |
   | Bei Somos United bereits im Einsatz? | Ja, für `cms.neonstudio.ch` | Nein, neu |
 
-  Twilio ist günstiger und erlaubt eine schöne alphanumerische Absender-ID ("SOMOS" statt einer Nummer) ohne Zusatzkosten — deshalb die Wahl. **Ein Hinweis dazu, weil es zur bisherigen Linie des Projekts passt:** Somos United legt sonst durchgehend Wert auf echte Schweizer Datenresidenz (deshalb z.B. Supabase Region Zürich für alle Personendaten). SMS-Inhalte sind zwar flüchtig (keine dauerhafte Speicherung von Personendaten bei Twilio, nur Telefonnummer + kurzer Text während des Versands), aber es ist trotzdem ein US-Anbieter statt eines Schweizer. Wenn dir die Konsistenz wichtiger ist als der Preisunterschied, ist SMSup jederzeit ohne Aufwand austauschbar — die Anbindung ist bewusst so gebaut (`sms_log` kennt keine Provider-Details), dass ein Wechsel später keine Datenmodell-Änderung braucht. Nur damit die Entscheidung bewusst getroffen ist, nicht aus Versehen.
+  Twilio ist günstiger, unterstützt zusätzlich WhatsApp (von Danny gewünscht, SMSup kann das nicht), und beide Anbieter arbeiten mit Guthaben statt Abo — **keine monatliche Gebühr bei Twilio**, nur Kosten pro tatsächlich versendeter Nachricht. Kurzzeitig auf SMSup zurückgestuft, weil die Twilio-Absender-ID-Registrierung ein "Upgrade" vom Trial-Konto verlangt — das wurde fälschlich als kostenpflichtiges Abo missverstanden; tatsächlich ist es nur die Umstellung von Trial-Limits auf ein finanziertes Pay-as-you-go-Konto, keine wiederkehrende Gebühr. Danny hat das nach Klärung bestätigt: zurück zu Twilio. **Ein Hinweis dazu, weil es zur bisherigen Linie des Projekts passt:** Somos United legt sonst durchgehend Wert auf echte Schweizer Datenresidenz (deshalb z.B. Supabase Region Zürich für alle Personendaten). SMS-/WhatsApp-Inhalte sind zwar flüchtig (keine dauerhafte Speicherung von Personendaten bei Twilio, nur Telefonnummer + kurzer Text während des Versands), aber es ist trotzdem ein US-Anbieter statt eines Schweizer. Wenn dir die Konsistenz später wichtiger wird als WhatsApp-Unterstützung, ist SMSup jederzeit ohne Aufwand austauschbar (nur fürs SMS-Alerts, kein WhatsApp-Ersatz) — die Anbindung ist bewusst so gebaut (`sms_log` kennt keine Provider-Details), dass ein Wechsel später keine Datenmodell-Änderung braucht.
   - Env-Variablen-Block `TWILIO_*` ergänzt in `01-ARCHITECTURE.md` Abschnitt 5.
+  - **WhatsApp braucht zusätzlich:** ein Meta Business Manager + verifiziertes WhatsApp Business Account (WABA) für "Verein Somos United", separat vom Twilio-Konto-Funding. Eigener Schritt, noch offen.
 
 ## 4. E-Mail-Korrespondenz (Kunden-Postfach im Konto) — Nachtrag Danny, 2026-08-19
 
@@ -86,12 +89,14 @@ Startseite der Admin-App — Ampelsystem (Grün/Gelb/Rot) statt Zahlenwüste, wi
 - Das Dashboard liest ausschliesslich aus diesem Cache, nie live von Google aus — schnell, kein Rate-Limit-Risiko, und die Zahlen sind für alle Admin-Nutzer:innen konsistent (alle sehen denselben Stand).
 - Voraussetzung (einmalige Einrichtung, siehe `02-DEPLOYMENT.md`): ein Google-Cloud-Projekt mit aktivierter GA4-Data-API und Search-Console-API, ein Service-Account mit Lesezugriff auf die GA4-Property und die Search-Console-Property von somosunited.ch. Env-Variablen-Block `GOOGLE_*` ist bereits in `01-ARCHITECTURE.md` Abschnitt 5 vorgesehen.
 
+**Resend-Daten (Ergänzung, 2026-09-01, Danny-Wunsch):** Resend bietet inzwischen eine eigene Metrics-API (`GET /emails/metrics`, siehe [Resend-Doku](https://resend.com/docs/api-reference/emails/get-metrics)) mit Zustellungs- und Engagement-Kennzahlen direkt von Resend selbst (`delivered`, `bounced`, `opened`, `unique_opened`, `clicked`, `complained`, `unsubscribed`, plus berechnete Raten wie `delivery_rate`/`open_rate`/`click_rate`/`bounce_rate`) — genauer als die bisherige Berechnung aus `newsletter_log`. Nach demselben Baukasten-Prinzip wie bei Google einzubinden: dieselbe tägliche Edge Function ruft zusätzlich die Resend-Metrics-API ab (Bearer-Auth mit dem bestehenden `RESEND_API_KEY`, kein neuer Key nötig) und schreibt in denselben **`dashboard_metrics_cache`** (`source = 'resend'`). Ersetzt/ergänzt die bisherige `newsletter_log`-Berechnung, sobald gebaut — noch nicht umgesetzt, nur als Entscheidung festgehalten für die Dashboard-Bauphase.
+
 Beispiel-Kacheln (illustrativ):
 
 - **Auslastung laufende Kurse** — Grün: gut gebucht, Gelb: mittel, Rot: fast leer/gefährdet (Schwellenwerte pro Serie später frei konfigurierbar, analog zum Scarcity-Schwellenwert aus `05-MODULE-BOOKING.md`).
 - **Warteliste-Länge gesamt** — informativ, kein Ampel-Wert nötig.
 - **Website-Traffic** (aus `dashboard_metrics_cache`, Quelle GA4) und **Suchperformance** (Quelle Search Console) — direkt im Dashboard, nicht nur verlinkt.
-- **Newsletter-Öffnungsrate**, **SMS-Opt-in-Rate** — aus `newsletter_log`/`families` berechnet.
+- **Newsletter-Öffnungsrate/Klickrate/Bounce-Rate** (aus `dashboard_metrics_cache`, Quelle Resend Metrics API), **SMS-Opt-in-Rate** — aus `families` berechnet.
 
 Konkrete Ampel-Schwellenwerte (was zählt als "Grün") sind bewusst nicht hier festgelegt — die legt Danny im Betrieb fest, sobald erste echte Zahlen da sind. Technisch: Kacheln sind unabhängige Bausteine, einzeln erweiterbar, ohne bestehende KPIs zu berühren.
 

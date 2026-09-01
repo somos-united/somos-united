@@ -6,9 +6,9 @@ import { structureTool } from "sanity/structure";
 import { LANGUAGES } from "./languages";
 import { schemaTypes } from "./schemaTypes";
 
-// No live Sanity project exists yet (md/02-DEPLOYMENT.md §2/§8) — these env
-// vars are unset until that project is created; the placeholder keeps
-// `sanity build`/`sanity dev` runnable locally in the meantime.
+// Live project: ydbo6w2y ("Somos United", dataset "production"), set via
+// studio/.env. Falls back to "placeholder" only if that file is missing, so
+// `sanity build`/`sanity dev` still start without crashing.
 const projectId = process.env.SANITY_STUDIO_PROJECT_ID ?? "placeholder";
 const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
 

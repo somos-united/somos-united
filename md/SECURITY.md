@@ -29,7 +29,7 @@ Kiosk-Geräte (Abschnitt 4.3 in `01-ARCHITECTURE.md`) sind von der 2FA-Pflicht a
 - **Supabase-Projekt-Region: Zürich (`eu-central-2`).** Alle operativen/personenbezogenen Daten (Client-DB, Trainer-Dossiers, Finance, Buchungen) liegen damit physisch in der Schweiz — ein starkes Argument gegenüber Eltern und Verein.
 - **Sanity:** Content liegt aktuell fix in Belgien (EU), keine Regionwahl möglich, auch nicht auf höheren Plänen. Unkritisch: dort liegt nur redaktioneller Content (Kurstexte, Seiten), keine Personendaten.
 - **Vercel:** Frontend/Edge läuft global verteilt (CDN), Server-Functions können auf eine EU-nahe Region gepinnt werden — Details in `02-DEPLOYMENT.md`.
-- **Twilio (SMS, neu):** US-Anbieter, keine Schweizer Datenresidenz — einzige bewusste Ausnahme zur sonstigen CH/EU-Linie dieses Projekts. Verarbeitete Daten sind auf Telefonnummer + kurzen Nachrichtentext während des Versands beschränkt, keine dauerhafte Personendaten-Speicherung. Abwägung (Preis vs. Konsistenz) und der jederzeit mögliche Wechsel auf den Schweizer Anbieter SMSup.ch stehen in `07-MODULE-CRM.md` Abschnitt 3.
+- **Twilio (SMS/WhatsApp):** US-Anbieter, keine Schweizer Datenresidenz — einzige bewusste Ausnahme zur sonstigen CH/EU-Linie dieses Projekts. Verarbeitete Daten sind auf Telefonnummer + kurzen Nachrichtentext während des Versands beschränkt, keine dauerhafte Personendaten-Speicherung. Abwägung (Preis/WhatsApp-Support vs. Konsistenz) und der jederzeit mögliche Teilwechsel (nur SMS, kein WhatsApp) auf den Schweizer Anbieter SMSup.ch stehen in `07-MODULE-CRM.md` Abschnitt 3.
 
 ## 3. Zahlungen (PCI)
 
