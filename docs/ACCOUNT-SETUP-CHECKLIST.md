@@ -52,3 +52,5 @@ Referenz: `md/02-DEPLOYMENT.md` Abschnitt 2 & 8. Diese Checkliste ist für Danny
 ## Bekannter Vercel-Fallstrick (2026-09-02)
 
 Das per Skript-Kommando konfigurierte "Ignored Build Step" (`git diff HEAD^ HEAD --quiet -- ./apps/X`) hat mindestens einmal einen echten Deploy fälschlicherweise als "keine Änderungen" übersprungen (Commit `9e8fcb6`, änderte nachweislich 8 Dateien in `apps/web`, wurde trotzdem gecancelt). Für `somos-united-web` deshalb auf Vercels eingebautes "Automatic"-Verhalten zurückgestellt (überspringt nur bereits deployte Commit-SHAs, kein fehleranfälliger Pfad-Diff). `somos-united-admin`/`somos-united-trainer` haben noch die alte Konfiguration — bei Bedarf gleich umstellen, falls dort ein ähnlich stiller Fehlschlag auftritt.
+
+**Nachtrag (2026-09-02):** Auch mit "Automatic" wurde ein `--allow-empty`-Retrigger-Commit (identischer Datei-Baum wie sein bereits gecancelter Vorgänger) sofort ohne Build-Log übersprungen — Vercel scheint Commits mit identischem Datei-Baum zu deduplizieren, unabhängig vom Build-Ergebnis des Vorgängers. Für einen echten Test ist ein Commit mit tatsächlicher Inhaltsänderung nötig, kein leerer Commit.
