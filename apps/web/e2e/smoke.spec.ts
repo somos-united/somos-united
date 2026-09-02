@@ -44,3 +44,15 @@ test("switches to the English locale via the language link", async ({ page }) =>
   await expect(page).toHaveURL(/\/en$/);
   await expect(page.getByRole("link", { name: /Drop us a line/ })).toBeVisible();
 });
+
+test.describe("/preview gate (middleware.ts)", () => {
+  test("blocks access without credentials", async ({ page }) => {
+    // No PREVIEW_AUTH_USER/PASSWORD in CI, so this is either 401 (wrong/no
+    // creds against a configured gate) or 503 (gate unconfigured) — either
+    // way, never the actual in-progress site. Asserting "not 200" rather
+    // than a specific status keeps this test meaningful regardless of
+    // whether CI has the preview-gate secrets configured.
+    const response = await page.goto("/preview/de");
+    expect(response?.status()).not.toBe(200);
+  });
+});
