@@ -48,3 +48,7 @@ Referenz: `md/02-DEPLOYMENT.md` Abschnitt 2 & 8. Diese Checkliste ist für Danny
 
 ---
 *Nicht Teil dieser Checkliste: die tatsächlichen Lohnabzugssätze (Treuhänder-Abstimmung, siehe `08-MODULE-FINANCE.md` Abschnitt 12) — das ist reine Dateneingabe später im Admin-App, keine Account-Frage.*
+
+## Bekannter Vercel-Fallstrick (2026-09-02)
+
+Das per Skript-Kommando konfigurierte "Ignored Build Step" (`git diff HEAD^ HEAD --quiet -- ./apps/X`) hat mindestens einmal einen echten Deploy fälschlicherweise als "keine Änderungen" übersprungen (Commit `9e8fcb6`, änderte nachweislich 8 Dateien in `apps/web`, wurde trotzdem gecancelt). Für `somos-united-web` deshalb auf Vercels eingebautes "Automatic"-Verhalten zurückgestellt (überspringt nur bereits deployte Commit-SHAs, kein fehleranfälliger Pfad-Diff). `somos-united-admin`/`somos-united-trainer` haben noch die alte Konfiguration — bei Bedarf gleich umstellen, falls dort ein ähnlich stiller Fehlschlag auftritt.
