@@ -2,13 +2,26 @@ import type { ReactNode } from "react";
 
 import type { Locale } from "@/lib/locales";
 
-import { HOME_COPY } from "../copy";
+import { HOME_COPY, type ModuleTeaser } from "../copy";
 import {
   CourseCardDetail,
   CourseCardQuick,
   CourseCardTeaser,
   type CourseCardData,
 } from "../sections/CoursesTeaser";
+import { ContentBox } from "../sections/ModuleBento";
+
+// Same 6-slot bento cell pattern as the shipped ModuleBento section
+// (04-DESIGN-SYSTEM.md §5) - reused here so the content/trade blend
+// below tests the actual layout system, not an invented one.
+const BENTO_SPAN = [
+  "md:col-span-2 md:row-span-2", // 1
+  "md:col-span-2", // 2
+  "md:col-span-1", // 3
+  "md:col-span-1", // 4
+  "md:col-span-2", // 5
+  "md:col-span-2", // 6
+];
 
 /**
  * Internal-only sandbox: same 6 course cards from the homepage teaser,
@@ -21,16 +34,24 @@ import {
 export default function GridTestPage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
   const courses = t.courses.items;
+  const modules = t.modules;
   const cta = t.courses.cta;
   const isDe = params.locale === "de";
-  // copy.ts always seeds 6 course items - safe to assert for this
-  // review-only sandbox rather than add dead null-checks.
+  // copy.ts always seeds 6 course items / 6 modules - safe to assert for
+  // this review-only sandbox rather than add dead null-checks.
   const [course0, course1, course2, course3] = courses as [
     CourseCardData,
     CourseCardData,
     CourseCardData,
     CourseCardData,
     ...CourseCardData[],
+  ];
+  const [module0, module1, module2, module3] = modules as [
+    ModuleTeaser,
+    ModuleTeaser,
+    ModuleTeaser,
+    ModuleTeaser,
+    ...ModuleTeaser[],
   ];
 
   // Named card expressions, from most to least information-dense - see
@@ -70,6 +91,28 @@ export default function GridTestPage({ params }: { params: { locale: Locale } })
             ? "Dieselben 6 Kurskarten in verschiedenen Grid-Breiten und Card-Ausdrücken, um das Verhalten zu vergleichen. Keine Design-Entscheidung, kein echter Inhalt."
             : "The same 6 course cards across different grid widths and card expressions, to compare behavior. Not a design decision, not real content."}
         </p>
+      </div>
+
+      {/* ---------- Part 0: content & trade blended, above the fold ---------- */}
+
+      <h2 className="mb-md text-display-section text-ink">Content & Trade — above the fold</h2>
+      <p className="mb-xl max-w-[60ch] text-body text-ink-secondary">
+        {isDe
+          ? "Modul-Übersicht (Content) und Kurskarten (Trade) im selben Bento-Grid statt als zwei getrennte Sektionen - so könnte der Bereich direkt unter dem Hero aussehen. Gleiches 6-Zellen-Bento-Muster wie das aktuelle Modul-Grid, zwei Zellen durch Teaser/Quick-Kurskarten ersetzt."
+          : "Module overview (Content) and course cards (Trade) in the same Bento grid instead of two separate sections - roughly how the area right under the Hero could look. Same 6-cell Bento pattern as the current module grid, two cells swapped for Teaser/Quick course cards."}
+      </p>
+
+      <div className="mb-huge grid grid-cols-1 gap-lg md:grid-cols-4">
+        <ContentBox module={module0} size="large" chip="primary" className={BENTO_SPAN[0]} />
+        <div className={BENTO_SPAN[1]}>
+          <CourseCardTeaser course={course0} cta={cta} />
+        </div>
+        <ContentBox module={module1} chip="coral" className={BENTO_SPAN[2]} />
+        <ContentBox module={module2} chip="primary" className={BENTO_SPAN[3]} />
+        <div className={BENTO_SPAN[4]}>
+          <CourseCardQuick course={course1} cta={cta} />
+        </div>
+        <ContentBox module={module3} chip="coral" className={BENTO_SPAN[5]} />
       </div>
 
       {/* ---------- Part 2: card expressions ---------- */}
