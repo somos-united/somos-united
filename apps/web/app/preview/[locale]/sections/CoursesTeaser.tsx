@@ -30,6 +30,69 @@ export interface CourseCardData {
  * so far). The image slot below is a labeled placeholder, not a fake
  * finished illustration - flagged clearly rather than faked.
  */
+/**
+ * Single card, extracted so the grid-behavior review page
+ * (grid-test/page.tsx) can drop the same cards into different grid
+ * configurations without duplicating this markup.
+ */
+export function CourseCard({ course, cta }: { course: CourseCardData; cta: string }) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
+      <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
+        {course.fomo && (
+          <span
+            className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
+              course.fomo.kind === "scarcity"
+                ? "bg-accent-coral text-on-primary"
+                : "bg-ink text-canvas"
+            }`}
+          >
+            {course.fomo.kind === "scarcity" ? (
+              <UsersThree size={13} weight="bold" aria-hidden />
+            ) : (
+              <Clock size={13} weight="bold" aria-hidden />
+            )}
+            {course.fomo.label}
+          </span>
+        )}
+        <span className="text-caption text-ink-mute">[Illustration folgt]</span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-lg">
+        <span className="text-caption text-ink-mute">
+          {course.category} · {course.dateLabel}
+        </span>
+        <h3 className="mt-xs text-heading-lg text-ink">{course.title}</h3>
+
+        <ul className="mt-md flex flex-col gap-xs">
+          {course.advantages.map((advantage) => (
+            <li key={advantage} className="flex items-start gap-xs text-body text-ink-secondary">
+              <Check
+                size={14}
+                weight="bold"
+                className="mt-[3px] shrink-0 text-accent-teal-deep"
+                aria-hidden
+              />
+              {advantage}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-lg flex flex-1 items-end justify-between gap-md">
+          <span className="text-heading-lg text-ink">{course.price}</span>
+          <button
+            type="button"
+            className="inline-flex items-center gap-xs rounded-pill bg-primary px-lg py-xs text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            {cta}
+            <ArrowRight size={16} weight="bold" aria-hidden />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CoursesTeaser({
   heading,
   subtext,
@@ -48,62 +111,7 @@ export function CoursesTeaser({
 
       <div className="mt-xl grid grid-cols-1 gap-lg md:grid-cols-3">
         {courses.map((course) => (
-          <div
-            key={course.title}
-            className="flex flex-col overflow-hidden rounded-lg border border-hairline"
-          >
-            <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
-              {course.fomo && (
-                <span
-                  className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
-                    course.fomo.kind === "scarcity"
-                      ? "bg-accent-coral text-on-primary"
-                      : "bg-ink text-canvas"
-                  }`}
-                >
-                  {course.fomo.kind === "scarcity" ? (
-                    <UsersThree size={13} weight="bold" aria-hidden />
-                  ) : (
-                    <Clock size={13} weight="bold" aria-hidden />
-                  )}
-                  {course.fomo.label}
-                </span>
-              )}
-              <span className="text-caption text-ink-mute">[Illustration folgt]</span>
-            </div>
-
-            <div className="flex flex-1 flex-col p-lg">
-              <span className="text-caption text-ink-mute">
-                {course.category} · {course.dateLabel}
-              </span>
-              <h3 className="mt-xs text-heading-lg text-ink">{course.title}</h3>
-
-              <ul className="mt-md flex flex-col gap-xs">
-                {course.advantages.map((advantage) => (
-                  <li key={advantage} className="flex items-start gap-xs text-body text-ink-secondary">
-                    <Check
-                      size={14}
-                      weight="bold"
-                      className="mt-[3px] shrink-0 text-accent-teal-deep"
-                      aria-hidden
-                    />
-                    {advantage}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-lg flex flex-1 items-end justify-between gap-md">
-                <span className="text-heading-lg text-ink">{course.price}</span>
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-xs rounded-pill bg-primary px-lg py-xs text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                >
-                  {cta}
-                  <ArrowRight size={16} weight="bold" aria-hidden />
-                </button>
-              </div>
-            </div>
-          </div>
+          <CourseCard key={course.title} course={course} cta={cta} />
         ))}
       </div>
     </section>
