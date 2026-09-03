@@ -14,10 +14,12 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "e2e": "turbo run e2e",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "test:bird-sms": "tsx scripts/test-bird-sms.ts"
   },
   "devDependencies": {
     "turbo": "2.1.3",
+    "tsx": "4.23.13",
     "typescript": "5.5.4"
   }
 }

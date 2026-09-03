@@ -5,3 +5,5 @@ packages:
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+minimumReleaseAgeExclude:
+  - '@messagebird/sdk@0.52.0'
