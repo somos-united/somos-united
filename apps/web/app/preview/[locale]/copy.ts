@@ -2,6 +2,8 @@ import type { ModuleCategory } from "@somos/types";
 
 import type { Locale } from "@/lib/locales";
 
+import type { CourseCardData } from "./sections/CoursesTeaser";
+
 /**
  * Placeholder copy for the Phase 1 design preview (/preview/[locale]).
  * Deliberately hardcoded here, not fetched from Sanity — this pass is
@@ -21,6 +23,12 @@ export interface HomeCopy {
   hero: { headline: string; subtext: string; primaryCta: string; secondaryCta: string };
   modulesHeading: string;
   modules: ModuleTeaser[];
+  courses: {
+    heading: string;
+    subtext: string;
+    cta: string;
+    items: CourseCardData[];
+  };
   process: { heading: string; steps: { verb: string; body: string }[] };
   quote: { label: string; body: string; attribution: string };
   closing: { headline: string; cta: string };
@@ -70,6 +78,33 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         teaser: "Bewusster Umgang mit sozialen Netzwerken und ihren Folgen.",
       },
     ],
+    courses: {
+      heading: "Nächste Kurse",
+      subtext: "Eine Auswahl kommender Termine, Preise nach Buchungszeitpunkt gestaffelt.",
+      cta: "Jetzt buchen",
+      items: [
+        {
+          category: "Medienkompetenz",
+          title: "Medienkompetenz Basiskurs",
+          dateLabel: "Wöchentlich, Zürich",
+          price: "CHF 25.–",
+          fomo: { kind: "scarcity", label: "Nur noch 3 Plätze" },
+        },
+        {
+          category: "Gewaltprävention",
+          title: "Gewaltprävention Einstieg",
+          dateLabel: "Wöchentlich, Bern",
+          price: "CHF 30.–",
+          fomo: { kind: "urgency", label: "Preis gültig bis 15.10." },
+        },
+        {
+          category: "Respekt",
+          title: "Respekt im Alltag",
+          dateLabel: "Wöchentlich, Basel",
+          price: "CHF 35.–",
+        },
+      ],
+    },
     process: {
       heading: "So läuft's ab",
       steps: [
@@ -134,6 +169,33 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         teaser: "A conscious approach to social networks and their effects.",
       },
     ],
+    courses: {
+      heading: "Upcoming courses",
+      subtext: "A selection of upcoming dates, priced by how early you book.",
+      cta: "Book now",
+      items: [
+        {
+          category: "Media literacy",
+          title: "Media Literacy Basics",
+          dateLabel: "Weekly, Zurich",
+          price: "CHF 25.-",
+          fomo: { kind: "scarcity", label: "Only 3 spots left" },
+        },
+        {
+          category: "Violence prevention",
+          title: "Violence Prevention Intro",
+          dateLabel: "Weekly, Bern",
+          price: "CHF 30.-",
+          fomo: { kind: "urgency", label: "Price valid until Oct 15" },
+        },
+        {
+          category: "Respect",
+          title: "Respect in Everyday Life",
+          dateLabel: "Weekly, Basel",
+          price: "CHF 35.-",
+        },
+      ],
+    },
     process: {
       heading: "How it works",
       steps: [

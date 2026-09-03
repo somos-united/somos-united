@@ -2,6 +2,7 @@ import type { Locale } from "@/lib/locales";
 
 import { HOME_COPY } from "./copy";
 import { ClosingCta } from "./sections/ClosingCta";
+import { CoursesTeaser } from "./sections/CoursesTeaser";
 import { Hero } from "./sections/Hero";
 import { ModuleBento } from "./sections/ModuleBento";
 import { Nav } from "./sections/Nav";
@@ -31,6 +32,12 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
           secondaryCta={t.hero.secondaryCta}
         />
         <ModuleBento heading={t.modulesHeading} modules={t.modules} />
+        <CoursesTeaser
+          heading={t.courses.heading}
+          subtext={t.courses.subtext}
+          courses={t.courses.items}
+          cta={t.courses.cta}
+        />
         <ProcessStrip heading={t.process.heading} steps={t.process.steps} />
         <QuoteBlock
           label={t.quote.label}
