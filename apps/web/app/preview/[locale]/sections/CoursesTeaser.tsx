@@ -31,11 +31,19 @@ export interface CourseCardData {
  * finished illustration - flagged clearly rather than faked.
  */
 /**
- * Single card, extracted so the grid-behavior review page
- * (grid-test/page.tsx) can drop the same cards into different grid
- * configurations without duplicating this markup.
+ * Three named card "expressions" for the same course data, from most to
+ * least information-dense - so the grid-behavior review page
+ * (grid-test/page.tsx) can mix them and Danny can address each by name
+ * when picking a direction:
+ *
+ * - Detail Card: full info (eyebrow, title, 4-5 benefit bullets, price,
+ *   CTA). The only variant used on the shipped homepage today.
+ * - Quick Card: eyebrow, title, price, CTA - drops the bullet list.
+ * - Teaser Card: title + one full-width "hard sell" CTA only - no
+ *   eyebrow, no price, no bullets. Pure visual impulse-click, closest to
+ *   the original ModuleBento treatment above it on the homepage.
  */
-export function CourseCard({ course, cta }: { course: CourseCardData; cta: string }) {
+export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta: string }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
       <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
@@ -93,6 +101,87 @@ export function CourseCard({ course, cta }: { course: CourseCardData; cta: strin
   );
 }
 
+export function CourseCardQuick({ course, cta }: { course: CourseCardData; cta: string }) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
+      <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
+        {course.fomo && (
+          <span
+            className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
+              course.fomo.kind === "scarcity"
+                ? "bg-accent-coral text-on-primary"
+                : "bg-ink text-canvas"
+            }`}
+          >
+            {course.fomo.kind === "scarcity" ? (
+              <UsersThree size={13} weight="bold" aria-hidden />
+            ) : (
+              <Clock size={13} weight="bold" aria-hidden />
+            )}
+            {course.fomo.label}
+          </span>
+        )}
+        <span className="text-caption text-ink-mute">[Illustration folgt]</span>
+      </div>
+
+      <div className="flex flex-1 flex-col p-lg">
+        <span className="text-caption text-ink-mute">
+          {course.category} · {course.dateLabel}
+        </span>
+        <h3 className="mt-xs text-heading-lg text-ink">{course.title}</h3>
+
+        <div className="mt-lg flex flex-1 items-end justify-between gap-md">
+          <span className="text-heading-lg text-ink">{course.price}</span>
+          <button
+            type="button"
+            className="inline-flex items-center gap-xs rounded-pill bg-primary px-lg py-xs text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          >
+            {cta}
+            <ArrowRight size={16} weight="bold" aria-hidden />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function CourseCardTeaser({ course, cta }: { course: CourseCardData; cta: string }) {
+  return (
+    <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
+      <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
+        {course.fomo && (
+          <span
+            className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
+              course.fomo.kind === "scarcity"
+                ? "bg-accent-coral text-on-primary"
+                : "bg-ink text-canvas"
+            }`}
+          >
+            {course.fomo.kind === "scarcity" ? (
+              <UsersThree size={13} weight="bold" aria-hidden />
+            ) : (
+              <Clock size={13} weight="bold" aria-hidden />
+            )}
+            {course.fomo.label}
+          </span>
+        )}
+        <span className="text-caption text-ink-mute">[Illustration folgt]</span>
+      </div>
+
+      <div className="flex flex-1 flex-col gap-md p-lg">
+        <h3 className="text-heading-lg text-ink">{course.title}</h3>
+        <button
+          type="button"
+          className="inline-flex w-full items-center justify-center gap-xs rounded-pill bg-primary px-lg py-sm text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        >
+          {cta}
+          <ArrowRight size={16} weight="bold" aria-hidden />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function CoursesTeaser({
   heading,
   subtext,
@@ -111,7 +200,7 @@ export function CoursesTeaser({
 
       <div className="mt-xl grid grid-cols-1 gap-lg md:grid-cols-3">
         {courses.map((course) => (
-          <CourseCard key={course.title} course={course} cta={cta} />
+          <CourseCardDetail key={course.title} course={course} cta={cta} />
         ))}
       </div>
     </section>
