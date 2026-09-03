@@ -35,20 +35,19 @@ Eine Detailansicht pro Familie bündelt:
 
 - **Newsletter:** Versand über Resend an `families` mit `newsletter_opt_in = true`, gefiltert nach Segment (Abschnitt 1). Jeder Versand ein `newsletter_log`-Eintrag.
 - **SMS-Alerts:** Versand an `families` mit `sms_opt_in = true`. Jeder Versand ein `sms_log`-Eintrag.
-- **SMS/WhatsApp-Provider: Twilio** (Entscheidung 2026-08-18, kurz zwischenzeitlich auf SMSup.ch umgestellt am 2026-08-31, dann am selben Tag zurück auf Twilio — siehe unten). Kurzer Vergleich, den Danny angefragt hatte:
+- **SMS/WhatsApp-Provider: Bird (ehem. MessageBird)** (Entscheidung 2026-09-03, ersetzt Twilio). **Twilio ist ab sofort dauerhaft ausgeschlossen** — Danny: schwierig im Umgang, ignoriert Schweizer Recht, unnötig kompliziertes Setup (siehe die Trust-Hub-Compliance-Odyssee vom 2026-09-01/02). Nie wieder in Betracht ziehen, auch nicht als Fallback.
 
-  | | SMSup.ch | Twilio |
+  | | SMSup.ch | Bird |
   |---|---|---|
-  | Preis/SMS (CH) | CHF 0.087–0.114 je nach Volumen | ≈ CHF 0.07 (USD 0.0769) |
   | WhatsApp-Unterstützung | Nein, nur SMS | Ja |
-  | Absender-Konfiguration | — | Alphanumerische Absender-ID ("SOMOSUnited") kostenlos, keine Rufnummer nötig |
-  | Herkunft/Billing | Schweizer Anbieter, CHF | US-Anbieter, USD-Abrechnung (EU/Irland-Datenverarbeitungsoption vorhanden) |
-  | Abrechnungsmodell | Guthaben/Kredite, kein Abo | Pay-as-you-go-Guthaben, kein Abo |
+  | Preis/SMS (Europa) | CHF 0.087–0.114 je nach Volumen | ca. CHF 0.05–0.10, kein Aufschlag auf Carrier-Kosten |
+  | Herkunft/Datenhaltung | Schweizer Anbieter, CHF | Firmensitz verlagert sich weg von den Niederlanden (Gründer-Aussage 2026-02, unternehmenspolitisch), **Geschäftsdaten-Hosting bleibt aber auf Google Cloud in NL/Belgien/UK/Deutschland** — echte EU-Datenresidenz, kein US-Anbieter |
+  | Abrechnungsmodell | Guthaben/Kredite, kein Abo | Pay-as-you-go ab $0, kein Abo |
   | Bei Somos United bereits im Einsatz? | Ja, für `cms.neonstudio.ch` | Nein, neu |
 
-  Twilio ist günstiger, unterstützt zusätzlich WhatsApp (von Danny gewünscht, SMSup kann das nicht), und beide Anbieter arbeiten mit Guthaben statt Abo — **keine monatliche Gebühr bei Twilio**, nur Kosten pro tatsächlich versendeter Nachricht. Kurzzeitig auf SMSup zurückgestuft, weil die Twilio-Absender-ID-Registrierung ein "Upgrade" vom Trial-Konto verlangt — das wurde fälschlich als kostenpflichtiges Abo missverstanden; tatsächlich ist es nur die Umstellung von Trial-Limits auf ein finanziertes Pay-as-you-go-Konto, keine wiederkehrende Gebühr. Danny hat das nach Klärung bestätigt: zurück zu Twilio. **Ein Hinweis dazu, weil es zur bisherigen Linie des Projekts passt:** Somos United legt sonst durchgehend Wert auf echte Schweizer Datenresidenz (deshalb z.B. Supabase Region Zürich für alle Personendaten). SMS-/WhatsApp-Inhalte sind zwar flüchtig (keine dauerhafte Speicherung von Personendaten bei Twilio, nur Telefonnummer + kurzer Text während des Versands), aber es ist trotzdem ein US-Anbieter statt eines Schweizer. Wenn dir die Konsistenz später wichtiger wird als WhatsApp-Unterstützung, ist SMSup jederzeit ohne Aufwand austauschbar (nur fürs SMS-Alerts, kein WhatsApp-Ersatz) — die Anbindung ist bewusst so gebaut (`sms_log` kennt keine Provider-Details), dass ein Wechsel später keine Datenmodell-Änderung braucht.
-  - Env-Variablen-Block `TWILIO_*` ergänzt in `01-ARCHITECTURE.md` Abschnitt 5.
-  - **WhatsApp braucht zusätzlich:** ein Meta Business Manager + verifiziertes WhatsApp Business Account (WABA) für "Verein Somos United", separat vom Twilio-Konto-Funding. Eigener Schritt, noch offen.
+  Bird ist die einzige geprüfte Option, die SMS **und** WhatsApp in einem Anbieter abdeckt, ohne Abo-Zwang, mit echter EU- statt US-Datenhaltung — direkte Verbesserung gegenüber Twilio in genau dem Punkt, der zur Ablehnung geführt hat. Kurz auch 360dialog geprüft (reiner WhatsApp-BSP, Deutschland) — verworfen: kein SMS (zweiter Anbieter nötig) und CHF ~49/Monat Fixgebühr pro Nummer, widerspricht der No-Abo-Linie. Alphanumerische Absender-ID-Registrierung funktioniert bei Bird nach demselben Land-für-Land-Prinzip wie bei Twilio (manche Länder brauchen Vorab-Registrierung, manche nicht) — ob Schweiz eine Vorab-Registrierung braucht, zeigt sich erst beim tatsächlichen Setup, keine Garantie, dass es einfacher wird als bei Twilio. SMSup bleibt als SMS-only-Fallback dokumentiert, falls Bird sich als genauso umständlich erweist wie Twilio — die Anbindung ist bewusst so gebaut (`sms_log` kennt keine Provider-Details), dass ein Wechsel später keine Datenmodell-Änderung braucht.
+  - Env-Variablen-Block `TWILIO_*` in `01-ARCHITECTURE.md` Abschnitt 5 durch `BIRD_*` ersetzt.
+  - **WhatsApp braucht zusätzlich:** ein Meta Business Manager + verifiziertes WhatsApp Business Account (WABA) für "Verein Somos United" — bei jedem WhatsApp-BSP nötig, nicht Bird-spezifisch. Eigener Schritt, noch offen.
 
 ## 4. E-Mail-Korrespondenz (Kunden-Postfach im Konto) — Nachtrag Danny, 2026-08-19
 

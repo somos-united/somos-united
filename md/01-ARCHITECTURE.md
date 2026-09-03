@@ -73,7 +73,7 @@ Wichtig als Experten-Hinweis: Screenshots technisch zuverlässig zu verhindern i
 - `.env.example` im Repo-Root mit allen benötigten Keys (ohne echte Werte) — Pflicht bei jeder neuen Integration.
 - Echte Secrets nur in Vercel Environment Variables (pro Projekt/Environment getrennt: Preview/Staging/Production), nie im Repo.
 - Naming: `NEXT_PUBLIC_*` ausschliesslich für Werte, die im Browser sichtbar sein dürfen (z.B. Sanity Project ID, Supabase Anon Key). Alles andere ohne Prefix, nur serverseitig verfügbar.
-- Pro Service ein Block: `SANITY_*`, `SUPABASE_*`, `STRIPE_*`, `RESEND_*`, `TWILIO_*` (SMS/WhatsApp-Versand, siehe `07-MODULE-CRM.md`), `CLOUDFLARE_*`, `GOOGLE_*` (Analytics/Search Console), `SNYK_*`/`SOCKET_*` (nur CI).
+- Pro Service ein Block: `SANITY_*`, `SUPABASE_*`, `STRIPE_*`, `RESEND_*`, `BIRD_*` (SMS/WhatsApp-Versand, siehe `07-MODULE-CRM.md`), `CLOUDFLARE_*`, `GOOGLE_*` (Analytics/Search Console), `SNYK_*`/`SOCKET_*` (nur CI).
 
 ## 6. Mehrsprachigkeit — technische Basis
 
