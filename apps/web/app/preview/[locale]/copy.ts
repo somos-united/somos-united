@@ -88,6 +88,13 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Medienkompetenz Basiskurs",
           dateLabel: "Wöchentlich, Zürich",
           price: "CHF 25.–",
+          advantages: [
+            "Sicher online unterwegs",
+            "Fake News erkennen",
+            "Eigene Mediennutzung reflektieren",
+            "Praktische Gruppenübungen",
+            "Austausch mit Gleichaltrigen",
+          ],
           fomo: { kind: "scarcity", label: "Nur noch 3 Plätze" },
         },
         {
@@ -95,6 +102,13 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Gewaltprävention Einstieg",
           dateLabel: "Wöchentlich, Bern",
           price: "CHF 30.–",
+          advantages: [
+            "Konflikte früh erkennen",
+            "Gewaltfrei reagieren lernen",
+            "Eigene Grenzen setzen",
+            "Rollenspiele aus dem Alltag",
+            "Begleitung durch Trainer:innen",
+          ],
           fomo: { kind: "urgency", label: "Preis gültig bis 15.10." },
         },
         {
@@ -102,6 +116,12 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Respekt im Alltag",
           dateLabel: "Wöchentlich, Basel",
           price: "CHF 35.–",
+          advantages: [
+            "Wertschätzend kommunizieren",
+            "Perspektiven wechseln",
+            "Vorurteile hinterfragen",
+            "Teamgeist stärken",
+          ],
         },
       ],
     },
@@ -179,6 +199,13 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Media Literacy Basics",
           dateLabel: "Weekly, Zurich",
           price: "CHF 25.-",
+          advantages: [
+            "Navigate online safely",
+            "Spot fake news",
+            "Reflect on media habits",
+            "Hands-on group exercises",
+            "Connect with peers",
+          ],
           fomo: { kind: "scarcity", label: "Only 3 spots left" },
         },
         {
@@ -186,6 +213,13 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Violence Prevention Intro",
           dateLabel: "Weekly, Bern",
           price: "CHF 30.-",
+          advantages: [
+            "Recognise conflict early",
+            "Respond without violence",
+            "Set personal boundaries",
+            "Real-life role play",
+            "Guided by trainers",
+          ],
           fomo: { kind: "urgency", label: "Price valid until Oct 15" },
         },
         {
@@ -193,6 +227,12 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           title: "Respect in Everyday Life",
           dateLabel: "Weekly, Basel",
           price: "CHF 35.-",
+          advantages: [
+            "Communicate with respect",
+            "Practice perspective-taking",
+            "Question assumptions",
+            "Build team spirit",
+          ],
         },
       ],
     },

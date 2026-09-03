@@ -1,10 +1,11 @@
-import { ArrowRight, Clock, UsersThree } from "@phosphor-icons/react/ssr";
+import { ArrowRight, Check, Clock, UsersThree } from "@phosphor-icons/react/ssr";
 
 export interface CourseCardData {
   category: string;
   title: string;
   dateLabel: string;
   price: string;
+  advantages: string[];
   fomo?: { kind: "scarcity" | "urgency"; label: string };
 }
 
@@ -76,7 +77,22 @@ export function CoursesTeaser({
                 {course.category} · {course.dateLabel}
               </span>
               <h3 className="mt-xs text-heading-lg text-ink">{course.title}</h3>
-              <div className="mt-md flex flex-1 items-end justify-between gap-md">
+
+              <ul className="mt-md flex flex-col gap-xs">
+                {course.advantages.map((advantage) => (
+                  <li key={advantage} className="flex items-start gap-xs text-body text-ink-secondary">
+                    <Check
+                      size={14}
+                      weight="bold"
+                      className="mt-[3px] shrink-0 text-accent-teal-deep"
+                      aria-hidden
+                    />
+                    {advantage}
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mt-lg flex flex-1 items-end justify-between gap-md">
                 <span className="text-heading-lg text-ink">{course.price}</span>
                 <button
                   type="button"
