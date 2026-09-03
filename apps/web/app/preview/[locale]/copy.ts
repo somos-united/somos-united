@@ -123,6 +123,50 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
             "Teamgeist stärken",
           ],
         },
+        {
+          category: "Psychische Stärke",
+          title: "Psychische Stärke im Alltag",
+          dateLabel: "Wöchentlich, Luzern",
+          price: "CHF 25.–",
+          advantages: [
+            "Stress besser bewältigen",
+            "Eigene Gefühle verstehen",
+            "Entspannungstechniken üben",
+            "Unterstützung durch die Gruppe",
+            "Mentale Widerstandskraft aufbauen",
+          ],
+          // Bewusst ohne FOMO-Pill (05-MODULE-BOOKING.md §6:
+          // "manche Kurse ... sollen keine Verknappungs-Botschaft
+          // zeigen") - Verknappungsdruck passt nicht zu einem
+          // Kurs über psychische Belastung.
+        },
+        {
+          category: "Orientierung",
+          title: "Orientierung finden",
+          dateLabel: "Wöchentlich, St. Gallen",
+          price: "CHF 30.–",
+          advantages: [
+            "Eigene Stärken entdecken",
+            "Ziele für die Zukunft setzen",
+            "Berufsfelder kennenlernen",
+            "Entscheidungen sicherer treffen",
+          ],
+          fomo: { kind: "scarcity", label: "Nur noch 5 Plätze" },
+        },
+        {
+          category: "Social Media",
+          title: "Social Media bewusst nutzen",
+          dateLabel: "Wöchentlich, Genf",
+          price: "CHF 25.–",
+          advantages: [
+            "Bewusster Umgang mit Apps",
+            "Privatsphäre schützen",
+            "Cybermobbing erkennen",
+            "Gesunde Bildschirmzeit finden",
+            "Digitale Spuren verstehen",
+          ],
+          fomo: { kind: "urgency", label: "Preis gültig bis 30.9." },
+        },
       ],
     },
     process: {
@@ -233,6 +277,46 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
             "Question assumptions",
             "Build team spirit",
           ],
+        },
+        {
+          category: "Mental strength",
+          title: "Mental Strength in Everyday Life",
+          dateLabel: "Weekly, Lucerne",
+          price: "CHF 25.-",
+          advantages: [
+            "Cope with stress better",
+            "Understand your own feelings",
+            "Practice relaxation techniques",
+            "Support from the group",
+            "Build mental resilience",
+          ],
+        },
+        {
+          category: "Orientation",
+          title: "Finding Direction",
+          dateLabel: "Weekly, St. Gallen",
+          price: "CHF 30.-",
+          advantages: [
+            "Discover your own strengths",
+            "Set goals for the future",
+            "Explore career paths",
+            "Make decisions with confidence",
+          ],
+          fomo: { kind: "scarcity", label: "Only 5 spots left" },
+        },
+        {
+          category: "Social media",
+          title: "Using Social Media Consciously",
+          dateLabel: "Weekly, Geneva",
+          price: "CHF 25.-",
+          advantages: [
+            "Use apps more mindfully",
+            "Protect your privacy",
+            "Recognise cyberbullying",
+            "Find healthy screen time",
+            "Understand your digital footprint",
+          ],
+          fomo: { kind: "urgency", label: "Price valid until Sep 30" },
         },
       ],
     },
