@@ -168,13 +168,13 @@ export default function GridTestPage({ params }: { params: { locale: Locale } })
       <GridSection
         label={
           isDe
-            ? "Mix 3 — alle 6 Kurse, Ausdruck rotiert (Detail / Quick / Teaser)"
-            : "Mix 3 — all 6 courses, expression rotates (Detail / Quick / Teaser)"
+            ? "Mix 3 — Ausdruck folgt dem FOMO-Flag (fomo_enabled = hard sell, sonst voll informativ)"
+            : "Mix 3 — expression follows the FOMO flag (fomo_enabled = hard sell, otherwise full info)"
         }
         className="grid-cols-1 md:grid-cols-3"
       >
-        {courses.map((course, index) => (
-          <RotatingCard key={course.title} course={course} cta={cta} index={index} />
+        {courses.map((course) => (
+          <FomoDrivenCard key={course.title} course={course} cta={cta} />
         ))}
       </GridSection>
 
@@ -247,18 +247,17 @@ export default function GridTestPage({ params }: { params: { locale: Locale } })
   );
 }
 
-function RotatingCard({
-  course,
-  cta,
-  index,
-}: {
-  course: CourseCardData;
-  cta: string;
-  index: number;
-}) {
-  const variant = index % 3;
-  if (variant === 0) return <CourseCardDetail course={course} cta={cta} />;
-  if (variant === 1) return <CourseCardQuick course={course} cta={cta} />;
+/**
+ * Danny 2026-09-03: "its one thing to offer the course - but we also
+ * want to sell. So the middle ground is a flag to activate or
+ * deactivate the FOMO." The `fomo` field already IS that flag
+ * (05-MODULE-BOOKING.md §6 `fomo_enabled`) - this just wires it to
+ * card-expression choice instead of leaving the pairing arbitrary:
+ * no FOMO -> gentler, full-info Detail Card; FOMO on -> hard-sell
+ * Teaser Card.
+ */
+function FomoDrivenCard({ course, cta }: { course: CourseCardData; cta: string }) {
+  if (!course.fomo) return <CourseCardDetail course={course} cta={cta} />;
   return <CourseCardTeaser course={course} cta={cta} />;
 }
 

@@ -45,7 +45,7 @@ export function ContentBox({
 }) {
   return (
     <div
-      className={`flex flex-col justify-between rounded-lg border border-hairline p-xl ${
+      className={`flex flex-col justify-center rounded-lg border border-hairline p-xl ${
         size === "large"
           ? "bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas)_65%)]"
           : "bg-canvas-soft"

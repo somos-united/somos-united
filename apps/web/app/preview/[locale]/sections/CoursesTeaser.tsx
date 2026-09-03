@@ -10,27 +10,6 @@ export interface CourseCardData {
 }
 
 /**
- * The "commercial" teaser: concrete, bookable course instances with real
- * pricing and FOMO-pill mechanics (05-MODULE-BOOKING.md §5-6), sitting
- * between the category overview above and the process/social-proof
- * sections below. Distinct layout family from ModuleBento above it -
- * uniform product cards, not an asymmetric grid, because this is a real
- * catalog listing rather than a category showcase.
- *
- * Prices use the module doc's own example tier numbers (CHF 25/30/35 -
- * §5: "Early Bird/Standard/Last Minute") rather than invented figures.
- * Both pill types are real, data-driven mechanics (scarcity: remaining
- * capacity vs. a threshold; urgency: the active price tier's end date) -
- * shown here as three different real states (scarcity, urgency, none)
- * since `fomo_enabled` is genuinely per-series and not every course
- * shows one.
- *
- * No illustration asset exists yet for these cards (same gap as the
- * hero - 04-DESIGN-SYSTEM.md §8: no photography/illustration commissioned
- * so far). The image slot below is a labeled placeholder, not a fake
- * finished illustration - flagged clearly rather than faked.
- */
-/**
  * Three named card "expressions" for the same course data, from most to
  * least information-dense - so the grid-behavior review page
  * (grid-test/page.tsx) can mix them and Danny can address each by name
@@ -46,7 +25,7 @@ export interface CourseCardData {
 export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta: string }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
-      <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
+      <div className="relative flex min-h-[200px] flex-1 items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
         {course.fomo && (
           <span
             className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
@@ -66,7 +45,7 @@ export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta:
         <span className="text-caption text-ink-mute">[Illustration folgt]</span>
       </div>
 
-      <div className="flex flex-1 flex-col p-lg">
+      <div className="flex flex-col p-lg">
         <span className="text-caption text-ink-mute">
           {course.category} · {course.dateLabel}
         </span>
@@ -86,7 +65,7 @@ export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta:
           ))}
         </ul>
 
-        <div className="mt-lg flex flex-1 items-end justify-between gap-md">
+        <div className="mt-lg flex items-center justify-between gap-md">
           <span className="text-heading-lg text-ink">{course.price}</span>
           <button
             type="button"
@@ -104,7 +83,7 @@ export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta:
 export function CourseCardQuick({ course, cta }: { course: CourseCardData; cta: string }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
-      <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
+      <div className="relative flex min-h-[200px] flex-1 items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
         {course.fomo && (
           <span
             className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
@@ -124,13 +103,13 @@ export function CourseCardQuick({ course, cta }: { course: CourseCardData; cta: 
         <span className="text-caption text-ink-mute">[Illustration folgt]</span>
       </div>
 
-      <div className="flex flex-1 flex-col p-lg">
+      <div className="flex flex-col p-lg">
         <span className="text-caption text-ink-mute">
           {course.category} · {course.dateLabel}
         </span>
         <h3 className="mt-xs text-heading-lg text-ink">{course.title}</h3>
 
-        <div className="mt-lg flex flex-1 items-end justify-between gap-md">
+        <div className="mt-lg flex items-center justify-between gap-md">
           <span className="text-heading-lg text-ink">{course.price}</span>
           <button
             type="button"
@@ -148,7 +127,7 @@ export function CourseCardQuick({ course, cta }: { course: CourseCardData; cta: 
 export function CourseCardTeaser({ course, cta }: { course: CourseCardData; cta: string }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
-      <div className="relative flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
+      <div className="relative flex min-h-[200px] flex-1 items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
         {course.fomo && (
           <span
             className={`absolute left-md top-md inline-flex items-center gap-xxs rounded-pill px-md py-xxs text-caption ${
@@ -168,7 +147,7 @@ export function CourseCardTeaser({ course, cta }: { course: CourseCardData; cta:
         <span className="text-caption text-ink-mute">[Illustration folgt]</span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-md p-lg">
+      <div className="flex flex-col gap-md p-lg">
         <h3 className="text-heading-lg text-ink">{course.title}</h3>
         <button
           type="button"
@@ -182,6 +161,28 @@ export function CourseCardTeaser({ course, cta }: { course: CourseCardData; cta:
   );
 }
 
+/**
+ * The "commercial" teaser: concrete, bookable course instances with real
+ * pricing and FOMO-pill mechanics (05-MODULE-BOOKING.md §5-6), sitting
+ * between the category overview above and the process/social-proof
+ * sections below. Uses Detail Card for every course by default; the
+ * grid-behavior review page (grid-test/page.tsx) is where Content
+ * boxes and the lighter Quick/Teaser expressions get blended in.
+ *
+ * Prices use the module doc's own example tier numbers (CHF 25/30/35 -
+ * §5: "Early Bird/Standard/Last Minute") rather than invented figures.
+ * Both pill types are real, data-driven mechanics (scarcity: remaining
+ * capacity vs. a threshold; urgency: the active price tier's end date) -
+ * shown here as three different real states (scarcity, urgency, none)
+ * since `fomo_enabled` is genuinely per-series and not every course
+ * shows one.
+ *
+ * No illustration asset exists yet for these cards - an illustrator has
+ * been commissioned (brief: minimalistic, quirky, B&W line art with a
+ * single bright accent color, per Danny 2026-09-03) but nothing's
+ * delivered yet. The image slot below is a labeled placeholder, not a
+ * fake finished illustration - flagged clearly rather than faked.
+ */
 export function CoursesTeaser({
   heading,
   subtext,
