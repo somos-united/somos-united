@@ -14,3 +14,6 @@ export type {
   SendWhatsAppTemplateParams,
   WhatsAppTemplateParam,
 } from "./bird";
+
+export { sendEmail } from "./resend";
+export type { SendEmailParams } from "./resend";

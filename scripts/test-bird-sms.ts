@@ -23,5 +23,9 @@ if (!process.env.BIRD_API_KEY) {
   process.exit(1);
 }
 
-const message = await sendSms({ to, text: "Test SOMOS United (Bird)" });
-console.log("Sent:", message.id, message.status);
+async function main() {
+  const message = await sendSms({ to, text: "Test SOMOS United (Bird)" });
+  console.log("Sent:", message.id, message.status);
+}
+
+main();

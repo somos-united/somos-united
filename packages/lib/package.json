@@ -16,7 +16,8 @@
   },
   "dependencies": {
     "@messagebird/sdk": "0.52.0",
-    "@somos/types": "workspace:*"
+    "@somos/types": "workspace:*",
+    "resend": "6.26.0"
   },
   "devDependencies": {
     "@somos/config": "workspace:*",
