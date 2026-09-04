@@ -49,6 +49,9 @@ export default function ModuleDetailPage({
         ctaShort={t.nav.ctaShort}
         moduleLabel={t.nav.moduleLabel}
         aboutLabel={t.nav.aboutLabel}
+        blogLabel={t.nav.blogLabel}
+        menuOpenLabel={t.nav.menuOpenLabel}
+        menuCloseLabel={t.nav.menuCloseLabel}
         active="module"
       />
       <main>

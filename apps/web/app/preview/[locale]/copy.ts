@@ -21,7 +21,15 @@ export interface ModuleTeaser {
 }
 
 export interface HomeCopy {
-  nav: { cta: string; ctaShort: string; moduleLabel: string; aboutLabel: string };
+  nav: {
+    cta: string;
+    ctaShort: string;
+    moduleLabel: string;
+    aboutLabel: string;
+    blogLabel: string;
+    menuOpenLabel: string;
+    menuCloseLabel: string;
+  };
   hero: { headline: string; subtext: string; primaryCta: string; secondaryCta: string };
   modulesHeading: string;
   modules: ModuleTeaser[];
@@ -39,7 +47,15 @@ export interface HomeCopy {
 
 export const HOME_COPY: Record<Locale, HomeCopy> = {
   de: {
-    nav: { cta: "Kurse entdecken", ctaShort: "Kurse", moduleLabel: "Module", aboutLabel: "Über uns" },
+    nav: {
+      cta: "Kurse entdecken",
+      ctaShort: "Kurse",
+      moduleLabel: "Module",
+      aboutLabel: "Über uns",
+      blogLabel: "Blog",
+      menuOpenLabel: "Menü öffnen",
+      menuCloseLabel: "Menü schliessen",
+    },
     hero: {
       headline: "Stark ins Leben.",
       subtext:
@@ -231,7 +247,15 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     },
   },
   en: {
-    nav: { cta: "Explore courses", ctaShort: "Courses", moduleLabel: "Modules", aboutLabel: "About" },
+    nav: {
+      cta: "Explore courses",
+      ctaShort: "Courses",
+      moduleLabel: "Modules",
+      aboutLabel: "About",
+      blogLabel: "Blog",
+      menuOpenLabel: "Open menu",
+      menuCloseLabel: "Close menu",
+    },
     hero: {
       headline: "Strong into life.",
       subtext: "Courses for kids and teens on media literacy, respect, and mental strength.",
@@ -558,5 +582,114 @@ export const ABOUT_PAGE_COPY: Record<Locale, AboutPageCopy> = {
       heading: "Our team",
       placeholder: "We'll introduce the people behind Somos United here soon.",
     },
+  },
+};
+
+/**
+ * Blog copy. Topics are grounded in the org's real subject matter (the
+ * 6 modules, its own pedagogy) rather than generic filler - same rule
+ * as everywhere else in this file. `slug` is shared across locales
+ * (same convention as ModuleTeaser.category), `publishedAt` is a plain
+ * ISO date string for this placeholder pass rather than a real
+ * Sanity `datetime`.
+ */
+export interface BlogPost {
+  slug: string;
+  title: string;
+  publishedAt: string;
+  excerpt: string;
+  body: string[];
+}
+
+export interface BlogPageCopy {
+  indexHeading: string;
+  indexSubtext: string;
+  readMore: string;
+  backToBlog: string;
+  posts: BlogPost[];
+}
+
+export const BLOG_PAGE_COPY: Record<Locale, BlogPageCopy> = {
+  de: {
+    indexHeading: "Blog",
+    indexSubtext: "Einblicke aus unserer Arbeit mit Familien, Trainer:innen und den Modulen.",
+    readMore: "Weiterlesen",
+    backToBlog: "Zurück zum Blog",
+    posts: [
+      {
+        slug: "bildschirmzeit-tipps",
+        title: "5 Tipps für einen entspannteren Umgang mit Bildschirmzeit",
+        publishedAt: "2026-08-15",
+        excerpt:
+          "Bildschirmzeit muss kein Streitthema sein. Fünf praktische Ansätze, die Familien im Alltag wirklich helfen.",
+        body: [
+          "Bildschirmzeit ist in den meisten Familien irgendwann Thema — meist dann, wenn die Fronten schon verhärtet sind. Dabei hilft es oft schon, Regeln gemeinsam statt einseitig festzulegen: Wenn Jugendliche mitentscheiden dürfen, wann und wie lange, steigt die Akzeptanz spürbar.",
+          "Genauso wichtig: bildschirmfreie Zeiten nicht als Strafe, sondern als gemeinsame Familienzeit rahmen. Ein fixer Zeitpunkt am Tag — etwa beim Essen — reicht oft schon, um den Umgang insgesamt entspannter zu machen.",
+        ],
+      },
+      {
+        slug: "warum-gruppenkurse",
+        title: "Warum unsere Kurse bewusst in kleinen Gruppen stattfinden",
+        publishedAt: "2026-08-01",
+        excerpt:
+          "Stärke entsteht im Austausch. Ein Blick hinter unsere pädagogische Entscheidung für kleine Gruppen statt Einzelcoaching.",
+        body: [
+          "Wir könnten unsere Module auch als Einzelcoaching anbieten. Bewusst tun wir das nicht: Jugendliche lernen von anderen Jugendlichen oft mehr als von einer erwachsenen Autoritätsperson allein — gerade bei Themen wie Respekt, Gewaltprävention oder Social Media, wo es um echte Alltagssituationen geht.",
+          "In kleinen Gruppen von acht bis zwölf Teilnehmenden entsteht ein Rahmen, in dem sich alle trauen, auch unangenehme Themen anzusprechen — begleitet, aber nicht bevormundet von unseren Trainer:innen.",
+        ],
+      },
+      {
+        slug: "fruehe-anzeichen-psychische-belastung",
+        title: "Psychische Belastung bei Jugendlichen: Worauf Eltern achten können",
+        publishedAt: "2026-07-18",
+        excerpt:
+          "Es gibt keine perfekte Checkliste — aber Signale, die Eltern ernst nehmen sollten. Ein einordnender Überblick.",
+        body: [
+          "Rückzug, Reizbarkeit, verändertes Schlafverhalten — solche Veränderungen gehören bei Jugendlichen bis zu einem gewissen Grad zur normalen Entwicklung. Schwierig wird es einzuschätzen, wann aus einer Phase eine echte Belastung wird.",
+          "Ein guter erster Schritt ist selten die grosse Konfrontation, sondern ein niedrigschwelliges, wiederholtes Gesprächsangebot — verbunden mit dem klaren Signal, dass Hilfe holen keine Schwäche ist. Genau hier setzt unser Modul Psychische Stärke an.",
+        ],
+      },
+    ],
+  },
+  en: {
+    indexHeading: "Blog",
+    indexSubtext: "Insights from our work with families, trainers, and the modules.",
+    readMore: "Read more",
+    backToBlog: "Back to blog",
+    posts: [
+      {
+        slug: "bildschirmzeit-tipps",
+        title: "5 tips for a more relaxed approach to screen time",
+        publishedAt: "2026-08-15",
+        excerpt:
+          "Screen time doesn't have to be a fight. Five practical approaches that actually help families day to day.",
+        body: [
+          "Screen time becomes an issue in most families eventually — usually once positions have already hardened. It often helps to set rules together instead of unilaterally: when teens get a say in when and how long, buy-in rises noticeably.",
+          "Just as important: frame screen-free time as shared family time, not punishment. One fixed point in the day — at dinner, say — is often enough to make the whole dynamic more relaxed.",
+        ],
+      },
+      {
+        slug: "warum-gruppenkurse",
+        title: "Why our courses deliberately run in small groups",
+        publishedAt: "2026-08-01",
+        excerpt:
+          "Strength grows through connection. A look behind our pedagogical choice of small groups over 1:1 coaching.",
+        body: [
+          "We could offer our modules as 1:1 coaching. We deliberately don't: teens often learn more from other teens than from an adult authority figure alone — especially on topics like respect, violence prevention, or social media, where real everyday situations are the point.",
+          "In small groups of eight to twelve, a space forms where everyone feels safe raising even uncomfortable topics — guided, but not lectured at, by our trainers.",
+        ],
+      },
+      {
+        slug: "fruehe-anzeichen-psychische-belastung",
+        title: "Mental strain in teens: what parents can watch for",
+        publishedAt: "2026-07-18",
+        excerpt:
+          "There's no perfect checklist — but there are signals worth taking seriously. A grounding overview.",
+        body: [
+          "Withdrawal, irritability, changed sleep patterns — in teens, changes like these fall within normal development up to a point. What's hard is judging when a phase turns into real strain.",
+          "A good first step is rarely a big confrontation — it's a low-key, repeated offer to talk, paired with the clear signal that asking for help isn't weakness. That's exactly where our Mental Strength module starts.",
+        ],
+      },
+    ],
   },
 };
