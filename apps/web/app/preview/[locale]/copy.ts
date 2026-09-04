@@ -471,6 +471,8 @@ export interface ModulePageCopy {
   detailCoursesHeading: (moduleTitle: string) => string;
   detailCoursesSubtext: string;
   detailCoursesEmpty: string;
+  detailCoursesMixedHeading: string;
+  detailCoursesMixedSubtext: string;
   otherModulesHeading: string;
 }
 
@@ -484,6 +486,9 @@ export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
     detailCoursesHeading: (moduleTitle) => `Kurse zu ${moduleTitle}`,
     detailCoursesSubtext: "Eine Auswahl kommender Termine zu diesem Modul.",
     detailCoursesEmpty: "Aktuell sind keine Termine zu diesem Modul geplant.",
+    detailCoursesMixedHeading: "Kurse, die dich interessieren könnten",
+    detailCoursesMixedSubtext:
+      "Dieses Modul hat aktuell nur wenige eigene Termine — hier eine Auswahl aus allen Kursen.",
     otherModulesHeading: "Weitere Module",
   },
   en: {
@@ -495,6 +500,9 @@ export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
     detailCoursesHeading: (moduleTitle) => `${moduleTitle} courses`,
     detailCoursesSubtext: "A selection of upcoming dates for this module.",
     detailCoursesEmpty: "No dates are currently scheduled for this module.",
+    detailCoursesMixedHeading: "Courses you might like",
+    detailCoursesMixedSubtext:
+      "This module only has a few dates of its own right now — here's a selection from across all courses.",
     otherModulesHeading: "Other modules",
   },
 };

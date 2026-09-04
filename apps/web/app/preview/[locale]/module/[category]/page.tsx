@@ -4,26 +4,55 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import type { Locale } from "@/lib/locales";
-import { SUPPORTED_LOCALES } from "@/lib/locales";
 
 import { HOME_COPY, MODULE_PAGE_COPY } from "../../copy";
 import { CoursesTeaser } from "../../sections/CoursesTeaser";
+import type { CourseCardData } from "../../sections/CoursesTeaser";
 import { Nav } from "../../sections/Nav";
 import { SiteFooter } from "../../sections/SiteFooter";
 
-const MODULE_CATEGORIES: ModuleCategory[] = [
-  "medienkompetenz",
-  "respekt",
-  "gewaltpraevention",
-  "psychische_belastung",
-  "orientierung",
-  "social_media",
-];
+/**
+ * Rendered per-request, not statically pre-rendered like the rest of
+ * this site - deliberately no generateStaticParams here. Next.js
+ * prerenders every param generateStaticParams enumerates regardless of
+ * `dynamic = "force-dynamic"`, so the two can't coexist for what this
+ * page actually needs: the "mixed" fallback below has to be genuinely
+ * random per visit, not frozen at build time (Danny: "refresh with
+ * every load"). Invalid category values still 404 via the notFound()
+ * check below.
+ */
+export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return SUPPORTED_LOCALES.flatMap((locale) =>
-    MODULE_CATEGORIES.map((category) => ({ locale, category })),
-  );
+function shuffle<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j]!, result[i]!];
+  }
+  return result;
+}
+
+/**
+ * Danny 2026-09-04: a module with only 1-2 courses of its own looks
+ * broken as a sparse single-card grid - and that's the real current
+ * state of every module today, not a hypothetical. Below a threshold,
+ * mix in the whole catalog at random instead of spotlighting the
+ * thinness of one topic; once a topic has enough of its own courses,
+ * stay focused and don't dilute it with unrelated ones. Capped at 6
+ * regardless of total catalog size ("prepare for a full roster").
+ */
+const MIN_TOPIC_COURSES_TO_STAY_FOCUSED = 4;
+const MAX_COURSES_SHOWN = 6;
+
+function selectModuleCourses(
+  allCourses: CourseCardData[],
+  category: ModuleCategory,
+): { courses: CourseCardData[]; isMixed: boolean } {
+  const topicCourses = allCourses.filter((c) => c.moduleCategory === category);
+  if (topicCourses.length > MIN_TOPIC_COURSES_TO_STAY_FOCUSED) {
+    return { courses: topicCourses.slice(0, MAX_COURSES_SHOWN), isMixed: false };
+  }
+  return { courses: shuffle(allCourses).slice(0, MAX_COURSES_SHOWN), isMixed: true };
 }
 
 export default function ModuleDetailPage({
@@ -39,7 +68,10 @@ export default function ModuleDetailPage({
     notFound();
   }
 
-  const relatedCourses = t.courses.items.filter((c) => c.moduleCategory === module_.category);
+  const { courses: displayedCourses, isMixed } = selectModuleCourses(
+    t.courses.items,
+    module_.category,
+  );
   const otherModules = t.modules.filter((m) => m.category !== module_.category);
 
   return (
@@ -83,11 +115,11 @@ export default function ModuleDetailPage({
           </div>
         </section>
 
-        {relatedCourses.length > 0 ? (
+        {displayedCourses.length > 0 ? (
           <CoursesTeaser
-            heading={copy.detailCoursesHeading(module_.title)}
-            subtext={copy.detailCoursesSubtext}
-            courses={relatedCourses}
+            heading={isMixed ? copy.detailCoursesMixedHeading : copy.detailCoursesHeading(module_.title)}
+            subtext={isMixed ? copy.detailCoursesMixedSubtext : copy.detailCoursesSubtext}
+            courses={displayedCourses}
             cta={t.courses.cta}
           />
         ) : (

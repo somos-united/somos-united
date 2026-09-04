@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Somos United",
-  description: "Somos United — mentale Stärkung für junge Menschen (Phase 0 foundation).",
+  description: "Somos United — mentale Stärkung für junge Menschen.",
 };
 
 // Single root layout (Next.js requires exactly one <html>/<body> pair per
