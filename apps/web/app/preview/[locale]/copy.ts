@@ -42,7 +42,14 @@ export interface HomeCopy {
   process: { heading: string; steps: { verb: string; body: string }[] };
   quote: { label: string; body: string; attribution: string };
   closing: { headline: string; cta: string };
-  footer: { tagline: string; contactLabel: string; linksHeading: string };
+  footer: {
+    tagline: string;
+    contactLabel: string;
+    linksHeading: string;
+    legalHeading: string;
+    impressumLabel: string;
+    datenschutzLabel: string;
+  };
 }
 
 export const HOME_COPY: Record<Locale, HomeCopy> = {
@@ -244,6 +251,9 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       tagline: "Mentale Stärkung für junge Menschen.",
       contactLabel: "Schreib uns",
       linksHeading: "Verein",
+      legalHeading: "Rechtliches",
+      impressumLabel: "Impressum",
+      datenschutzLabel: "Datenschutz",
     },
   },
   en: {
@@ -439,6 +449,9 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       tagline: "Mental strength for young people.",
       contactLabel: "Drop us a line",
       linksHeading: "Association",
+      legalHeading: "Legal",
+      impressumLabel: "Imprint",
+      datenschutzLabel: "Privacy",
     },
   },
 };
@@ -691,5 +704,153 @@ export const BLOG_PAGE_COPY: Record<Locale, BlogPageCopy> = {
         ],
       },
     ],
+  },
+};
+
+/**
+ * Legal pages (Impressum/Datenschutz). Unlike every other placeholder
+ * in this file, these are NOT invented content to be swapped for real
+ * copy later - an Impressum exists specifically to identify who's
+ * legally responsible for the site, so the identifying fields
+ * (address, phone, Handelsregister/UID) are honestly left as pending
+ * rather than fabricated. See addressPending/uidPending below - render
+ * these as an explicit "folgt"/"pending" state, not filled with
+ * invented details.
+ *
+ * The privacy policy body is grounded in this project's actual
+ * documented data practices (03-DATA-MODEL.md's child-data
+ * minimization decision, Supabase Zürich region, Bird/Resend as real
+ * processors, SECURITY.md's EDÖB breach-notification note) - still a
+ * draft that needs real legal review before being treated as final,
+ * but not fabricated the way a fake testimonial would be.
+ *
+ * No Sanity schema exists yet for an Impressum type specifically
+ * (legalDocument only covers "agb"/"datenschutz", see
+ * studio/schemaTypes/legalDocument.ts) - a small schema follow-up,
+ * not urgent while nothing here is Sanity-driven yet.
+ */
+export interface LegalPageCopy {
+  impressum: {
+    heading: string;
+    addressPending: string;
+    uidPending: string;
+    responsiblePending: string;
+    contactLabel: string;
+    liabilityHeading: string;
+    liabilityBody: string;
+    linksHeading: string;
+    linksBody: string;
+  };
+  datenschutz: {
+    heading: string;
+    intro: string;
+    controllerHeading: string;
+    dataHeading: string;
+    dataItems: string[];
+    purposeHeading: string;
+    purposeBody: string;
+    thirdPartiesHeading: string;
+    thirdPartiesIntro: string;
+    thirdParties: { name: string; role: string }[];
+    rightsHeading: string;
+    rightsBody: string;
+    breachHeading: string;
+    breachBody: string;
+    contactLabel: string;
+  };
+}
+
+export const LEGAL_PAGE_COPY: Record<Locale, LegalPageCopy> = {
+  de: {
+    impressum: {
+      heading: "Impressum",
+      addressPending: "Adresse folgt",
+      uidPending: "Handelsregister-/UID-Nummer folgt, falls eingetragen",
+      responsiblePending: "Verantwortliche Person folgt",
+      contactLabel: "E-Mail",
+      liabilityHeading: "Haftungsausschluss",
+      liabilityBody:
+        "Der Verein Somos United übernimmt keine Gewähr für die Richtigkeit, Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen auf dieser Website. Haftungsansprüche gegen den Verein Somos United wegen Schäden materieller oder immaterieller Art, welche aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten Informationen entstehen, sind ausgeschlossen.",
+      linksHeading: "Links auf externe Websites",
+      linksBody:
+        "Diese Website kann Links zu externen Websites Dritter enthalten, auf deren Inhalte wir keinen Einfluss haben. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter verantwortlich.",
+    },
+    datenschutz: {
+      heading: "Datenschutzerklärung",
+      intro:
+        "Diese Erklärung beschreibt, welche Daten der Verein Somos United im Rahmen dieser Website und der Kursverwaltung bearbeitet.",
+      controllerHeading: "Verantwortliche Stelle",
+      dataHeading: "Welche Daten wir erheben",
+      dataItems: [
+        "Kontaktdaten der Eltern/Erziehungsberechtigten (Name, E-Mail, Telefonnummer)",
+        "Angaben zu Kindern: Vorname und Geburtsjahr (bewusst kein vollständiges Geburtsdatum), Allergien/Gesundheitshinweise, sofern für die Kursteilnahme relevant",
+        "Buchungs- und Zahlungsdaten",
+        "Technische Daten beim Website-Besuch (z. B. über Analyse-Tools)",
+      ],
+      purposeHeading: "Zweck der Datenbearbeitung",
+      purposeBody:
+        "Die Daten werden ausschliesslich zur Organisation und Durchführung unserer Kurse sowie zur Kommunikation mit teilnehmenden Familien verwendet.",
+      thirdPartiesHeading: "Eingesetzte Dienstleister",
+      thirdPartiesIntro:
+        "Für den Betrieb dieser Plattform setzen wir folgende Dienstleister ein, die in unserem Auftrag Daten bearbeiten:",
+      thirdParties: [
+        { name: "Supabase", role: "Datenbank-Hosting (Region Zürich)" },
+        { name: "Bird", role: "SMS- und WhatsApp-Versand" },
+        { name: "Resend", role: "E-Mail-Versand" },
+      ],
+      rightsHeading: "Ihre Rechte",
+      rightsBody:
+        "Sie haben nach dem Schweizer Datenschutzgesetz (DSG) das Recht auf Auskunft, Berichtigung und Löschung Ihrer Daten. Bei Fragen wenden Sie sich an uns.",
+      breachHeading: "Meldung von Datenschutzverletzungen",
+      breachBody:
+        "Bei einem Vorfall mit hohem Risiko für betroffene Personen informieren wir gemäss den gesetzlichen Vorgaben den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten (EDÖB).",
+      contactLabel: "E-Mail",
+    },
+  },
+  en: {
+    impressum: {
+      heading: "Imprint",
+      addressPending: "Address pending",
+      uidPending: "Commercial registry/UID number pending, if registered",
+      responsiblePending: "Responsible person pending",
+      contactLabel: "Email",
+      liabilityHeading: "Disclaimer",
+      liabilityBody:
+        "Verein Somos United makes no guarantee as to the accuracy, completeness, or timeliness of the information on this website. Liability claims against Verein Somos United arising from the use or non-use of the information published here are excluded.",
+      linksHeading: "Links to external websites",
+      linksBody:
+        "This website may contain links to external third-party websites over whose content we have no influence. The respective provider is always responsible for the content of linked pages.",
+    },
+    datenschutz: {
+      heading: "Privacy Policy",
+      intro:
+        "This policy describes what data Verein Somos United processes as part of this website and course administration.",
+      controllerHeading: "Data controller",
+      dataHeading: "What data we collect",
+      dataItems: [
+        "Contact details of parents/guardians (name, email, phone number)",
+        "Information about children: first name and birth year (deliberately not a full date of birth), allergy/health notes where relevant to course participation",
+        "Booking and payment data",
+        "Technical data from website visits (e.g. via analytics tools)",
+      ],
+      purposeHeading: "Purpose of processing",
+      purposeBody:
+        "Data is used exclusively to organise and run our courses and to communicate with participating families.",
+      thirdPartiesHeading: "Service providers we use",
+      thirdPartiesIntro:
+        "To run this platform, we use the following service providers, who process data on our behalf:",
+      thirdParties: [
+        { name: "Supabase", role: "Database hosting (Zurich region)" },
+        { name: "Bird", role: "SMS and WhatsApp sending" },
+        { name: "Resend", role: "Email sending" },
+      ],
+      rightsHeading: "Your rights",
+      rightsBody:
+        "Under the Swiss Data Protection Act (DSG), you have the right to access, correct, and delete your data. Contact us with any questions.",
+      breachHeading: "Data breach notification",
+      breachBody:
+        "In the event of an incident posing a high risk to affected individuals, we will notify the Swiss Federal Data Protection and Information Commissioner (FDPIC/EDÖB) as required by law.",
+      contactLabel: "Email",
+    },
   },
 };

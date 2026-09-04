@@ -7,7 +7,7 @@ import type { Locale } from "@/lib/locales";
 
 import { MobileNavMenu } from "./MobileNavMenu";
 
-export type NavActive = "home" | "module" | "about" | "blog";
+export type NavActive = "home" | "module" | "about" | "blog" | "legal";
 
 /**
  * Nav height stays within the 64-80px cap (py-sm on a text-heading-md

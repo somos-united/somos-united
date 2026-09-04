@@ -51,9 +51,13 @@ export default function ModuleIndexPage({ params }: { params: { locale: Locale }
         </section>
       </main>
       <SiteFooter
+        locale={params.locale}
         tagline={t.footer.tagline}
         contactLabel={t.footer.contactLabel}
         linksHeading={t.footer.linksHeading}
+        legalHeading={t.footer.legalHeading}
+        impressumLabel={t.footer.impressumLabel}
+        datenschutzLabel={t.footer.datenschutzLabel}
       />
     </>
   );

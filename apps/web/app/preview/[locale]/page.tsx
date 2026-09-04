@@ -57,9 +57,13 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
         <ClosingCta headline={t.closing.headline} cta={t.closing.cta} />
       </main>
       <SiteFooter
+        locale={params.locale}
         tagline={t.footer.tagline}
         contactLabel={t.footer.contactLabel}
         linksHeading={t.footer.linksHeading}
+        legalHeading={t.footer.legalHeading}
+        impressumLabel={t.footer.impressumLabel}
+        datenschutzLabel={t.footer.datenschutzLabel}
       />
     </>
   );
