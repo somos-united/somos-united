@@ -21,7 +21,7 @@ export interface ModuleTeaser {
 }
 
 export interface HomeCopy {
-  nav: { cta: string; ctaShort: string; moduleLabel: string };
+  nav: { cta: string; ctaShort: string; moduleLabel: string; aboutLabel: string };
   hero: { headline: string; subtext: string; primaryCta: string; secondaryCta: string };
   modulesHeading: string;
   modules: ModuleTeaser[];
@@ -39,7 +39,7 @@ export interface HomeCopy {
 
 export const HOME_COPY: Record<Locale, HomeCopy> = {
   de: {
-    nav: { cta: "Kurse entdecken", ctaShort: "Kurse", moduleLabel: "Module" },
+    nav: { cta: "Kurse entdecken", ctaShort: "Kurse", moduleLabel: "Module", aboutLabel: "Über uns" },
     hero: {
       headline: "Stark ins Leben.",
       subtext:
@@ -231,7 +231,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     },
   },
   en: {
-    nav: { cta: "Explore courses", ctaShort: "Courses", moduleLabel: "Modules" },
+    nav: { cta: "Explore courses", ctaShort: "Courses", moduleLabel: "Modules", aboutLabel: "About" },
     hero: {
       headline: "Strong into life.",
       subtext: "Courses for kids and teens on media literacy, respect, and mental strength.",
@@ -456,5 +456,107 @@ export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
     detailCoursesHeading: (moduleTitle) => `${moduleTitle} courses`,
     detailCoursesSubtext: "A selection of upcoming dates for this module.",
     detailCoursesEmpty: "No dates are currently scheduled for this module.",
+  },
+};
+
+/**
+ * Content for /about. Grounded in the org's own mandate statement
+ * (00-MASTER-PLAN.md §0: "Somos United ist eine gemeinnützige Plattform
+ * (Schweiz) für Kurse/Module, die junge Menschen mental stärken") rather
+ * than invented mission-statement fluff. Deliberately no fabricated
+ * team bios/photos - `team.placeholder` is honest about that gap the
+ * same way "[Illustration folgt]" is elsewhere, rather than inventing
+ * fake names the way a fake testimonial would be.
+ */
+export interface AboutValue {
+  icon: "shield" | "heart" | "users" | "target";
+  title: string;
+  body: string;
+}
+
+export interface AboutPageCopy {
+  heading: string;
+  subtext: string;
+  storyHeading: string;
+  story: string[];
+  valuesHeading: string;
+  values: AboutValue[];
+  team: { heading: string; placeholder: string };
+}
+
+export const ABOUT_PAGE_COPY: Record<Locale, AboutPageCopy> = {
+  de: {
+    heading: "Wir sind Somos United.",
+    subtext:
+      "Eine gemeinnützige Plattform aus der Schweiz, die Kinder und Jugendliche mental stärkt — mit Kursen zu Medienkompetenz, Respekt, Gewaltprävention und mehr.",
+    storyHeading: "Warum es uns gibt",
+    story: [
+      "Aufwachsen war noch nie einfach — aber die Herausforderungen von heute sind neu: ständige Erreichbarkeit, sozialer Druck online wie offline, wachsende psychische Belastung. Somos United wurde gegründet, um Kindern und Jugendlichen praktische Werkzeuge für genau diese Realität mitzugeben.",
+      "Als gemeinnützige Organisation aus der Schweiz glauben wir, dass mentale Stärke lernbar ist — in kleinen Gruppen, mit echten Trainer:innen, nah am Alltag der Teilnehmenden. Deshalb bauen wir sechs Module, die genau dort ansetzen, wo es zählt.",
+    ],
+    valuesHeading: "Was uns wichtig ist",
+    values: [
+      {
+        icon: "shield",
+        title: "Sicherheit zuerst",
+        body: "Besonders bei Daten von Kindern und Jugendlichen gilt: so wenig wie möglich, so geschützt wie möglich.",
+      },
+      {
+        icon: "heart",
+        title: "Für alle zugänglich",
+        body: "Als gemeinnützige Organisation wollen wir, dass Herkunft oder Budget nie über die Teilnahme entscheiden.",
+      },
+      {
+        icon: "users",
+        title: "Gemeinschaft",
+        body: "Stärke entsteht im Austausch — unsere Kurse laufen bewusst in kleinen Gruppen, nicht allein vor einem Bildschirm.",
+      },
+      {
+        icon: "target",
+        title: "Echte Wirkung",
+        body: "Sechs Module, die an echten Herausforderungen ansetzen — nicht an abstrakten Lehrplänen.",
+      },
+    ],
+    team: {
+      heading: "Unser Team",
+      placeholder: "Hier stellen wir bald die Menschen hinter Somos United vor.",
+    },
+  },
+  en: {
+    heading: "We are Somos United.",
+    subtext:
+      "A Swiss nonprofit platform that strengthens kids and teens mentally — with courses on media literacy, respect, violence prevention, and more.",
+    storyHeading: "Why we exist",
+    story: [
+      "Growing up was never easy — but today's challenges are new: constant connectivity, social pressure online and offline, and rising mental strain. Somos United was founded to give kids and teens practical tools for exactly that reality.",
+      "As a Swiss nonprofit, we believe mental strength can be learned — in small groups, with real trainers, close to participants' everyday lives. That's why we're building six modules that meet young people exactly where it counts.",
+    ],
+    valuesHeading: "What matters to us",
+    values: [
+      {
+        icon: "shield",
+        title: "Safety first",
+        body: "Especially with children's data: as little as possible, as protected as possible.",
+      },
+      {
+        icon: "heart",
+        title: "Accessible to everyone",
+        body: "As a nonprofit, we don't want background or budget to ever decide who gets to take part.",
+      },
+      {
+        icon: "users",
+        title: "Community",
+        body: "Strength grows through connection — our courses run in small groups on purpose, not alone in front of a screen.",
+      },
+      {
+        icon: "target",
+        title: "Real impact",
+        body: "Six modules built around real challenges — not abstract curricula.",
+      },
+    ],
+    team: {
+      heading: "Our team",
+      placeholder: "We'll introduce the people behind Somos United here soon.",
+    },
   },
 };

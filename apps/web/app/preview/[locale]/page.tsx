@@ -28,6 +28,7 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
         cta={t.nav.cta}
         ctaShort={t.nav.ctaShort}
         moduleLabel={t.nav.moduleLabel}
+        aboutLabel={t.nav.aboutLabel}
         active="home"
       />
       <main>

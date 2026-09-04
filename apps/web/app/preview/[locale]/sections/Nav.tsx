@@ -1,10 +1,11 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import { ButtonPrimaryPill, GlassPanel } from "@somos/ui";
 
 import type { Locale } from "@/lib/locales";
 
-export type NavActive = "home" | "module";
+export type NavActive = "home" | "module" | "about";
 
 /**
  * Nav height stays within the 64-80px cap (py-sm on a text-heading-md
@@ -21,12 +22,14 @@ export function Nav({
   cta,
   ctaShort,
   moduleLabel,
+  aboutLabel,
   active,
 }: {
   locale: Locale;
   cta: string;
   ctaShort: string;
   moduleLabel: string;
+  aboutLabel: string;
   active: NavActive;
 }) {
   const otherLocale: Locale = locale === "de" ? "en" : "de";
@@ -41,15 +44,12 @@ export function Nav({
           Somos United
         </Link>
         <div className="flex items-center gap-xs sm:gap-lg">
-          <Link
-            href={`/preview/${locale}/module`}
-            aria-current={active === "module" ? "page" : undefined}
-            className={`whitespace-nowrap text-caption transition-colors hover:text-ink ${
-              active === "module" ? "font-semibold text-ink" : "text-ink-mute"
-            }`}
-          >
+          <NavLink href={`/preview/${locale}/module`} isActive={active === "module"}>
             {moduleLabel}
-          </Link>
+          </NavLink>
+          <NavLink href={`/preview/${locale}/about`} isActive={active === "about"}>
+            {aboutLabel}
+          </NavLink>
           <Link
             href={`/preview/${otherLocale}`}
             className="whitespace-nowrap text-caption text-ink-mute underline decoration-1 underline-offset-4 transition-colors hover:text-ink"
@@ -63,5 +63,27 @@ export function Nav({
         </div>
       </div>
     </GlassPanel>
+  );
+}
+
+function NavLink({
+  href,
+  isActive,
+  children,
+}: {
+  href: string;
+  isActive: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      aria-current={isActive ? "page" : undefined}
+      className={`whitespace-nowrap text-caption transition-colors hover:text-ink ${
+        isActive ? "font-semibold text-ink" : "text-ink-mute"
+      }`}
+    >
+      {children}
+    </Link>
   );
 }

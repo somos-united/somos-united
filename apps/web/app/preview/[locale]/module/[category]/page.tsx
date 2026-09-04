@@ -48,6 +48,7 @@ export default function ModuleDetailPage({
         cta={t.nav.cta}
         ctaShort={t.nav.ctaShort}
         moduleLabel={t.nav.moduleLabel}
+        aboutLabel={t.nav.aboutLabel}
         active="module"
       />
       <main>
