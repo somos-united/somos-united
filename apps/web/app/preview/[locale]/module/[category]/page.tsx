@@ -43,7 +43,7 @@ export default function ModuleDetailPage({
 
   return (
     <>
-      <Nav locale={params.locale} cta={t.nav.cta} />
+      <Nav locale={params.locale} cta={t.nav.cta} moduleLabel={t.nav.moduleLabel} active="module" />
       <main>
         <section className="mx-auto max-w-6xl px-lg pt-xl md:px-xl">
           <Link

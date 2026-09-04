@@ -23,7 +23,7 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
 
   return (
     <>
-      <Nav locale={params.locale} cta={t.nav.cta} />
+      <Nav locale={params.locale} cta={t.nav.cta} moduleLabel={t.nav.moduleLabel} active="home" />
       <main>
         <Hero
           headline={t.hero.headline}
