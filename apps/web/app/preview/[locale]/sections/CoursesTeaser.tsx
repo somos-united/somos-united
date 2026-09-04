@@ -1,7 +1,10 @@
 import { ArrowRight, Check, Clock, UsersThree } from "@phosphor-icons/react/ssr";
 
+import type { ModuleCategory } from "@somos/types";
+
 export interface CourseCardData {
   category: string;
+  moduleCategory: ModuleCategory;
   title: string;
   dateLabel: string;
   price: string;

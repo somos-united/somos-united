@@ -31,7 +31,7 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
           primaryCta={t.hero.primaryCta}
           secondaryCta={t.hero.secondaryCta}
         />
-        <ModuleBento heading={t.modulesHeading} modules={t.modules} />
+        <ModuleBento heading={t.modulesHeading} modules={t.modules} locale={params.locale} />
         <CoursesTeaser
           heading={t.courses.heading}
           subtext={t.courses.subtext}

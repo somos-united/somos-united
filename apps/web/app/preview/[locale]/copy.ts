@@ -16,6 +16,8 @@ export interface ModuleTeaser {
   category: ModuleCategory;
   title: string;
   teaser: string;
+  ageRange: string;
+  description: string[];
 }
 
 export interface HomeCopy {
@@ -51,31 +53,61 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         category: "medienkompetenz",
         title: "Medienkompetenz",
         teaser: "Wie Kinder und Jugendliche Medien bewusst, sicher und selbstbestimmt nutzen.",
+        ageRange: "10–14 Jahre",
+        description: [
+          "Kinder und Jugendliche wachsen mit Smartphones, Apps und ständiger Erreichbarkeit auf. Dieses Modul vermittelt, wie sie Inhalte kritisch einordnen, Fake News erkennen und ihre eigene Mediennutzung reflektieren.",
+          "In praktischen Gruppenübungen tauschen sich die Teilnehmenden über eigene Erfahrungen aus und entwickeln gemeinsam Strategien für einen sicheren, selbstbestimmten Umgang mit digitalen Medien.",
+        ],
       },
       {
         category: "respekt",
         title: "Respekt",
         teaser: "Wertschätzend miteinander umgehen, Grenzen erkennen und respektieren.",
+        ageRange: "8–12 Jahre",
+        description: [
+          "Respektvoller Umgang beginnt im Alltag: beim Zuhören, beim Aushandeln von Konflikten, beim Anerkennen unterschiedlicher Perspektiven. Dieses Modul stärkt die Fähigkeit, eigene und fremde Grenzen wahrzunehmen.",
+          "Rollenspiele und Gruppendiskussionen helfen den Teilnehmenden, Vorurteile zu hinterfragen und wertschätzende Kommunikation im Schulalltag und darüber hinaus zu üben.",
+        ],
       },
       {
         category: "gewaltpraevention",
         title: "Gewaltprävention",
         teaser: "Konflikte erkennen und gewaltfrei lösen lernen.",
+        ageRange: "10–15 Jahre",
+        description: [
+          "Konflikte gehören zum Aufwachsen dazu — entscheidend ist, wie man mit ihnen umgeht. Dieses Modul zeigt, wie Spannungen frühzeitig erkannt und deeskaliert werden, bevor sie eskalieren.",
+          "Ausgebildete Trainer:innen begleiten die Gruppe durch alltagsnahe Rollenspiele, in denen Teilnehmende üben, eigene Grenzen zu setzen und gewaltfrei zu reagieren.",
+        ],
       },
       {
         category: "psychische_belastung",
         title: "Psychische Stärke",
         teaser: "Umgang mit Druck, Stress und schwierigen Gefühlen.",
+        ageRange: "12–16 Jahre",
+        description: [
+          "Schule, soziale Erwartungen, der eigene Anspruch — psychischer Druck zeigt sich bei Jugendlichen oft anders als bei Erwachsenen. Dieses Modul schafft einen geschützten Rahmen, um über Stress und schwierige Gefühle zu sprechen.",
+          "Im Zentrum stehen einfache Entspannungstechniken, das Verstehen eigener Emotionen und der Austausch in einer unterstützenden Gruppe — bewusst ohne Leistungsdruck oder Verkaufsdruck.",
+        ],
       },
       {
         category: "orientierung",
         title: "Orientierung",
         teaser: "Den eigenen Weg finden, in Schule, Beruf und Leben.",
+        ageRange: "14–17 Jahre",
+        description: [
+          "Welche Stärken habe ich, welche Berufsfelder passen zu mir, wie treffe ich eine Entscheidung, die sich richtig anfühlt? Dieses Modul begleitet Jugendliche in einer Phase, in der viele Weichen gestellt werden.",
+          "Durch Selbstreflexion, Erkundung verschiedener Berufsfelder und begleitete Übungen gewinnen die Teilnehmenden mehr Sicherheit für ihre nächsten Schritte.",
+        ],
       },
       {
         category: "social_media",
         title: "Social Media",
         teaser: "Bewusster Umgang mit sozialen Netzwerken und ihren Folgen.",
+        ageRange: "11–15 Jahre",
+        description: [
+          "Soziale Netzwerke prägen den Alltag von Jugendlichen wie kaum ein anderes Medium. Dieses Modul vermittelt einen bewussteren Umgang mit Apps, Privatsphäre-Einstellungen und dem eigenen digitalen Fussabdruck.",
+          "Ein besonderer Schwerpunkt liegt auf dem Erkennen von Cybermobbing und dem Finden einer gesunden Bildschirmzeit — praxisnah und ohne erhobenen Zeigefinger.",
+        ],
       },
     ],
     courses: {
@@ -85,6 +117,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       items: [
         {
           category: "Medienkompetenz",
+          moduleCategory: "medienkompetenz",
           title: "Medienkompetenz Basiskurs",
           dateLabel: "Wöchentlich, Zürich",
           price: "CHF 25.–",
@@ -99,6 +132,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Gewaltprävention",
+          moduleCategory: "gewaltpraevention",
           title: "Gewaltprävention Einstieg",
           dateLabel: "Wöchentlich, Bern",
           price: "CHF 30.–",
@@ -113,6 +147,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Respekt",
+          moduleCategory: "respekt",
           title: "Respekt im Alltag",
           dateLabel: "Wöchentlich, Basel",
           price: "CHF 35.–",
@@ -125,6 +160,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Psychische Stärke",
+          moduleCategory: "psychische_belastung",
           title: "Psychische Stärke im Alltag",
           dateLabel: "Wöchentlich, Luzern",
           price: "CHF 25.–",
@@ -142,6 +178,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Orientierung",
+          moduleCategory: "orientierung",
           title: "Orientierung finden",
           dateLabel: "Wöchentlich, St. Gallen",
           price: "CHF 30.–",
@@ -155,6 +192,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Social Media",
+          moduleCategory: "social_media",
           title: "Social Media bewusst nutzen",
           dateLabel: "Wöchentlich, Genf",
           price: "CHF 25.–",
@@ -206,31 +244,61 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         category: "medienkompetenz",
         title: "Media literacy",
         teaser: "How kids and teens use media consciously, safely, and with confidence.",
+        ageRange: "10–14 years",
+        description: [
+          "Kids and teens grow up with smartphones, apps, and constant connectivity. This module teaches them to critically assess content, spot fake news, and reflect on their own media habits.",
+          "In hands-on group exercises, participants share their own experiences and work together on strategies for a safer, more self-determined approach to digital media.",
+        ],
       },
       {
         category: "respekt",
         title: "Respect",
         teaser: "Treating each other with respect, recognising and honouring boundaries.",
+        ageRange: "8–12 years",
+        description: [
+          "Respectful behaviour starts in everyday life: listening, working through conflict, recognising different perspectives. This module builds the ability to notice both your own boundaries and other people's.",
+          "Role play and group discussions help participants question assumptions and practice respectful communication at school and beyond.",
+        ],
       },
       {
         category: "gewaltpraevention",
         title: "Violence prevention",
         teaser: "Recognising conflict and learning to resolve it without violence.",
+        ageRange: "10–15 years",
+        description: [
+          "Conflict is part of growing up — what matters is how you handle it. This module shows how to recognise rising tension early and de-escalate before it turns into something worse.",
+          "Trained facilitators guide the group through realistic role-play scenarios where participants practice setting boundaries and responding without violence.",
+        ],
       },
       {
         category: "psychische_belastung",
         title: "Mental strength",
         teaser: "Coping with pressure, stress, and difficult emotions.",
+        ageRange: "12–16 years",
+        description: [
+          "School, social expectations, self-imposed pressure — mental strain shows up differently in teens than in adults. This module creates a safe space to talk about stress and difficult emotions.",
+          "The focus is on simple relaxation techniques, understanding your own feelings, and support from a group — deliberately without performance pressure or a sales pitch.",
+        ],
       },
       {
         category: "orientierung",
         title: "Orientation",
         teaser: "Finding your own path, in school, work, and life.",
+        ageRange: "14–17 years",
+        description: [
+          "What are my strengths, which career fields fit me, how do I make a decision that actually feels right? This module supports teens through a stage where a lot of paths are being set.",
+          "Through self-reflection, exploring different career fields, and guided exercises, participants gain more confidence for their next steps.",
+        ],
       },
       {
         category: "social_media",
         title: "Social media",
         teaser: "A conscious approach to social networks and their effects.",
+        ageRange: "11–15 years",
+        description: [
+          "Social networks shape teenage life like few other media. This module teaches a more conscious approach to apps, privacy settings, and your own digital footprint.",
+          "A particular focus is on recognising cyberbullying and finding healthy screen time — practical, and without wagging a finger.",
+        ],
       },
     ],
     courses: {
@@ -240,6 +308,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       items: [
         {
           category: "Media literacy",
+          moduleCategory: "medienkompetenz",
           title: "Media Literacy Basics",
           dateLabel: "Weekly, Zurich",
           price: "CHF 25.-",
@@ -254,6 +323,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Violence prevention",
+          moduleCategory: "gewaltpraevention",
           title: "Violence Prevention Intro",
           dateLabel: "Weekly, Bern",
           price: "CHF 30.-",
@@ -268,6 +338,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Respect",
+          moduleCategory: "respekt",
           title: "Respect in Everyday Life",
           dateLabel: "Weekly, Basel",
           price: "CHF 35.-",
@@ -280,6 +351,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Mental strength",
+          moduleCategory: "psychische_belastung",
           title: "Mental Strength in Everyday Life",
           dateLabel: "Weekly, Lucerne",
           price: "CHF 25.-",
@@ -293,6 +365,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Orientation",
+          moduleCategory: "orientierung",
           title: "Finding Direction",
           dateLabel: "Weekly, St. Gallen",
           price: "CHF 30.-",
@@ -306,6 +379,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
         {
           category: "Social media",
+          moduleCategory: "social_media",
           title: "Using Social Media Consciously",
           dateLabel: "Weekly, Geneva",
           price: "CHF 25.-",
@@ -342,5 +416,45 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       contactLabel: "Drop us a line",
       linksHeading: "Association",
     },
+  },
+};
+
+/**
+ * Chrome text for the dedicated module pages (/module index +
+ * /module/[category] detail) - kept separate from HomeCopy since the
+ * per-module content itself (title/teaser/ageRange/description) already
+ * lives in HOME_COPY[locale].modules and is shared between the homepage
+ * teaser and these pages, one source of truth per module.
+ */
+export interface ModulePageCopy {
+  indexHeading: string;
+  indexSubtext: string;
+  backToModules: string;
+  ageLabel: string;
+  detailCoursesHeading: (moduleTitle: string) => string;
+  detailCoursesSubtext: string;
+  detailCoursesEmpty: string;
+}
+
+export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
+  de: {
+    indexHeading: "Unsere Module",
+    indexSubtext:
+      "Sechs Themenfelder, in denen Kinder und Jugendliche gestärkt werden — jedes mit eigenen Kursen und passendem Altersbereich.",
+    backToModules: "Alle Module",
+    ageLabel: "Altersspanne",
+    detailCoursesHeading: (moduleTitle) => `Kurse zu ${moduleTitle}`,
+    detailCoursesSubtext: "Eine Auswahl kommender Termine zu diesem Modul.",
+    detailCoursesEmpty: "Aktuell sind keine Termine zu diesem Modul geplant.",
+  },
+  en: {
+    indexHeading: "Our modules",
+    indexSubtext:
+      "Six topic areas where kids and teens are strengthened — each with its own courses and matching age range.",
+    backToModules: "All modules",
+    ageLabel: "Age range",
+    detailCoursesHeading: (moduleTitle) => `${moduleTitle} courses`,
+    detailCoursesSubtext: "A selection of upcoming dates for this module.",
+    detailCoursesEmpty: "No dates are currently scheduled for this module.",
   },
 };

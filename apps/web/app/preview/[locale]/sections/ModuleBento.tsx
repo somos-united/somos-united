@@ -1,3 +1,7 @@
+import Link from "next/link";
+
+import type { Locale } from "@/lib/locales";
+
 import type { ModuleTeaser } from "../copy";
 
 /**
@@ -37,40 +41,58 @@ export function ContentBox({
   size = "normal",
   chip = "primary",
   className = "",
+  href,
 }: {
   module: ModuleTeaser;
   size?: "large" | "normal";
   chip?: "primary" | "coral";
   className?: string;
+  href?: string;
 }) {
-  return (
-    <div
-      className={`flex flex-col justify-center rounded-lg border border-hairline p-xl ${
-        size === "large"
-          ? "bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas)_65%)]"
-          : "bg-canvas-soft"
-      } ${className}`}
-    >
-      <div>
-        <span
-          className={`inline-block rounded-pill px-md py-xxs text-caption ${
-            chip === "coral"
-              ? "bg-accent-coral-subtle-bg text-accent-coral-deep"
-              : "bg-primary-subdued-bg text-primary"
-          }`}
-        >
-          {module.title}
-        </span>
-        <h3 className={`mt-md text-ink ${size === "large" ? "text-display-section" : "text-heading-lg"}`}>
-          {module.title}
-        </h3>
-        <p className="mt-sm max-w-[38ch] text-body text-ink-secondary">{module.teaser}</p>
-      </div>
+  const boxClassName = `flex flex-col justify-center rounded-lg border border-hairline p-xl transition-colors ${
+    size === "large"
+      ? "bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas)_65%)]"
+      : "bg-canvas-soft"
+  } ${href ? "hover:border-primary" : ""} ${className}`;
+
+  const content = (
+    <div>
+      <span
+        className={`inline-block rounded-pill px-md py-xxs text-caption ${
+          chip === "coral"
+            ? "bg-accent-coral-subtle-bg text-accent-coral-deep"
+            : "bg-primary-subdued-bg text-primary"
+        }`}
+      >
+        {module.title}
+      </span>
+      <h3 className={`mt-md text-ink ${size === "large" ? "text-display-section" : "text-heading-lg"}`}>
+        {module.title}
+      </h3>
+      <p className="mt-sm max-w-[38ch] text-body text-ink-secondary">{module.teaser}</p>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className={boxClassName}>
+        {content}
+      </Link>
+    );
+  }
+
+  return <div className={boxClassName}>{content}</div>;
 }
 
-export function ModuleBento({ heading, modules }: { heading: string; modules: ModuleTeaser[] }) {
+export function ModuleBento({
+  heading,
+  modules,
+  locale,
+}: {
+  heading: string;
+  modules: ModuleTeaser[];
+  locale: Locale;
+}) {
   return (
     <section className="mx-auto max-w-6xl px-lg py-huge md:px-xl">
       <h2 className="text-display-section text-ink">{heading}</h2>
@@ -83,6 +105,7 @@ export function ModuleBento({ heading, modules }: { heading: string; modules: Mo
             size={i === 0 ? "large" : "normal"}
             chip={i % 2 === 1 ? "coral" : "primary"}
             className={CELL_SPAN[i]}
+            href={`/preview/${locale}/module/${module.category}`}
           />
         ))}
       </div>
