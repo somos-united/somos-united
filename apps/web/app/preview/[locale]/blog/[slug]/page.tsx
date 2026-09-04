@@ -29,6 +29,8 @@ export default function BlogPostPage({
     notFound();
   }
 
+  const otherPosts = copy.posts.filter((p) => p.slug !== post.slug);
+
   return (
     <>
       <Nav
@@ -62,6 +64,21 @@ export default function BlogPostPage({
               {paragraph}
             </p>
           ))}
+
+          <div className="mt-huge border-t border-hairline pt-xl">
+            <h2 className="text-heading-lg text-ink">{copy.otherPostsHeading}</h2>
+            <div className="mt-md flex flex-col gap-sm">
+              {otherPosts.map((other) => (
+                <Link
+                  key={other.slug}
+                  href={`/preview/${params.locale}/blog/${other.slug}`}
+                  className="text-body text-primary underline decoration-1 underline-offset-4 transition-colors hover:text-primary-press"
+                >
+                  {other.title}
+                </Link>
+              ))}
+            </div>
+          </div>
         </article>
       </main>
       <SiteFooter

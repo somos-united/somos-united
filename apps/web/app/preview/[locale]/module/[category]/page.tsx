@@ -40,6 +40,7 @@ export default function ModuleDetailPage({
   }
 
   const relatedCourses = t.courses.items.filter((c) => c.moduleCategory === module_.category);
+  const otherModules = t.modules.filter((m) => m.category !== module_.category);
 
   return (
     <>
@@ -94,6 +95,21 @@ export default function ModuleDetailPage({
             <p className="text-body text-ink-secondary">{copy.detailCoursesEmpty}</p>
           </section>
         )}
+
+        <section className="mx-auto max-w-6xl px-lg pb-huge md:px-xl">
+          <h2 className="text-heading-lg text-ink">{copy.otherModulesHeading}</h2>
+          <div className="mt-lg grid grid-cols-2 gap-md md:grid-cols-5">
+            {otherModules.map((other) => (
+              <Link
+                key={other.category}
+                href={`/preview/${params.locale}/module/${other.category}`}
+                className="rounded-lg border border-hairline p-lg transition-colors hover:border-primary"
+              >
+                <span className="text-body font-semibold text-ink">{other.title}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
       </main>
       <SiteFooter
         locale={params.locale}

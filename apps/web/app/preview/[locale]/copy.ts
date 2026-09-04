@@ -471,6 +471,7 @@ export interface ModulePageCopy {
   detailCoursesHeading: (moduleTitle: string) => string;
   detailCoursesSubtext: string;
   detailCoursesEmpty: string;
+  otherModulesHeading: string;
 }
 
 export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
@@ -483,6 +484,7 @@ export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
     detailCoursesHeading: (moduleTitle) => `Kurse zu ${moduleTitle}`,
     detailCoursesSubtext: "Eine Auswahl kommender Termine zu diesem Modul.",
     detailCoursesEmpty: "Aktuell sind keine Termine zu diesem Modul geplant.",
+    otherModulesHeading: "Weitere Module",
   },
   en: {
     indexHeading: "Our modules",
@@ -493,6 +495,7 @@ export const MODULE_PAGE_COPY: Record<Locale, ModulePageCopy> = {
     detailCoursesHeading: (moduleTitle) => `${moduleTitle} courses`,
     detailCoursesSubtext: "A selection of upcoming dates for this module.",
     detailCoursesEmpty: "No dates are currently scheduled for this module.",
+    otherModulesHeading: "Other modules",
   },
 };
 
@@ -619,6 +622,7 @@ export interface BlogPageCopy {
   indexSubtext: string;
   readMore: string;
   backToBlog: string;
+  otherPostsHeading: string;
   posts: BlogPost[];
 }
 
@@ -628,6 +632,7 @@ export const BLOG_PAGE_COPY: Record<Locale, BlogPageCopy> = {
     indexSubtext: "Einblicke aus unserer Arbeit mit Familien, Trainer:innen und den Modulen.",
     readMore: "Weiterlesen",
     backToBlog: "Zurück zum Blog",
+    otherPostsHeading: "Weitere Beiträge",
     posts: [
       {
         slug: "bildschirmzeit-tipps",
@@ -669,6 +674,7 @@ export const BLOG_PAGE_COPY: Record<Locale, BlogPageCopy> = {
     indexSubtext: "Insights from our work with families, trainers, and the modules.",
     readMore: "Read more",
     backToBlog: "Back to blog",
+    otherPostsHeading: "More posts",
     posts: [
       {
         slug: "bildschirmzeit-tipps",
