@@ -7,5 +7,10 @@
 // (00-MASTER-PLAN.md §0) they must read prices/rates/policy tiers from
 // Supabase/`app_settings`, never hardcode them here.
 
-export { sendSms } from "./bird";
-export type { BirdSmsCategory, SendSmsParams } from "./bird";
+export { sendSms, sendWhatsAppTemplate } from "./bird";
+export type {
+  BirdSmsCategory,
+  SendSmsParams,
+  SendWhatsAppTemplateParams,
+  WhatsAppTemplateParam,
+} from "./bird";

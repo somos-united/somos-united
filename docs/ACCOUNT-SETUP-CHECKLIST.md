@@ -28,7 +28,8 @@ Referenz: `md/02-DEPLOYMENT.md` Abschnitt 2 & 8. Diese Checkliste ist für Danny
 - [ ] **Stripe** — Account, Verein als Rechtsträger hinterlegen
 - [ ] **Resend** — Account (transaktionale Mails; später auch Resend Inbound für den Kunden-E-Mail-Verlauf, siehe `07-MODULE-CRM.md` Abschnitt 4)
 - [x] ~~Twilio~~ — **Blacklisted 2026-09-03, dauerhaft ausgeschlossen** (Danny: schwierig, ignoriert Schweizer Recht, kompliziertes Setup — siehe die Trust-Hub-Compliance-Odyssee vom 2026-09-01/02). Twilio-Konto/Absender bleiben ungenutzt stehen, kein weiterer Aufwand hier. Auth Token nicht rotiert (war versehentlich im Chat sichtbar) — egal, Konto wird nicht mehr verwendet.
-- [ ] **Bird** — Account neu und dediziert unter Somos United anlegen (`tech@somosunited.ch`), Pay-as-you-go. Alphanumerische SMS-Absender-ID "SOMOSUnited" o.ä. einrichten (Land-für-Land-Prinzip wie bei Twilio, Vorab-Registrierung für Schweiz noch nicht geprüft). `BIRD_*` Credentials in Vercel eintragen. Separat, nur für WhatsApp: Meta Business Manager + WhatsApp Business Account (WABA) für "Verein Somos United" verifizieren.
+- [x] **Bird (SMS)** — Account unter Somos United angelegt (`tech@somosunited.ch`), Pay-as-you-go, Wallet aufgeladen. `BIRD_API_KEY` in Vercel (Production) eingetragen und mit echtem Test-Versand (`pnpm test:bird-sms`) verifiziert 2026-09-04. Alphanumerische SMS-Absender-ID "SOMOSUnited" (11 Zeichen, Bird-Maximum) unter SMS → Senders eingerichtet 2026-09-04.
+- [ ] **Bird (WhatsApp)** — separat von SMS, noch offen: Meta Business Manager + WhatsApp Business Account (WABA) für "Verein Somos United" verifizieren, dann `BIRD_WHATSAPP_FROM` (Absendernummer, E.164-Format) in Vercel eintragen.
 - [ ] **Notion** — dedizierter Workspace, **nicht** geteilt mit anderen Projekten
 
 ### 6. Security-Scanning (CI)

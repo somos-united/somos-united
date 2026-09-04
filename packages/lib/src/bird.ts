@@ -39,3 +39,51 @@ export async function sendSms({ to, text, category = "transactional" }: SendSmsP
     category,
   });
 }
+
+export interface WhatsAppTemplateParam {
+  name: string;
+  text: string;
+}
+
+export interface SendWhatsAppTemplateParams {
+  to: string;
+  templateSlug: string;
+  bodyParams?: WhatsAppTemplateParam[];
+}
+
+/**
+ * Sends a WhatsApp template message. Templates, not free text, are the
+ * only content deliverable outside an open 24h customer-service window
+ * (@messagebird/sdk@0.52.0's WhatsAppMessageSendRequest docs) - the only
+ * mode this project needs, since booking reminders/CRM alerts are
+ * outbound-initiated, not replies inside an active conversation.
+ *
+ * `from` is required here (BIRD_WHATSAPP_FROM, the WhatsApp Business
+ * number in E.164 format) - the SDK only lets a *Bird-managed* template
+ * omit it, which doesn't apply to a workspace-authored template like
+ * ours.
+ *
+ * The template itself (slug, its approved copy, which variables it
+ * takes) has to exist and be Meta-approved in the Bird dashboard first -
+ * this function only sends against a template that's already live.
+ */
+export async function sendWhatsAppTemplate({
+  to,
+  templateSlug,
+  bodyParams = [],
+}: SendWhatsAppTemplateParams) {
+  const bird = getBirdClient();
+  return bird.whatsapp.send({
+    to,
+    from: process.env.BIRD_WHATSAPP_FROM!,
+    template: {
+      slug: templateSlug,
+      components: [
+        {
+          type: "body",
+          parameters: bodyParams.map((param) => ({ type: "text", ...param })),
+        },
+      ],
+    },
+  });
+}
