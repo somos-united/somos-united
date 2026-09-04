@@ -868,3 +868,22 @@ export const LEGAL_PAGE_COPY: Record<Locale, LegalPageCopy> = {
     },
   },
 };
+
+export interface NotFoundCopy {
+  heading: string;
+  body: string;
+  cta: string;
+}
+
+export const NOT_FOUND_COPY: Record<Locale, NotFoundCopy> = {
+  de: {
+    heading: "Seite nicht gefunden",
+    body: "Diese Seite gibt es nicht oder nicht mehr.",
+    cta: "Zur Startseite",
+  },
+  en: {
+    heading: "Page not found",
+    body: "This page doesn't exist or isn't there anymore.",
+    cta: "Back to homepage",
+  },
+};

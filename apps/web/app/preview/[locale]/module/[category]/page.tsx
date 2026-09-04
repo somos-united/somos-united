@@ -1,5 +1,6 @@
 import type { ModuleCategory } from "@somos/types";
 import { ArrowLeft } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -22,6 +23,17 @@ import { SiteFooter } from "../../sections/SiteFooter";
  * check below.
  */
 export const dynamic = "force-dynamic";
+
+export function generateMetadata({
+  params,
+}: {
+  params: { locale: Locale; category: string };
+}): Metadata {
+  const t = HOME_COPY[params.locale];
+  const module_ = t.modules.find((m) => m.category === params.category);
+  if (!module_) return {};
+  return { title: module_.title, description: module_.teaser };
+}
 
 function shuffle<T>(items: T[]): T[] {
   const result = [...items];

@@ -1,3 +1,5 @@
+import type { Metadata } from "next";
+
 import type { Locale } from "@/lib/locales";
 
 import { HOME_COPY } from "./copy";
@@ -18,6 +20,11 @@ import { SiteFooter } from "./sections/SiteFooter";
  * this direction is approved, each section's text moves into Sanity
  * `page`/`module` documents instead of copy.ts.
  */
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  const t = HOME_COPY[params.locale];
+  return { title: t.hero.headline, description: t.hero.subtext };
+}
+
 export default function PreviewHomePage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
 

@@ -1,4 +1,5 @@
 import { ArrowRight } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import type { Locale } from "@/lib/locales";
@@ -7,6 +8,11 @@ import { BLOG_PAGE_COPY, HOME_COPY } from "../copy";
 import { Nav } from "../sections/Nav";
 import { SiteFooter } from "../sections/SiteFooter";
 import { formatPostDate } from "./date";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  const copy = BLOG_PAGE_COPY[params.locale];
+  return { title: copy.indexHeading, description: copy.indexSubtext };
+}
 
 /**
  * Last of the four Phase 1 public pages (00-MASTER-PLAN.md §3). Simple

@@ -1,4 +1,5 @@
 import { ArrowLeft } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -14,6 +15,16 @@ export function generateStaticParams() {
   return SUPPORTED_LOCALES.flatMap((locale) =>
     BLOG_PAGE_COPY[locale].posts.map((post) => ({ locale, slug: post.slug })),
   );
+}
+
+export function generateMetadata({
+  params,
+}: {
+  params: { locale: Locale; slug: string };
+}): Metadata {
+  const post = BLOG_PAGE_COPY[params.locale].posts.find((p) => p.slug === params.slug);
+  if (!post) return {};
+  return { title: post.title, description: post.excerpt };
 }
 
 export default function BlogPostPage({

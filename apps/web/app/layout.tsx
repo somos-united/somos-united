@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Somos United",
+  title: { default: "Somos United", template: "%s | Somos United" },
   description: "Somos United — mentale Stärkung für junge Menschen.",
 };
 

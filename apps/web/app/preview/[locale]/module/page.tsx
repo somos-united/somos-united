@@ -1,4 +1,5 @@
 import { ArrowRight } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import type { Locale } from "@/lib/locales";
@@ -6,6 +7,11 @@ import type { Locale } from "@/lib/locales";
 import { HOME_COPY, MODULE_PAGE_COPY, type ModuleTeaser } from "../copy";
 import { Nav } from "../sections/Nav";
 import { SiteFooter } from "../sections/SiteFooter";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  const copy = MODULE_PAGE_COPY[params.locale];
+  return { title: copy.indexHeading, description: copy.indexSubtext };
+}
 
 /**
  * Module index: a real directory page (uniform grid, one card per

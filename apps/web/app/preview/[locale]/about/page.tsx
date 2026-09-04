@@ -1,5 +1,6 @@
 import type { Icon } from "@phosphor-icons/react";
 import { HandHeart, ShieldCheck, Sparkle, Target, UsersThree } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/locales";
 
@@ -14,6 +15,11 @@ const VALUE_ICONS: Record<AboutValue["icon"], Icon> = {
   users: UsersThree,
   target: Target,
 };
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  const copy = ABOUT_PAGE_COPY[params.locale];
+  return { title: copy.heading, description: copy.subtext };
+}
 
 /**
  * Content-heavy page, deliberately less UI-pattern-heavy than the

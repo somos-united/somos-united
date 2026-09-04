@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
+
 import type { Locale } from "@/lib/locales";
 
 import { HOME_COPY, LEGAL_PAGE_COPY } from "../../copy";
 import { Nav } from "../../sections/Nav";
 import { SiteFooter } from "../../sections/SiteFooter";
+
+export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
+  return { title: LEGAL_PAGE_COPY[params.locale].datenschutz.heading };
+}
 
 /**
  * Grounded in this project's actual documented data practices
