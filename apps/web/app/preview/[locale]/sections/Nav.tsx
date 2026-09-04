@@ -19,11 +19,13 @@ export type NavActive = "home" | "module";
 export function Nav({
   locale,
   cta,
+  ctaShort,
   moduleLabel,
   active,
 }: {
   locale: Locale;
   cta: string;
+  ctaShort: string;
   moduleLabel: string;
   active: NavActive;
 }) {
@@ -32,14 +34,17 @@ export function Nav({
   return (
     <GlassPanel className="sticky top-0 z-20 !rounded-none !border-x-0 !border-t-0">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-lg py-sm">
-        <Link href={`/preview/${locale}`} className="text-heading-md text-ink">
+        <Link
+          href={`/preview/${locale}`}
+          className="shrink-0 whitespace-nowrap text-heading-md text-ink"
+        >
           Somos United
         </Link>
-        <div className="flex items-center gap-lg">
+        <div className="flex items-center gap-xs sm:gap-lg">
           <Link
             href={`/preview/${locale}/module`}
             aria-current={active === "module" ? "page" : undefined}
-            className={`text-caption transition-colors hover:text-ink ${
+            className={`whitespace-nowrap text-caption transition-colors hover:text-ink ${
               active === "module" ? "font-semibold text-ink" : "text-ink-mute"
             }`}
           >
@@ -47,11 +52,14 @@ export function Nav({
           </Link>
           <Link
             href={`/preview/${otherLocale}`}
-            className="text-caption text-ink-mute underline decoration-1 underline-offset-4 transition-colors hover:text-ink"
+            className="whitespace-nowrap text-caption text-ink-mute underline decoration-1 underline-offset-4 transition-colors hover:text-ink"
           >
             {otherLocale.toUpperCase()}
           </Link>
-          <ButtonPrimaryPill>{cta}</ButtonPrimaryPill>
+          <ButtonPrimaryPill className="whitespace-nowrap">
+            <span className="hidden sm:inline">{cta}</span>
+            <span className="sm:hidden">{ctaShort}</span>
+          </ButtonPrimaryPill>
         </div>
       </div>
     </GlassPanel>

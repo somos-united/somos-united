@@ -21,7 +21,7 @@ export interface ModuleTeaser {
 }
 
 export interface HomeCopy {
-  nav: { cta: string; moduleLabel: string };
+  nav: { cta: string; ctaShort: string; moduleLabel: string };
   hero: { headline: string; subtext: string; primaryCta: string; secondaryCta: string };
   modulesHeading: string;
   modules: ModuleTeaser[];
@@ -39,7 +39,7 @@ export interface HomeCopy {
 
 export const HOME_COPY: Record<Locale, HomeCopy> = {
   de: {
-    nav: { cta: "Kurse entdecken", moduleLabel: "Module" },
+    nav: { cta: "Kurse entdecken", ctaShort: "Kurse", moduleLabel: "Module" },
     hero: {
       headline: "Stark ins Leben.",
       subtext:
@@ -231,7 +231,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
     },
   },
   en: {
-    nav: { cta: "Explore courses", moduleLabel: "Modules" },
+    nav: { cta: "Explore courses", ctaShort: "Courses", moduleLabel: "Modules" },
     hero: {
       headline: "Strong into life.",
       subtext: "Courses for kids and teens on media literacy, respect, and mental strength.",

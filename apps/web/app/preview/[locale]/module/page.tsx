@@ -21,7 +21,13 @@ export default function ModuleIndexPage({ params }: { params: { locale: Locale }
 
   return (
     <>
-      <Nav locale={params.locale} cta={t.nav.cta} moduleLabel={t.nav.moduleLabel} active="module" />
+      <Nav
+        locale={params.locale}
+        cta={t.nav.cta}
+        ctaShort={t.nav.ctaShort}
+        moduleLabel={t.nav.moduleLabel}
+        active="module"
+      />
       <main>
         <section className="mx-auto max-w-6xl px-lg py-huge md:px-xl">
           <h1 className="text-display-section text-ink">{copy.indexHeading}</h1>
