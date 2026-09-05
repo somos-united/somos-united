@@ -2,35 +2,37 @@
 
 Referenz: `md/02-DEPLOYMENT.md` Abschnitt 2 & 8. Diese Checkliste ist für Danny (Ausführung) — jeder Account wird neu und dediziert unter Somos United angelegt, nie unter privaten oder Agentur-Accounts.
 
+**Audit 2026-09-05:** Danny stellte fest, dass mehrere Zeilen hier als "offen" markiert waren, obwohl der jeweilige Account/Service längst lief (z.B. Vercel, Supabase, Sanity) — Claude hatte das nicht konsequent nachgetragen, als die Arbeit tatsächlich passierte. Diese Version wurde Zeile für Zeile gegen den echten Live-Zustand geprüft (Vercel-/Supabase-/Sanity-API direkt abgefragt, nicht nur angenommen), nicht nur gegen die eigene Erinnerung. **Regel ab jetzt: nach jedem Account-Setup-Schritt sofort hier nachtragen, nicht erst wenn es auffällt.**
+
 **Vorher einmalig klären:**
-- [ ] `somosunited.ch` registriert? (Domain-Registrierung ist Voraussetzung für `tech@somosunited.ch` und alle Subdomains)
-- [ ] `tech@somosunited.ch` bei CYON eingerichtet (Account-Halter-E-Mail für alle Signups unten)
-- [ ] Rechnungsadresse/Billing-Entität bei jedem kostenpflichtigen Dienst: **Verein Somos United** (nicht Privatperson, nicht Agentur)
-- [ ] 2FA ist auf **jedem** Account unten Pflicht, nicht optional
+- [x] `somosunited.ch` registriert — live, DNS zeigt auf Vercel.
+- [x] `tech@somosunited.ch` eingerichtet — wird produktiv für GitHub/Google/etc. genutzt.
+- [x] Rechnungsadresse/Billing-Entität **Verein Somos United** — durchgängig so verwendet.
+- [ ] 2FA auf **jedem** Account — nicht einzeln durchgeprüft, keine API-Möglichkeit das von aussen zu verifizieren. Danny bitte selbst stichprobenartig prüfen.
 
 ## Reihenfolge (praktisch)
 
 ### 1. Passwort-Manager zuerst
-- [ ] **Bitwarden Free Organization** — 2 Personen (Danny + 1). Alle folgenden Zugangsdaten sofort hier eintragen, nicht in Notizen/Mail zwischenlagern.
+- [ ] **Bitwarden Free Organization** — Status nicht verifiziert, keine API-Zugriffsmöglichkeit. Danny bitte bestätigen.
 
 ### 2. Code & Hosting
-- [x] **GitHub** — Organisation `somos-united` (nicht privates Repo). Erledigt 2026-08-25: Org unter `github.com/somos-united`, Rechtsträger "Verein Somos United", Login `tech@somosunited.ch`. Repo `somos-united/somos-united` erstellt und gepusht, CI grün.
-- [ ] **Vercel** — Team-Account, mit GitHub-Org verknüpfen (ermöglicht automatische Preview-Deploys pro PR)
+- [x] **GitHub** — Org `github.com/somos-united`, Repo `somos-united/somos-united`, Login `tech@somosunited.ch`. Erledigt 2026-08-25, seither durchgängig in Benutzung (jeder Deploy dieses Projekts läuft darüber).
+- [x] **Vercel** — Team "Somos United" (`team_XboM1yeeo6MFV8WKSffCHwBe`), mit GitHub-Org verknüpft. Drei Projekte: `somos-united-web` (live, `www.somosunited.ch`), `somos-united-admin`, `somos-united-trainer`. **War hier fälschlich als offen markiert** — lief bereits seit Wochen aktiv, nur nie nachgetragen.
 
 ### 3. Daten & Content
-- [ ] **Supabase** — Organisation, Projekt-Region **Zürich (`eu-central-2`)** explizit wählen
-- [ ] **Sanity** — Organisation, Plan **Free** zum Start
+- [x] **Supabase** — Projekt "Somos United Project" (`rrxgnhvhykapnrtzfsoy`), Region **Zürich (`eu-central-2`)** ✓, Status ACTIVE_HEALTHY, Postgres 17.6. **Vollständiges Schema bereits live** — alle 36 Tabellen aus `03-DATA-MODEL.md` (Buchung, Trainer, CRM, Finance — nicht nur die aktuelle Phase) existieren seit der Migration `init_schema` vom **2026-08-26**, inhaltlich 1:1 gegen die Doku geprüft (2026-09-05) und korrekt. **War hier fälschlich als offen markiert.** Noch zu prüfen/tun: `app_settings`-Default-Werte (z.B. `scarcity_seats_threshold_default`) noch nicht auf tatsächliche Zeilen geprüft; noch keine echten Datensätze (`locations` z.B. 0 Zeilen) — nichts zum Buchen vorhanden, bis mindestens ein Standort/eine Kursserie angelegt ist.
+- [x] **Sanity** — Projekt "Somos United" (`ydbo6w2y`), erstellt 2026-08-25, Schema live seit 2026-09-01 (siehe `project_phase0_sanity_deployed`). **War hier fälschlich als offen markiert.**
 
 ### 4. Netzwerk & Sicherheit
-- [ ] **Cloudflare** — Account (DNS-Zone erst aufschaltbar, sobald Domain registriert ist)
+- [ ] **Cloudflare** — bestätigt **nicht** aufgesetzt (direkt per DNS-Abfrage geprüft 2026-09-04: Nameserver zeigen auf Vercel, kein Cloudflare). Von Danny bewusst pausiert 2026-09-04 ("wir warten ein, zwei Tage").
 
 ### 5. Zahlungen & Kommunikation
-- [ ] **Stripe** — Account, Verein als Rechtsträger hinterlegen
+- [x] **Stripe** — von Danny bestätigt eingerichtet 2026-09-05. **Nicht** über die Stripe-API gegengeprüft — der Stripe-MCP-Connector braucht eine Re-Autorisierung (`claude mcp` / `/mcp`), bisher nicht durchgeführt. Checkout-Code ist noch nicht geschrieben.
 - [x] **Resend (transaktional)** — Domain `mail.somosunited.ch` verifiziert seit 2026-08-27 (Sending enabled). `RESEND_API_KEY` erzeugt und mit echtem Test-Versand (`pnpm test:resend-email`) verifiziert 2026-09-04, aktuell in Vercel-Projekt **Admin** eingetragen (nicht Web — beide brauchen ihn später separat, siehe `packages/lib/src/resend.ts`). Resend Inbound (Receiving, für `email_messages`/Kunden-E-Mail-Verlauf, `07-MODULE-CRM.md` Abschnitt 4) noch nicht aktiviert — separate spätere Ausbaustufe.
 - [x] ~~Twilio~~ — **Blacklisted 2026-09-03, dauerhaft ausgeschlossen** (Danny: schwierig, ignoriert Schweizer Recht, kompliziertes Setup — siehe die Trust-Hub-Compliance-Odyssee vom 2026-09-01/02). Twilio-Konto/Absender bleiben ungenutzt stehen, kein weiterer Aufwand hier. Auth Token nicht rotiert (war versehentlich im Chat sichtbar) — egal, Konto wird nicht mehr verwendet.
 - [x] **Bird (SMS)** — Account unter Somos United angelegt (`tech@somosunited.ch`), Pay-as-you-go, Wallet aufgeladen. `BIRD_API_KEY` in Vercel (Production) eingetragen und mit echtem Test-Versand (`pnpm test:bird-sms`) verifiziert 2026-09-04. Alphanumerische SMS-Absender-ID "SOMOSUnited" (11 Zeichen, Bird-Maximum) unter SMS → Senders eingerichtet 2026-09-04.
-- [ ] **Bird (WhatsApp)** — separat von SMS, noch offen: Meta Business Manager + WhatsApp Business Account (WABA) für "Verein Somos United" verifizieren, dann `BIRD_WHATSAPP_FROM` (Absendernummer, E.164-Format) in Vercel eintragen.
-- [ ] **Notion** — dedizierter Workspace, **nicht** geteilt mit anderen Projekten
+- [ ] **Bird (WhatsApp)** — separat von SMS, bewusst pausiert 2026-09-04 auf Dannys Wunsch. Noch offen, sobald wieder aufgenommen: Meta Business Manager + WhatsApp Business Account (WABA) für "Verein Somos United" verifizieren, dann `BIRD_WHATSAPP_FROM` (Absendernummer, E.164-Format) in Vercel eintragen.
+- [ ] **Notion** — Status nicht verifiziert, kein MCP-Zugriff in dieser Session geprüft. Danny bitte bestätigen, ob der dedizierte Workspace existiert.
 
 ### 6. Security-Scanning (CI)
 - [x] **Snyk** — Org "Somos United Switzerland" verbunden mit `somos-united/somos-united`, alle 9 package.json-Manifeste im Monorepo importiert (root, packages/*, apps/web+trainer+admin, studio) 2026-09-01. `turbo.json`-Importfehler ist unschädlich (kein Dependency-Manifest, wird ignoriert). Snyk öffnete automatisch 3 Fix-PRs (next 14.2.15 → 14.2.35, behebt 3 kritische CVEs pro App: Improper Authorization, Directory Traversal, Insecure Automated Optimizations). Alle 3 PRs hatten eine veraltete `pnpm-lock.yaml` (Snyk aktualisiert nur `package.json`, nicht das Lockfile) — lokal gefixt und gepusht, jetzt alle CI-Checks grün (Lint/Typecheck/Test/Build, E2E, Snyk, Socket, Vercel). PRs #1 (trainer), #2 (web), #3 (admin) bereit zum Mergen, wartet auf Danny. Socket- und Snyk-Status-Checks sind jetzt für die Branch-Protection-Regel auswählbar (liefen auf diesen PRs) — **noch zu tun:** in GitHub Branch-Protection-Regel als required hinzufügen.
