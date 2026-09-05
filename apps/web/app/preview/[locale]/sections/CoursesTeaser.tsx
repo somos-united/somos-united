@@ -1,6 +1,9 @@
 import { ArrowRight, Check, Clock, UsersThree } from "@phosphor-icons/react/ssr";
+import Link from "next/link";
 
 import type { ModuleCategory } from "@somos/types";
+
+import type { Locale } from "@/lib/locales";
 
 export interface CourseCardData {
   category: string;
@@ -10,6 +13,14 @@ export interface CourseCardData {
   price: string;
   advantages: string[];
   fomo?: { kind: "scarcity" | "urgency"; label: string };
+  /**
+   * Slug of a real /book/[slug] page, if one's been built for this
+   * course yet (only "medienkompetenz-basiskurs" so far - one template
+   * built well before replicating to the rest, see book/copy.ts).
+   * Undefined means the CTA stays a plain non-navigating button rather
+   * than link to a page that doesn't exist.
+   */
+  bookingSlug?: string;
 }
 
 /**
@@ -25,7 +36,49 @@ export interface CourseCardData {
  *   eyebrow, no price, no bullets. Pure visual impulse-click, closest to
  *   the original ModuleBento treatment above it on the homepage.
  */
-export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta: string }) {
+
+/**
+ * Shared CTA for all three card expressions: a real link once
+ * course.bookingSlug + locale are both available, otherwise a plain
+ * non-navigating button (most courses don't have a /book page built
+ * yet). One place to keep this logic instead of tripling it.
+ */
+function CourseCta({
+  course,
+  cta,
+  locale,
+  className,
+}: {
+  course: CourseCardData;
+  cta: string;
+  locale?: Locale;
+  className: string;
+}) {
+  if (course.bookingSlug && locale) {
+    return (
+      <Link href={`/preview/${locale}/book/${course.bookingSlug}`} className={className}>
+        {cta}
+        <ArrowRight size={16} weight="bold" aria-hidden />
+      </Link>
+    );
+  }
+  return (
+    <button type="button" className={className}>
+      {cta}
+      <ArrowRight size={16} weight="bold" aria-hidden />
+    </button>
+  );
+}
+
+export function CourseCardDetail({
+  course,
+  cta,
+  locale,
+}: {
+  course: CourseCardData;
+  cta: string;
+  locale?: Locale;
+}) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
       <div className="relative flex min-h-[200px] flex-1 items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
@@ -70,20 +123,27 @@ export function CourseCardDetail({ course, cta }: { course: CourseCardData; cta:
 
         <div className="mt-lg flex items-center justify-between gap-md">
           <span className="text-heading-lg text-ink">{course.price}</span>
-          <button
-            type="button"
+          <CourseCta
+            course={course}
+            cta={cta}
+            locale={locale}
             className="inline-flex items-center gap-xs rounded-pill bg-primary px-lg py-xs text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            {cta}
-            <ArrowRight size={16} weight="bold" aria-hidden />
-          </button>
+          />
         </div>
       </div>
     </div>
   );
 }
 
-export function CourseCardQuick({ course, cta }: { course: CourseCardData; cta: string }) {
+export function CourseCardQuick({
+  course,
+  cta,
+  locale,
+}: {
+  course: CourseCardData;
+  cta: string;
+  locale?: Locale;
+}) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
       <div className="relative flex min-h-[200px] flex-1 items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
@@ -114,20 +174,27 @@ export function CourseCardQuick({ course, cta }: { course: CourseCardData; cta: 
 
         <div className="mt-lg flex items-center justify-between gap-md">
           <span className="text-heading-lg text-ink">{course.price}</span>
-          <button
-            type="button"
+          <CourseCta
+            course={course}
+            cta={cta}
+            locale={locale}
             className="inline-flex items-center gap-xs rounded-pill bg-primary px-lg py-xs text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-          >
-            {cta}
-            <ArrowRight size={16} weight="bold" aria-hidden />
-          </button>
+          />
         </div>
       </div>
     </div>
   );
 }
 
-export function CourseCardTeaser({ course, cta }: { course: CourseCardData; cta: string }) {
+export function CourseCardTeaser({
+  course,
+  cta,
+  locale,
+}: {
+  course: CourseCardData;
+  cta: string;
+  locale?: Locale;
+}) {
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-hairline">
       <div className="relative flex min-h-[200px] flex-1 items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">
@@ -152,13 +219,12 @@ export function CourseCardTeaser({ course, cta }: { course: CourseCardData; cta:
 
       <div className="flex flex-col gap-md p-lg">
         <h3 className="text-heading-lg text-ink">{course.title}</h3>
-        <button
-          type="button"
+        <CourseCta
+          course={course}
+          cta={cta}
+          locale={locale}
           className="inline-flex w-full items-center justify-center gap-xs rounded-pill bg-primary px-lg py-sm text-button text-on-primary transition-colors hover:bg-primary-press focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          {cta}
-          <ArrowRight size={16} weight="bold" aria-hidden />
-        </button>
+        />
       </div>
     </div>
   );
@@ -191,11 +257,13 @@ export function CoursesTeaser({
   subtext,
   courses,
   cta,
+  locale,
 }: {
   heading: string;
   subtext: string;
   courses: CourseCardData[];
   cta: string;
+  locale?: Locale;
 }) {
   return (
     <section className="mx-auto max-w-6xl px-lg py-huge md:px-xl">
@@ -204,7 +272,7 @@ export function CoursesTeaser({
 
       <div className="mt-xl grid grid-cols-1 gap-lg md:grid-cols-3">
         {courses.map((course) => (
-          <CourseCardDetail key={course.title} course={course} cta={cta} />
+          <CourseCardDetail key={course.title} course={course} cta={cta} locale={locale} />
         ))}
       </div>
     </section>

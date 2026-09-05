@@ -152,6 +152,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
             "Austausch mit Gleichaltrigen",
           ],
           fomo: { kind: "scarcity", label: "Nur noch 3 Plätze" },
+          bookingSlug: "medienkompetenz-basiskurs",
         },
         {
           category: "Gewaltprävention",
@@ -354,6 +355,7 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
             "Connect with peers",
           ],
           fomo: { kind: "scarcity", label: "Only 3 spots left" },
+          bookingSlug: "medienkompetenz-basiskurs",
         },
         {
           category: "Violence prevention",

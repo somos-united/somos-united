@@ -133,6 +133,7 @@ export default function ModuleDetailPage({
             subtext={isMixed ? copy.detailCoursesMixedSubtext : copy.detailCoursesSubtext}
             courses={displayedCourses}
             cta={t.courses.cta}
+            locale={params.locale}
           />
         ) : (
           <section className="mx-auto max-w-6xl px-lg py-huge md:px-xl">

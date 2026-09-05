@@ -54,6 +54,7 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
           subtext={t.courses.subtext}
           courses={t.courses.items}
           cta={t.courses.cta}
+          locale={params.locale}
         />
         <ProcessStrip heading={t.process.heading} steps={t.process.steps} />
         <QuoteBlock
