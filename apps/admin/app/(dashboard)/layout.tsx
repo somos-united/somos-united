@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { href: "/", label: "Übersicht" },
   { href: "/locations", label: "Standorte" },
   { href: "/courses", label: "Kurse" },
+  { href: "/team", label: "Team" },
 ];
 
 export default async function DashboardLayout({

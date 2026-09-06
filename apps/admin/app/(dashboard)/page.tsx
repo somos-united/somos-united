@@ -23,6 +23,14 @@ export default function AdminHomePage() {
             </p>
           </GlassPanel>
         </Link>
+        <Link href="/team">
+          <GlassPanel className="flex flex-col gap-xs p-lg hover:bg-canvas-lavender">
+            <h2 className="text-heading-md text-ink">Team</h2>
+            <p className="text-body text-ink-secondary">
+              Rollen der Team-Mitglieder verwalten (braucht die users-Berechtigung).
+            </p>
+          </GlassPanel>
+        </Link>
       </div>
     </div>
   );
