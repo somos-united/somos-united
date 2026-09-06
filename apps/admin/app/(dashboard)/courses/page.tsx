@@ -3,15 +3,15 @@ import Link from "next/link";
 import { ButtonPrimaryPill, GlassPanel, TextInput } from "@somos/ui";
 
 import { getSupabaseServerClient } from "../../../lib/supabase/server";
-import { createCourseSeries } from "./actions";
+import { createCourseSeries, deleteCourseSeries, updateCourseSeries } from "./actions";
 
 interface SeriesRow {
   id: string;
   module_ref: string;
+  location_id: string | null;
   cadence_label: string | null;
   abo_enabled: boolean;
   fomo_enabled: boolean;
-  locations: { name: string } | null;
 }
 
 interface LocationOption {
@@ -23,9 +23,9 @@ async function getCourseSeries(): Promise<SeriesRow[]> {
   const supabase = getSupabaseServerClient();
   const { data } = await supabase
     .from("course_series")
-    .select("id, module_ref, cadence_label, abo_enabled, fomo_enabled, locations ( name )")
+    .select("id, module_ref, location_id, cadence_label, abo_enabled, fomo_enabled")
     .order("created_at", { ascending: false });
-  return (data as unknown as SeriesRow[]) ?? [];
+  return data ?? [];
 }
 
 async function getLocationOptions(): Promise<LocationOption[]> {
@@ -34,20 +34,55 @@ async function getLocationOptions(): Promise<LocationOption[]> {
   return data ?? [];
 }
 
+const STATUS_MESSAGES: Record<string, string> = {
+  saved: "Kursserie gespeichert.",
+  updated: "Änderungen gespeichert.",
+  deleted: "Kursserie gelöscht.",
+};
+
+function LocationSelect({
+  locations,
+  defaultValue,
+}: {
+  locations: LocationOption[];
+  defaultValue: string;
+}) {
+  return (
+    <select
+      name="location_id"
+      defaultValue={defaultValue}
+      className="w-full rounded-sm border border-hairline bg-canvas px-md py-sm text-body text-ink focus:border-primary focus:outline-none"
+    >
+      <option value="">— kein Standort —</option>
+      {locations.map((location) => (
+        <option key={location.id} value={location.id}>
+          {location.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+
 export default async function CoursesPage({
   searchParams,
 }: {
   searchParams: { status?: string };
 }) {
   const [series, locations] = await Promise.all([getCourseSeries(), getLocationOptions()]);
+  const status = searchParams.status;
 
   return (
     <div className="flex flex-col gap-lg">
       <h1 className="text-heading-lg text-ink">Kurse</h1>
 
-      {searchParams.status === "saved" && (
+      {status && status !== "error" && STATUS_MESSAGES[status] && (
         <p className="rounded-sm bg-status-good-bg px-md py-sm text-body text-status-good-text">
-          Kursserie gespeichert.
+          {STATUS_MESSAGES[status]}
+        </p>
+      )}
+      {status === "error" && (
+        <p className="rounded-sm bg-status-critical-bg px-md py-sm text-body text-status-critical-text">
+          Das hat nicht geklappt. Bitte erneut versuchen.
         </p>
       )}
 
@@ -58,23 +93,44 @@ export default async function CoursesPage({
           </p>
         )}
         {series.map((s) => (
-          <Link key={s.id} href={`/courses/${s.id}`}>
-            <GlassPanel className="flex flex-col gap-xs p-md hover:bg-canvas-lavender">
-              <div className="flex items-baseline justify-between">
-                <span className="text-body font-medium text-ink">{s.module_ref}</span>
-                {s.cadence_label && (
-                  <span className="text-caption-lg text-ink-mute">{s.cadence_label}</span>
-                )}
+          <GlassPanel key={s.id} className="flex flex-col gap-sm p-md">
+            <Link href={`/courses/${s.id}`} className="text-caption-lg text-primary underline">
+              Termine &amp; Preise verwalten →
+            </Link>
+            <form action={updateCourseSeries} className="flex flex-col gap-sm">
+              <input type="hidden" name="id" value={s.id} />
+              <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
+                Sanity module_ref
+                <TextInput name="module_ref" defaultValue={s.module_ref} required />
+              </label>
+              <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
+                Standort
+                <LocationSelect locations={locations} defaultValue={s.location_id ?? ""} />
+              </label>
+              <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
+                Rhythmus (nur informativ)
+                <TextInput name="cadence_label" defaultValue={s.cadence_label ?? ""} />
+              </label>
+              <label className="flex items-center gap-xs text-caption-lg text-ink-secondary">
+                <input type="checkbox" name="fomo_enabled" defaultChecked={s.fomo_enabled} />
+                FOMO-Pills anzeigen (Knappheit/Dringlichkeit)
+              </label>
+              <label className="flex items-center gap-xs text-caption-lg text-ink-secondary">
+                <input type="checkbox" name="abo_enabled" defaultChecked={s.abo_enabled} />
+                Abo-Buchung erlauben (6x/12x/24x)
+              </label>
+              <div className="flex items-center gap-sm">
+                <ButtonPrimaryPill type="submit">Speichern</ButtonPrimaryPill>
+                <button
+                  type="submit"
+                  formAction={deleteCourseSeries}
+                  className="text-caption-lg text-status-critical-text underline underline-offset-2"
+                >
+                  Löschen
+                </button>
               </div>
-              <span className="text-caption-lg text-ink-secondary">
-                {s.locations?.name ?? "Kein Standort zugewiesen"}
-                {" · "}
-                {s.fomo_enabled ? "FOMO-Pills an" : "FOMO-Pills aus"}
-                {" · "}
-                {s.abo_enabled ? "Abo möglich" : "Nur Einzelbuchung"}
-              </span>
-            </GlassPanel>
-          </Link>
+            </form>
+          </GlassPanel>
         ))}
       </div>
 
@@ -91,17 +147,7 @@ export default async function CoursesPage({
           </label>
           <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
             Standort
-            <select
-              name="location_id"
-              className="w-full rounded-sm border border-hairline bg-canvas px-md py-sm text-body text-ink focus:border-primary focus:outline-none"
-            >
-              <option value="">— kein Standort —</option>
-              {locations.map((location) => (
-                <option key={location.id} value={location.id}>
-                  {location.name}
-                </option>
-              ))}
-            </select>
+            <LocationSelect locations={locations} defaultValue="" />
           </label>
           <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
             Rhythmus (nur informativ)
