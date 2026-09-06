@@ -19,3 +19,9 @@ export type { TextInputProps } from "./components/TextInput";
 
 export { GlassPanel } from "./components/GlassPanel";
 export type { GlassPanelProps } from "./components/GlassPanel";
+
+export { StatusBadge } from "./components/StatusBadge";
+export type { StatusBadgeProps, StatusBadgeTone } from "./components/StatusBadge";
+
+export { KpiTile } from "./components/KpiTile";
+export type { KpiTileProps } from "./components/KpiTile";

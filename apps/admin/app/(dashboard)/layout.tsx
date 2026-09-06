@@ -1,16 +1,8 @@
-import Link from "next/link";
-
 import { ButtonSecondary, GlassPanel } from "@somos/ui";
 
 import { getCurrentProfile } from "../../lib/current-profile";
 import { signOut } from "./actions";
-
-const NAV_ITEMS = [
-  { href: "/", label: "Übersicht" },
-  { href: "/locations", label: "Standorte" },
-  { href: "/courses", label: "Kurse" },
-  { href: "/team", label: "Team" },
-];
+import { SidebarNav } from "./sidebar-nav";
 
 export default async function DashboardLayout({
   children,
@@ -41,25 +33,24 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-canvas-soft">
-      <header className="flex items-center justify-between border-b border-hairline bg-canvas px-lg py-sm">
-        <nav className="flex gap-lg">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-body text-ink-secondary hover:text-ink"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <form action={signOut} className="flex items-center gap-sm">
-          <span className="text-body text-ink-mute">{profile.email}</span>
-          <ButtonSecondary type="submit">Abmelden</ButtonSecondary>
-        </form>
-      </header>
-      <main className="mx-auto max-w-3xl px-lg py-xl">{children}</main>
+    <div className="flex min-h-screen bg-canvas-soft">
+      <aside className="flex w-64 shrink-0 flex-col justify-between border-r border-hairline bg-canvas p-lg">
+        <div className="flex flex-col gap-xl">
+          <span className="text-heading-md text-ink">Somos United</span>
+          <SidebarNav />
+        </div>
+        <div className="flex flex-col gap-sm border-t border-hairline pt-md">
+          <span className="truncate text-caption text-ink-mute">{profile.email}</span>
+          <form action={signOut}>
+            <ButtonSecondary type="submit" className="w-full">
+              Abmelden
+            </ButtonSecondary>
+          </form>
+        </div>
+      </aside>
+      <main className="flex-1 overflow-y-auto px-xl py-xl">
+        <div className="mx-auto max-w-3xl">{children}</div>
+      </main>
     </div>
   );
 }

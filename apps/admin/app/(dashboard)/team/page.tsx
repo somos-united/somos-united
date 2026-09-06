@@ -1,4 +1,4 @@
-import { ButtonPrimaryPill, GlassPanel } from "@somos/ui";
+import { ButtonPrimaryPill } from "@somos/ui";
 
 import { getSupabaseServerClient } from "../../../lib/supabase/server";
 import { updateTeamMemberRole } from "./actions";
@@ -21,13 +21,13 @@ export default async function TeamPage() {
     return (
       <div className="flex flex-col gap-md">
         <h1 className="text-heading-lg text-ink">Team</h1>
-        <GlassPanel className="p-lg">
+        <div className="rounded-lg border border-hairline bg-canvas p-lg">
           <p className="text-body text-ink-secondary">
             Dein Account hat aktuell keine Berechtigung, andere Nutzer zu verwalten (dafür ist die
             separate <code>users</code>-Berechtigung nötig, unabhängig von der Admin-Rolle). Bitte
             einen Admin mit dieser Berechtigung bitten.
           </p>
-        </GlassPanel>
+        </div>
       </div>
     );
   }
@@ -39,7 +39,10 @@ export default async function TeamPage() {
       <h1 className="text-heading-lg text-ink">Team</h1>
       <div className="flex flex-col gap-sm">
         {members.map((member) => (
-          <GlassPanel key={member.id} className="flex items-center justify-between gap-md p-md">
+          <div
+            key={member.id}
+            className="flex items-center justify-between gap-md rounded-lg border border-hairline bg-canvas p-md"
+          >
             <div className="flex flex-col">
               <span className="text-body text-ink">{member.email}</span>
               {member.permissions.length > 0 && (
@@ -63,7 +66,7 @@ export default async function TeamPage() {
               </select>
               <ButtonPrimaryPill type="submit">Speichern</ButtonPrimaryPill>
             </form>
-          </GlassPanel>
+          </div>
         ))}
       </div>
     </div>

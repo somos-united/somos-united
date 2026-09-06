@@ -13,6 +13,7 @@
     "clean": "rm -rf .next .turbo"
   },
   "dependencies": {
+    "@phosphor-icons/react": "2.1.10",
     "@somos/ui": "workspace:*",
     "@supabase/ssr": "^0.12.6",
     "@supabase/supabase-js": "^2.115.0",

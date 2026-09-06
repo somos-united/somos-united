@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ButtonPrimaryPill, GlassPanel, TextInput } from "@somos/ui";
+import { ButtonPrimaryPill, TextInput } from "@somos/ui";
 
 import { getSupabaseServerClient } from "../../../lib/supabase/server";
 import { createCourseSeries, deleteCourseSeries, updateCourseSeries } from "./actions";
@@ -93,7 +93,7 @@ export default async function CoursesPage({
           </p>
         )}
         {series.map((s) => (
-          <GlassPanel key={s.id} className="flex flex-col gap-sm p-md">
+          <div key={s.id} className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-md">
             <Link href={`/courses/${s.id}`} className="text-caption-lg text-primary underline">
               Termine &amp; Preise verwalten →
             </Link>
@@ -130,11 +130,11 @@ export default async function CoursesPage({
                 </button>
               </div>
             </form>
-          </GlassPanel>
+          </div>
         ))}
       </div>
 
-      <GlassPanel className="flex flex-col gap-sm p-lg">
+      <div className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-lg">
         <h2 className="text-heading-md text-ink">Neue Kursserie</h2>
         <p className="text-caption-lg text-ink-mute">
           `module_ref` ist die Sanity-Dokument-ID des Kursinhalts (Text/Bilder kommen von dort,
@@ -165,7 +165,7 @@ export default async function CoursesPage({
             Kursserie speichern
           </ButtonPrimaryPill>
         </form>
-      </GlassPanel>
+      </div>
     </div>
   );
 }

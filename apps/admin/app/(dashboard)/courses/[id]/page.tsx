@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-import { ButtonPrimaryPill, GlassPanel, TextInput } from "@somos/ui";
+import { ButtonPrimaryPill, TextInput } from "@somos/ui";
 
 import { getSupabaseServerClient } from "../../../../lib/supabase/server";
 import {
@@ -176,7 +176,7 @@ export default async function CourseSeriesDetailPage({
           <p className="text-body text-ink-secondary">Noch keine Termine angelegt.</p>
         )}
         {instances.map((instance) => (
-          <GlassPanel key={instance.id} className="flex flex-col gap-sm p-md">
+          <div key={instance.id} className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-md">
             <form action={updateInstanceForSeries} className="flex flex-col gap-sm">
               <input type="hidden" name="id" value={instance.id} />
               <div className="grid grid-cols-1 gap-sm sm:grid-cols-3">
@@ -224,10 +224,10 @@ export default async function CourseSeriesDetailPage({
                 </button>
               </div>
             </form>
-          </GlassPanel>
+          </div>
         ))}
 
-        <GlassPanel className="flex flex-col gap-sm p-lg">
+        <div className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-lg">
           <h3 className="text-heading-md text-ink">Neuer Termin</h3>
           <form action={createInstanceForSeries} className="flex flex-col gap-sm">
             <input type="hidden" name="module_ref" value={series.module_ref} />
@@ -251,7 +251,7 @@ export default async function CourseSeriesDetailPage({
               Termin speichern
             </ButtonPrimaryPill>
           </form>
-        </GlassPanel>
+        </div>
       </section>
 
       <section className="flex flex-col gap-sm">
@@ -260,7 +260,7 @@ export default async function CourseSeriesDetailPage({
           <p className="text-body text-ink-secondary">Noch keine Preisstaffel angelegt.</p>
         )}
         {priceTiers.map((tier) => (
-          <GlassPanel key={tier.id} className="flex flex-col gap-sm p-md">
+          <div key={tier.id} className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-md">
             <form action={updatePriceTierForSeries} className="flex flex-col gap-sm">
               <input type="hidden" name="id" value={tier.id} />
               <div className="grid grid-cols-1 gap-sm sm:grid-cols-2">
@@ -324,10 +324,10 @@ export default async function CourseSeriesDetailPage({
                 </button>
               </div>
             </form>
-          </GlassPanel>
+          </div>
         ))}
 
-        <GlassPanel className="flex flex-col gap-sm p-lg">
+        <div className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-lg">
           <h3 className="text-heading-md text-ink">Neue Preisstufe</h3>
           <form action={createPriceTierForSeries} className="flex flex-col gap-sm">
             <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
@@ -363,7 +363,7 @@ export default async function CourseSeriesDetailPage({
               Preisstufe speichern
             </ButtonPrimaryPill>
           </form>
-        </GlassPanel>
+        </div>
       </section>
     </div>
   );

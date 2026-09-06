@@ -1,4 +1,4 @@
-import { ButtonPrimaryPill, GlassPanel, TextInput } from "@somos/ui";
+import { ButtonPrimaryPill, TextInput } from "@somos/ui";
 
 import { getSupabaseServerClient } from "../../../lib/supabase/server";
 import { createLocation, deleteLocation, updateLocation } from "./actions";
@@ -57,7 +57,10 @@ export default async function LocationsPage({
           </p>
         )}
         {locations.map((location) => (
-          <GlassPanel key={location.id} className="flex flex-col gap-sm p-md">
+          <div
+            key={location.id}
+            className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-md"
+          >
             <form action={updateLocation} className="flex flex-col gap-sm">
               <input type="hidden" name="id" value={location.id} />
               <div className="grid grid-cols-1 gap-sm sm:grid-cols-2">
@@ -104,11 +107,11 @@ export default async function LocationsPage({
                 </button>
               </div>
             </form>
-          </GlassPanel>
+          </div>
         ))}
       </div>
 
-      <GlassPanel className="flex flex-col gap-sm p-lg">
+      <div className="flex flex-col gap-sm rounded-lg border border-hairline bg-canvas p-lg">
         <h2 className="text-heading-md text-ink">Neuer Standort</h2>
         <form action={createLocation} className="flex flex-col gap-sm">
           <label className="flex flex-col gap-xs text-caption-lg text-ink-secondary">
@@ -131,7 +134,7 @@ export default async function LocationsPage({
             Standort speichern
           </ButtonPrimaryPill>
         </form>
-      </GlassPanel>
+      </div>
     </div>
   );
 }
