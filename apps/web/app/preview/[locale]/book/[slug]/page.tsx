@@ -8,41 +8,43 @@ import type { Locale } from "@/lib/locales";
 import { HOME_COPY } from "../../copy";
 import { Nav } from "../../sections/Nav";
 import { SiteFooter } from "../../sections/SiteFooter";
-import { BOOKING_PAGE_CHROME, BOOKING_PAGES, type PlanOption } from "../copy";
+import { BOOKING_PAGE_CHROME, type PlanOption } from "../copy";
 import { activeTier, daysUntil, formatDateLabel, formatPrice, formatShortDate, spotsLeft, tierEndDate } from "../pricing";
+import { getBookingPageData } from "./data";
 
 /**
  * Rendered per-request, not statically pre-rendered - the whole point
  * of this page is a price that's correctly computed against *today's*
- * date (05-MODULE-BOOKING.md §5's "airline principle"). A static build
- * would freeze the wrong tier the moment a real day passes.
+ * date (05-MODULE-BOOKING.md §5's "airline principle"), and instance
+ * availability that reflects the real database, not a build-time
+ * snapshot.
  */
 export const dynamic = "force-dynamic";
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { locale: Locale; slug: string };
-}): Metadata {
-  const page = BOOKING_PAGES[params.locale][params.slug];
+}): Promise<Metadata> {
+  const page = await getBookingPageData(params.slug, params.locale);
   if (!page) return {};
   return { title: page.courseTitle };
 }
 
-export default function BookingPage({
+export default async function BookingPage({
   params,
 }: {
   params: { locale: Locale; slug: string };
 }) {
   const t = HOME_COPY[params.locale];
   const chrome = BOOKING_PAGE_CHROME[params.locale];
-  const page = BOOKING_PAGES[params.locale][params.slug];
+  const page = await getBookingPageData(params.slug, params.locale);
   if (!page) {
     notFound();
   }
 
   const today = new Date();
-  const firstInstance = page.instances[0]!;
+  const firstInstance = page.instances[0];
 
   return (
     <>
@@ -67,28 +69,44 @@ export default function BookingPage({
             {chrome.backToModule}
           </Link>
 
-          <span className="mt-lg block text-caption text-ink-mute">
-            {page.category} · {page.cadenceLabel}, {page.location}
-          </span>
+          {(page.cadenceLabel || page.locationName) && (
+            <span className="mt-lg block text-caption text-ink-mute">
+              {[page.cadenceLabel, page.locationName].filter(Boolean).join(" · ")}
+            </span>
+          )}
           <h1 className="mt-xs text-display-hero text-ink">{page.courseTitle}</h1>
+          {page.description && (
+            <p className="mt-md max-w-[65ch] whitespace-pre-line text-body text-ink-secondary">
+              {page.description}
+            </p>
+          )}
         </section>
 
         <section className="mx-auto max-w-4xl px-lg py-xl md:px-xl">
           <h2 className="text-heading-lg text-ink">{chrome.instancesHeading}</h2>
           <div className="mt-md flex flex-col gap-xs">
+            {page.instances.length === 0 && (
+              <p className="text-body text-ink-secondary">
+                {params.locale === "de"
+                  ? "Aktuell keine Termine geplant."
+                  : "No dates currently scheduled."}
+              </p>
+            )}
             {page.instances.map((instance) => {
               const remaining = spotsLeft(instance);
               const showScarcity = page.fomoEnabled && remaining <= page.scarcitySeatsThreshold;
               return (
                 <div
-                  key={instance.isoDate}
+                  key={instance.id}
                   className="flex items-center justify-between rounded-lg border border-hairline px-lg py-md"
                 >
                   <div>
                     <span className="text-body text-ink">
                       {formatDateLabel(instance.isoDate, params.locale)}
                     </span>
-                    <span className="ml-sm text-caption text-ink-mute">{instance.time}</span>
+                    <span className="ml-sm text-caption text-ink-mute">
+                      {instance.startTime}–{instance.endTime}
+                    </span>
                   </div>
                   {showScarcity && (
                     <span className="inline-flex items-center gap-xxs rounded-pill bg-accent-coral px-md py-xxs text-caption text-on-primary">
@@ -102,23 +120,25 @@ export default function BookingPage({
           </div>
         </section>
 
-        <section className="mx-auto max-w-4xl px-lg pb-xl md:px-xl">
-          <h2 className="text-heading-lg text-ink">{chrome.plansHeading}</h2>
-          <div className="mt-md grid grid-cols-1 gap-lg md:grid-cols-2">
-            {page.plans.map((plan) => (
-              <PlanCard
-                key={plan.planType}
-                plan={plan}
-                referenceIsoDate={firstInstance.isoDate}
-                today={today}
-                locale={params.locale}
-                fomoEnabled={page.fomoEnabled}
-                priceValidUntilLabel={chrome.priceValidUntilLabel}
-                ctaLabel={chrome.ctaLabel}
-              />
-            ))}
-          </div>
-        </section>
+        {firstInstance && page.plans.length > 0 && (
+          <section className="mx-auto max-w-4xl px-lg pb-xl md:px-xl">
+            <h2 className="text-heading-lg text-ink">{chrome.plansHeading}</h2>
+            <div className="mt-md grid grid-cols-1 gap-lg md:grid-cols-2">
+              {page.plans.map((plan) => (
+                <PlanCard
+                  key={plan.planType}
+                  plan={plan}
+                  referenceIsoDate={firstInstance.isoDate}
+                  today={today}
+                  locale={params.locale}
+                  fomoEnabled={page.fomoEnabled}
+                  priceValidUntilLabel={chrome.priceValidUntilLabel}
+                  ctaLabel={chrome.ctaLabel}
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="mx-auto max-w-4xl px-lg pb-huge md:px-xl">
           <div className="rounded-lg border border-hairline bg-canvas-soft p-xl">
@@ -168,7 +188,7 @@ function PlanCard({
 
       <div className="mt-lg flex items-baseline gap-xs">
         <span className="text-display-section text-ink">{formatPrice(tier.priceCents)}</span>
-        <span className="text-caption text-ink-mute">({tier.tierLabel})</span>
+        {tier.tierLabel && <span className="text-caption text-ink-mute">({tier.tierLabel})</span>}
       </div>
 
       {fomoEnabled && endDate && (

@@ -1,5 +1,6 @@
 import type { TypedObject } from "@portabletext/types";
 import { createClient } from "@sanity/client";
+import type { ModuleCategory } from "@somos/types";
 
 import type { Locale } from "./locales";
 
@@ -52,6 +53,33 @@ export async function getPageBySlug(
   return getSanityClient().fetch<SanityPageDoc | null>(
     `*[_type == "page" && slug.current == $slug && language == $language][0]{
       _id, title, sections
+    }`,
+    { slug, language },
+  );
+}
+
+export interface SanityModuleDoc {
+  _id: string;
+  title: string;
+  ageRange?: string;
+  category: ModuleCategory;
+  description: TypedObject[];
+}
+
+// The booking flow's content lives in Sanity's `module` documents (same
+// slug across locales, distinguished by `language` — matches
+// getPageBySlug's pattern above). `status == "published"` is the schema's
+// own editorial flag on top of Sanity's draft/publish mechanism, so a
+// module can exist and be published in Sanity but still be marked
+// "draft" content-wise while the editorial team works on it.
+export async function getModuleBySlug(
+  slug: string,
+  locale: Locale,
+): Promise<SanityModuleDoc | null> {
+  const language = SANITY_LANGUAGE_BY_LOCALE[locale];
+  return getSanityClient().fetch<SanityModuleDoc | null>(
+    `*[_type == "module" && slug.current == $slug && language == $language && status == "published"][0]{
+      _id, title, ageRange, category, description
     }`,
     { slug, language },
   );
