@@ -34,12 +34,22 @@ async function getLocationOptions(): Promise<LocationOption[]> {
   return data ?? [];
 }
 
-export default async function CoursesPage() {
+export default async function CoursesPage({
+  searchParams,
+}: {
+  searchParams: { status?: string };
+}) {
   const [series, locations] = await Promise.all([getCourseSeries(), getLocationOptions()]);
 
   return (
     <div className="flex flex-col gap-lg">
       <h1 className="text-heading-lg text-ink">Kurse</h1>
+
+      {searchParams.status === "saved" && (
+        <p className="rounded-sm bg-status-good-bg px-md py-sm text-body text-status-good-text">
+          Kursserie gespeichert.
+        </p>
+      )}
 
       <div className="flex flex-col gap-sm">
         {series.length === 0 && (

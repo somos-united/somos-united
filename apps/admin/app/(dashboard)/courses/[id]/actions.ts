@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { getSupabaseServerClient } from "../../../../lib/supabase/server";
 
@@ -25,7 +25,8 @@ export async function createInstance(seriesId: string, formData: FormData): Prom
     capacity: Number.parseInt(capacity, 10),
   });
 
-  revalidatePath(`/courses/${seriesId}`);
+  // redirect, not revalidatePath -- see locations/actions.ts's comment.
+  redirect(`/courses/${seriesId}?status=instance_saved`);
 }
 
 export async function createPriceTier(seriesId: string, formData: FormData): Promise<void> {
@@ -52,5 +53,5 @@ export async function createPriceTier(seriesId: string, formData: FormData): Pro
     label: typeof label === "string" && label.trim() !== "" ? label.trim() : null,
   });
 
-  revalidatePath(`/courses/${seriesId}`);
+  redirect(`/courses/${seriesId}?status=tier_saved`);
 }

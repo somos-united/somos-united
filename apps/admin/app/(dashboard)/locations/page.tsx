@@ -21,12 +21,22 @@ async function getLocations(): Promise<LocationRow[]> {
   return data ?? [];
 }
 
-export default async function LocationsPage() {
+export default async function LocationsPage({
+  searchParams,
+}: {
+  searchParams: { status?: string };
+}) {
   const locations = await getLocations();
 
   return (
     <div className="flex flex-col gap-lg">
       <h1 className="text-heading-lg text-ink">Standorte</h1>
+
+      {searchParams.status === "saved" && (
+        <p className="rounded-sm bg-status-good-bg px-md py-sm text-body text-status-good-text">
+          Standort gespeichert.
+        </p>
+      )}
 
       <div className="flex flex-col gap-sm">
         {locations.length === 0 && (

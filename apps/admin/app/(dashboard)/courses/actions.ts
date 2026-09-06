@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { getSupabaseServerClient } from "../../../lib/supabase/server";
 
@@ -25,5 +25,8 @@ export async function createCourseSeries(formData: FormData): Promise<void> {
     fomo_enabled: fomoEnabled,
   });
 
-  revalidatePath("/courses");
+  // redirect, not revalidatePath -- see the same comment in
+  // locations/actions.ts (resets the form, avoids inviting a duplicate
+  // submit that isn't obviously visible as having worked).
+  redirect("/courses?status=saved");
 }

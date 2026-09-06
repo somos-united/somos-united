@@ -75,8 +75,10 @@ async function getLocationOptions(): Promise<LocationOption[]> {
 
 export default async function CourseSeriesDetailPage({
   params,
+  searchParams,
 }: {
   params: { id: string };
+  searchParams: { status?: string };
 }) {
   const series = await getSeries(params.id);
   if (!series) notFound();
@@ -102,6 +104,17 @@ export default async function CourseSeriesDetailPage({
           {series.abo_enabled ? "Abo möglich" : "Nur Einzelbuchung"}
         </p>
       </div>
+
+      {searchParams.status === "instance_saved" && (
+        <p className="rounded-sm bg-status-good-bg px-md py-sm text-body text-status-good-text">
+          Termin gespeichert.
+        </p>
+      )}
+      {searchParams.status === "tier_saved" && (
+        <p className="rounded-sm bg-status-good-bg px-md py-sm text-body text-status-good-text">
+          Preisstufe gespeichert.
+        </p>
+      )}
 
       <section className="flex flex-col gap-sm">
         <h2 className="text-heading-md text-ink">Termine</h2>

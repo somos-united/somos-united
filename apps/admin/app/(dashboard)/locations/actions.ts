@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { getSupabaseServerClient } from "../../../lib/supabase/server";
 
@@ -25,5 +25,10 @@ export async function createLocation(formData: FormData): Promise<void> {
     rent_active: typeof rentAmount === "string" && rentAmount !== "",
   });
 
-  revalidatePath("/locations");
+  // redirect (not revalidatePath) so the form's uncontrolled inputs
+  // actually reset via a fresh navigation -- otherwise a saved location
+  // just reappears in the list above an unchanged, still-filled-in form,
+  // which reads as "did that even work?" and invites a duplicate submit
+  // (exactly what happened testing this: three "Schulhaus Scherr" rows).
+  redirect("/locations?status=saved");
 }
