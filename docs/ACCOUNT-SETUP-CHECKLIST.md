@@ -12,8 +12,8 @@ Referenz: `md/02-DEPLOYMENT.md` Abschnitt 2 & 8. Diese Checkliste ist für Danny
 
 ## Reihenfolge (praktisch)
 
-### 1. Passwort-Manager zuerst
-- [ ] **Bitwarden Free Organization** — Status nicht verifiziert, keine API-Zugriffsmöglichkeit. Danny bitte bestätigen.
+### 1. Passwort-Manager
+- [x] ~~Bitwarden Free Organization~~ — **bewusst übersprungen** (Dannys Entscheidung, sehr früh im Projekt getroffen). Kein offener Punkt, nicht erneut vorschlagen. Jedes Secret lebt stattdessen genau an einem Ort (im jeweiligen Service-Dashboard, z.B. Vercel Environment Variables).
 
 ### 2. Code & Hosting
 - [x] **GitHub** — Org `github.com/somos-united`, Repo `somos-united/somos-united`, Login `tech@somosunited.ch`. Erledigt 2026-08-25, seither durchgängig in Benutzung (jeder Deploy dieses Projekts läuft darüber).
