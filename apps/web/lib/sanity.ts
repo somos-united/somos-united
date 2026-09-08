@@ -27,7 +27,15 @@ function getSanityClient() {
     // No token: this reads only published content at request time, never
     // drafts — matches the "no auto-publish, someone reviews first" rule
     // (SECURITY.md §7) and needs no secret for a public marketing page.
-    useCdn: process.env.NODE_ENV === "production",
+    //
+    // useCdn deliberately false, including in production: caught live
+    // (2026-09-08) that Sanity's CDN endpoint can lag ~60s+ behind a
+    // fresh publish, which directly undermines the "content changes must
+    // actually be editable and show up" principle this whole content
+    // migration is built around. This site's traffic doesn't need CDN
+    // caching; guaranteed consistency matters more than the marginal
+    // speed/cost benefit here.
+    useCdn: false,
   });
 }
 
