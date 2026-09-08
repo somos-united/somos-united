@@ -31,6 +31,28 @@ function getSanityClient() {
   });
 }
 
+// Shared by every consumer that needs plain text out of a portable-text
+// field without pulling in a full portable-text renderer for what's
+// currently always plain paragraphs (no bold/links/lists yet). Returns
+// one string per block, so callers choose how to join them (separate
+// <p> tags vs. one blob) rather than baking that choice in here.
+export function portableTextToPlainParagraphs(blocks: TypedObject[]): string[] {
+  return blocks
+    .map((block) => {
+      if (typeof block !== "object" || block === null || !("children" in block)) return "";
+      const children = (block as { children?: unknown }).children;
+      if (!Array.isArray(children)) return "";
+      return children
+        .map((child) =>
+          typeof child === "object" && child !== null && "text" in child
+            ? String((child as { text?: unknown }).text ?? "")
+            : "",
+        )
+        .join("");
+    })
+    .filter((paragraph) => paragraph !== "");
+}
+
 export interface SanitySection {
   _key: string;
   heading?: string;
@@ -61,6 +83,7 @@ export async function getPageBySlug(
 export interface SanityModuleDoc {
   _id: string;
   title: string;
+  teaser?: string;
   ageRange?: string;
   category: ModuleCategory;
   description: TypedObject[];
@@ -79,8 +102,35 @@ export async function getModuleBySlug(
   const language = SANITY_LANGUAGE_BY_LOCALE[locale];
   return getSanityClient().fetch<SanityModuleDoc | null>(
     `*[_type == "module" && slug.current == $slug && language == $language && status == "published"][0]{
-      _id, title, ageRange, category, description
+      _id, title, teaser, ageRange, category, description
     }`,
     { slug, language },
   );
+}
+
+// The 6 module topic-overview documents (Medienkompetenz, Respekt, ...)
+// deliberately use slug == category (see getModuleBySlug's callers in the
+// module index/detail pages and the homepage) so this is really just
+// getModuleBySlug called 6× — a dedicated query is only worth it because
+// callers want all 6 in one shot, in a stable, known order.
+export async function getAllModuleTeasers(locale: Locale): Promise<SanityModuleDoc[]> {
+  const language = SANITY_LANGUAGE_BY_LOCALE[locale];
+  const modules = await getSanityClient().fetch<SanityModuleDoc[]>(
+    `*[_type == "module" && language == $language && status == "published" && slug.current == category]{
+      _id, title, teaser, ageRange, category, description
+    }`,
+    { language },
+  );
+
+  const order: ModuleCategory[] = [
+    "medienkompetenz",
+    "respekt",
+    "gewaltpraevention",
+    "psychische_belastung",
+    "orientierung",
+    "social_media",
+  ];
+  return order
+    .map((category) => modules.find((m) => m.category === category))
+    .filter((m): m is SanityModuleDoc => m !== undefined);
 }

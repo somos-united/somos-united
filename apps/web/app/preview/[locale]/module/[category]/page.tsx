@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import type { Locale } from "@/lib/locales";
+import { getAllModuleTeasers, getModuleBySlug, portableTextToPlainParagraphs } from "@/lib/sanity";
 
 import { HOME_COPY, MODULE_PAGE_COPY } from "../../copy";
 import { CoursesTeaser } from "../../sections/CoursesTeaser";
@@ -24,13 +25,12 @@ import { SiteFooter } from "../../sections/SiteFooter";
  */
 export const dynamic = "force-dynamic";
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { locale: Locale; category: string };
-}): Metadata {
-  const t = HOME_COPY[params.locale];
-  const module_ = t.modules.find((m) => m.category === params.category);
+}): Promise<Metadata> {
+  const module_ = await getModuleBySlug(params.category, params.locale);
   if (!module_) return {};
   return { title: module_.title, description: module_.teaser };
 }
@@ -52,6 +52,11 @@ function shuffle<T>(items: T[]): T[] {
  * thinness of one topic; once a topic has enough of its own courses,
  * stay focused and don't dilute it with unrelated ones. Capped at 6
  * regardless of total catalog size ("prepare for a full roster").
+ *
+ * Still reading from the hardcoded copy.ts course list, not Supabase -
+ * that rewiring (course teasers driven by real course_series, matching
+ * the booking page's data source) is the next piece of this migration,
+ * scoped separately from the module content itself.
  */
 const MIN_TOPIC_COURSES_TO_STAY_FOCUSED = 4;
 const MAX_COURSES_SHOWN = 6;
@@ -67,7 +72,7 @@ function selectModuleCourses(
   return { courses: shuffle(allCourses).slice(0, MAX_COURSES_SHOWN), isMixed: true };
 }
 
-export default function ModuleDetailPage({
+export default async function ModuleDetailPage({
   params,
 }: {
   params: { locale: Locale; category: string };
@@ -75,16 +80,19 @@ export default function ModuleDetailPage({
   const t = HOME_COPY[params.locale];
   const copy = MODULE_PAGE_COPY[params.locale];
 
-  const module_ = t.modules.find((m) => m.category === params.category);
+  const module_ = await getModuleBySlug(params.category, params.locale);
   if (!module_) {
     notFound();
   }
+
+  const allModules = await getAllModuleTeasers(params.locale);
+  const otherModules = allModules.filter((m) => m.category !== module_.category);
+  const descriptionParagraphs = portableTextToPlainParagraphs(module_.description);
 
   const { courses: displayedCourses, isMixed } = selectModuleCourses(
     t.courses.items,
     module_.category,
   );
-  const otherModules = t.modules.filter((m) => m.category !== module_.category);
 
   return (
     <>
@@ -111,11 +119,13 @@ export default function ModuleDetailPage({
 
           <div className="mt-lg grid grid-cols-1 items-center gap-xl md:grid-cols-2">
             <div>
-              <span className="inline-block w-fit rounded-pill bg-primary-subdued-bg px-md py-xxs text-caption text-primary">
-                {copy.ageLabel}: {module_.ageRange}
-              </span>
+              {module_.ageRange && (
+                <span className="inline-block w-fit rounded-pill bg-primary-subdued-bg px-md py-xxs text-caption text-primary">
+                  {copy.ageLabel}: {module_.ageRange}
+                </span>
+              )}
               <h1 className="mt-md text-display-hero text-ink">{module_.title}</h1>
-              {module_.description.map((paragraph) => (
+              {descriptionParagraphs.map((paragraph) => (
                 <p key={paragraph} className="mt-md max-w-[60ch] text-body text-ink-secondary">
                   {paragraph}
                 </p>

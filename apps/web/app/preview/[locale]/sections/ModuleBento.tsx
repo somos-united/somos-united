@@ -1,8 +1,17 @@
+import type { ModuleCategory } from "@somos/types";
 import Link from "next/link";
 
 import type { Locale } from "@/lib/locales";
 
-import type { ModuleTeaser } from "../copy";
+// Deliberately minimal, not the full SanityModuleDoc -- ContentBox only
+// ever reads these three fields, and grid-test/page.tsx (a design-review
+// playground, not real content) still feeds it plain copy.ts objects
+// that satisfy this shape without needing to fake _id/description.
+export interface ModuleTeaserLike {
+  category: ModuleCategory;
+  title: string;
+  teaser?: string;
+}
 
 /**
  * The Bento grid named in 04-DESIGN-SYSTEM.md §5: one large 2×2 feature
@@ -43,7 +52,7 @@ export function ContentBox({
   className = "",
   href,
 }: {
-  module: ModuleTeaser;
+  module: ModuleTeaserLike;
   size?: "large" | "normal";
   chip?: "primary" | "coral";
   className?: string;
@@ -90,7 +99,7 @@ export function ModuleBento({
   locale,
 }: {
   heading: string;
-  modules: ModuleTeaser[];
+  modules: ModuleTeaserLike[];
   locale: Locale;
 }) {
   return (

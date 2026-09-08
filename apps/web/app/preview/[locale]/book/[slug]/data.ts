@@ -1,7 +1,7 @@
 import type { ModuleCategory } from "@somos/types";
 
 import type { Locale } from "@/lib/locales";
-import { getModuleBySlug } from "@/lib/sanity";
+import { getModuleBySlug, portableTextToPlainParagraphs } from "@/lib/sanity";
 import { getSupabaseClient } from "@/lib/supabase";
 
 import type { BookingInstance, PlanOption, PriceTierRow } from "../copy";
@@ -18,26 +18,6 @@ export interface BookingPageData {
   scarcitySeatsThreshold: number;
   instances: BookingInstance[];
   plans: PlanOption[];
-}
-
-// Sanity's portable text is rich content, but this page only ever shows a
-// short plain-text blurb -- join span text rather than pulling in a full
-// portable-text renderer for one paragraph.
-function plainTextFromPortableText(blocks: unknown[]): string {
-  return blocks
-    .map((block) => {
-      if (typeof block !== "object" || block === null || !("children" in block)) return "";
-      const children = (block as { children?: unknown }).children;
-      if (!Array.isArray(children)) return "";
-      return children
-        .map((child) =>
-          typeof child === "object" && child !== null && "text" in child
-            ? String((child as { text?: unknown }).text ?? "")
-            : "",
-        )
-        .join("");
-    })
-    .join("\n\n");
 }
 
 // Formatted server-side (this is a Server Component), so without an
@@ -147,7 +127,7 @@ export async function getBookingPageData(
 
   return {
     courseTitle: sanityModule.title,
-    description: plainTextFromPortableText(sanityModule.description),
+    description: portableTextToPlainParagraphs(sanityModule.description).join("\n\n"),
     moduleCategory: sanityModule.category,
     locationName: locationResult.data?.name ?? null,
     cadenceLabel: series.cadence_label,

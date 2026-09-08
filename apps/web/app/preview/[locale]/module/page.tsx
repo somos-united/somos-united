@@ -3,10 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import type { Locale } from "@/lib/locales";
+import { getAllModuleTeasers, type SanityModuleDoc } from "@/lib/sanity";
 
-import { HOME_COPY, MODULE_PAGE_COPY, type ModuleTeaser } from "../copy";
+import { HOME_COPY, MODULE_PAGE_COPY } from "../copy";
 import { Nav } from "../sections/Nav";
 import { SiteFooter } from "../sections/SiteFooter";
+
+export const dynamic = "force-dynamic";
 
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
   const copy = MODULE_PAGE_COPY[params.locale];
@@ -21,9 +24,10 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
  * impression (that's the homepage's job). Links from the homepage's
  * ModuleBento tiles land here or skip straight to a detail page.
  */
-export default function ModuleIndexPage({ params }: { params: { locale: Locale } }) {
+export default async function ModuleIndexPage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
   const copy = MODULE_PAGE_COPY[params.locale];
+  const modules = await getAllModuleTeasers(params.locale);
 
   return (
     <>
@@ -44,7 +48,7 @@ export default function ModuleIndexPage({ params }: { params: { locale: Locale }
           <p className="mt-sm max-w-[60ch] text-body text-ink-secondary">{copy.indexSubtext}</p>
 
           <div className="mt-xl grid grid-cols-1 gap-lg md:grid-cols-2">
-            {t.modules.map((module, i) => (
+            {modules.map((module, i) => (
               <ModuleIndexCard
                 key={module.category}
                 module={module}
@@ -75,7 +79,7 @@ function ModuleIndexCard({
   ageLabel,
   isCoral,
 }: {
-  module: ModuleTeaser;
+  module: SanityModuleDoc;
   locale: Locale;
   ageLabel: string;
   isCoral: boolean;
@@ -89,15 +93,17 @@ function ModuleIndexCard({
         <span className="text-caption text-ink-mute">[Illustration folgt]</span>
       </div>
       <div className="flex flex-1 flex-col p-xl">
-        <span
-          className={`inline-block w-fit rounded-pill px-md py-xxs text-caption ${
-            isCoral
-              ? "bg-accent-coral-subtle-bg text-accent-coral-deep"
-              : "bg-primary-subdued-bg text-primary"
-          }`}
-        >
-          {ageLabel}: {module.ageRange}
-        </span>
+        {module.ageRange && (
+          <span
+            className={`inline-block w-fit rounded-pill px-md py-xxs text-caption ${
+              isCoral
+                ? "bg-accent-coral-subtle-bg text-accent-coral-deep"
+                : "bg-primary-subdued-bg text-primary"
+            }`}
+          >
+            {ageLabel}: {module.ageRange}
+          </span>
+        )}
         <h2 className="mt-md text-heading-lg text-ink">{module.title}</h2>
         <p className="mt-sm text-body text-ink-secondary">{module.teaser}</p>
         <span className="mt-lg inline-flex items-center gap-xs text-button text-primary">

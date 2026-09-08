@@ -44,6 +44,14 @@ export const moduleType = defineType({
       },
     }),
     defineField({
+      name: "teaser",
+      title: "Teaser (Kurztext)",
+      type: "string",
+      description:
+        "Kurzer, prägnanter Einzeiler für Bento-Kacheln (Startseite, Modul-Übersicht) — bewusst separat von der Beschreibung unten, die länger und ausführlicher ist.",
+      validation: (Rule) => Rule.max(160),
+    }),
+    defineField({
       name: "description",
       title: "Beschreibung",
       type: "array",

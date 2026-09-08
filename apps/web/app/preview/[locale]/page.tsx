@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/locales";
+import { getAllModuleTeasers } from "@/lib/sanity";
 
 import { HOME_COPY } from "./copy";
 import { ClosingCta } from "./sections/ClosingCta";
@@ -13,20 +14,23 @@ import { QuoteBlock } from "./sections/QuoteBlock";
 import { SiteFooter } from "./sections/SiteFooter";
 
 /**
- * Design-direction preview: full hand-built layout with placeholder copy
- * (see copy.ts), not the generic Sanity section-builder that lived here
- * before. That fetch pipeline (lib/sanity.ts, proven working end-to-end
- * against the live project) is intentionally paused, not deleted - once
- * this direction is approved, each section's text moves into Sanity
- * `page`/`module` documents instead of copy.ts.
+ * Full hand-built layout, matching the approved design direction. The 6
+ * module teasers (ModuleBento below) come live from Sanity `module`
+ * documents; everything else here is still app-level UI chrome/copy.ts
+ * placeholder text (hero, process steps, quote, course listings) --
+ * course listings specifically are meant to come from real Supabase
+ * course_series once more exist, same as the module content did.
  */
+export const dynamic = "force-dynamic";
+
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
   const t = HOME_COPY[params.locale];
   return { title: t.hero.headline, description: t.hero.subtext };
 }
 
-export default function PreviewHomePage({ params }: { params: { locale: Locale } }) {
+export default async function PreviewHomePage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
+  const modules = await getAllModuleTeasers(params.locale);
 
   return (
     <>
@@ -48,7 +52,7 @@ export default function PreviewHomePage({ params }: { params: { locale: Locale }
           primaryCta={t.hero.primaryCta}
           secondaryCta={t.hero.secondaryCta}
         />
-        <ModuleBento heading={t.modulesHeading} modules={t.modules} locale={params.locale} />
+        <ModuleBento heading={t.modulesHeading} modules={modules} locale={params.locale} />
         <CoursesTeaser
           heading={t.courses.heading}
           subtext={t.courses.subtext}
