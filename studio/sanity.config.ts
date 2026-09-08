@@ -29,6 +29,13 @@ export default defineConfig({
     documentInternationalization({
       supportedLanguages: LANGUAGES.map((lang) => ({ id: lang.id, title: lang.title })),
       schemaTypes: ["module", "page", "blogPost", "legalDocument"],
+      // Content created directly via API (this session's module migration)
+      // had no translation.metadata linking documents until fixed by hand
+      // 2026-09-08 -- this shows the "Manage translations" action on any
+      // document even without one yet, so a future editor (or me) can fix
+      // the same gap through the Studio's own UI instead of needing a
+      // manual API reconciliation again.
+      allowCreateMetaDoc: true,
     }),
   ],
 
