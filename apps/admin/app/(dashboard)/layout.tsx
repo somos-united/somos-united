@@ -33,22 +33,9 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-canvas-soft">
-      <aside className="flex w-64 shrink-0 flex-col justify-between border-r border-hairline bg-canvas p-lg">
-        <div className="flex flex-col gap-xl">
-          <span className="text-heading-md text-ink">Somos United</span>
-          <SidebarNav />
-        </div>
-        <div className="flex flex-col gap-sm border-t border-hairline pt-md">
-          <span className="truncate text-caption text-ink-mute">{profile.email}</span>
-          <form action={signOut}>
-            <ButtonSecondary type="submit" className="w-full">
-              Abmelden
-            </ButtonSecondary>
-          </form>
-        </div>
-      </aside>
-      <main className="flex-1 overflow-y-auto px-xl py-xl">
+    <div className="flex min-h-screen flex-col bg-canvas-soft md:flex-row">
+      <SidebarNav email={profile.email ?? "unbekannt"} onSignOut={signOut} />
+      <main className="flex-1 overflow-y-auto px-lg py-lg md:px-xl md:py-xl">
         <div className="mx-auto max-w-3xl">{children}</div>
       </main>
     </div>
