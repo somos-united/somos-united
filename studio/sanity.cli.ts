@@ -5,4 +5,5 @@ const dataset = process.env.SANITY_STUDIO_DATASET ?? "production";
 
 export default defineCliConfig({
   api: { projectId, dataset },
+  studioHost: "somos-united",
 });
