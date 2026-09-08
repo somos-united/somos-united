@@ -15,3 +15,15 @@ export const LANGUAGES = [
 export type LanguageId = (typeof LANGUAGES)[number]["id"];
 
 export const DEFAULT_LANGUAGE: LanguageId = LANGUAGES[0].id;
+
+/**
+ * Sanity object-field names must be valid identifiers (no hyphens), so a
+ * per-language field inside a single localized document — e.g.
+ * `title: { de: "...", en: "..." }` in module.ts — can't key directly off
+ * LANGUAGES[].id ("de-CH"). This is the one place that maps a language id to
+ * its safe field name.
+ */
+export const LOCALE_FIELD_NAMES: Record<LanguageId, string> = {
+  "de-CH": "de",
+  en: "en",
+};

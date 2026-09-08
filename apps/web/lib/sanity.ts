@@ -97,22 +97,33 @@ export interface SanityModuleDoc {
   description: TypedObject[];
 }
 
-// The booking flow's content lives in Sanity's `module` documents (same
-// slug across locales, distinguished by `language` — matches
-// getPageBySlug's pattern above). `status == "published"` is the schema's
-// own editorial flag on top of Sanity's draft/publish mechanism, so a
-// module can exist and be published in Sanity but still be marked
-// "draft" content-wise while the editorial team works on it.
+// Unlike `page` (still one document per language via the
+// document-internationalization plugin, see getPageBySlug above), `module`
+// is a single document per item with a field per language (module.ts,
+// changed 2026-09-08: two documents per module let shared fields like
+// category/ageRange drift between languages with nothing to catch it).
+// `Locale` ("de"/"en") is used directly as the object key here because it
+// already matches the schema's field names (studio/languages.ts
+// LOCALE_FIELD_NAMES) -- no separate id mapping needed for this schema.
+//
+// `status == "published"` is the schema's own editorial flag on top of
+// Sanity's draft/publish mechanism, so a module can exist and be published
+// in Sanity but still be marked "draft" content-wise while the editorial
+// team works on it.
 export async function getModuleBySlug(
   slug: string,
   locale: Locale,
 ): Promise<SanityModuleDoc | null> {
-  const language = SANITY_LANGUAGE_BY_LOCALE[locale];
   return getSanityClient().fetch<SanityModuleDoc | null>(
-    `*[_type == "module" && slug.current == $slug && language == $language && status == "published"][0]{
-      _id, title, teaser, ageRange, category, description
+    `*[_type == "module" && slug.current == $slug && status == "published"][0]{
+      _id,
+      "title": title[$locale],
+      "teaser": teaser[$locale],
+      "ageRange": ageRange[$locale],
+      category,
+      "description": description[$locale]
     }`,
-    { slug, language },
+    { slug, locale },
   );
 }
 
@@ -122,12 +133,16 @@ export async function getModuleBySlug(
 // getModuleBySlug called 6× — a dedicated query is only worth it because
 // callers want all 6 in one shot, in a stable, known order.
 export async function getAllModuleTeasers(locale: Locale): Promise<SanityModuleDoc[]> {
-  const language = SANITY_LANGUAGE_BY_LOCALE[locale];
   const modules = await getSanityClient().fetch<SanityModuleDoc[]>(
-    `*[_type == "module" && language == $language && status == "published" && slug.current == category]{
-      _id, title, teaser, ageRange, category, description
+    `*[_type == "module" && status == "published" && slug.current == category]{
+      _id,
+      "title": title[$locale],
+      "teaser": teaser[$locale],
+      "ageRange": ageRange[$locale],
+      category,
+      "description": description[$locale]
     }`,
-    { language },
+    { locale },
   );
 
   const order: ModuleCategory[] = [

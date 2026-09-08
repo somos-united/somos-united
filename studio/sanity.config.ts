@@ -22,19 +22,19 @@ export default defineConfig({
   plugins: [
     structureTool(),
     visionTool(),
-    // i18n (01-ARCHITECTURE.md §6): module/page/blogPost/legalDocument get a
+    // i18n (01-ARCHITECTURE.md §6): page/blogPost/legalDocument get a
     // per-language document + a `translation.metadata` document linking the
     // language variants — that sixth schema from md/03-DATA-MODEL.md §1 is
     // registered by this plugin itself, not hand-authored in schemaTypes/.
+    //
+    // `module` deliberately does NOT use this plugin (removed 2026-09-08):
+    // for short structured content like modules, two documents per item
+    // meant category/ageRange/slug were entered twice and could drift
+    // between languages with nothing to catch it. module.ts now holds one
+    // document per item with a field per language instead.
     documentInternationalization({
       supportedLanguages: LANGUAGES.map((lang) => ({ id: lang.id, title: lang.title })),
-      schemaTypes: ["module", "page", "blogPost", "legalDocument"],
-      // Content created directly via API (this session's module migration)
-      // had no translation.metadata linking documents until fixed by hand
-      // 2026-09-08 -- this shows the "Manage translations" action on any
-      // document even without one yet, so a future editor (or me) can fix
-      // the same gap through the Studio's own UI instead of needing a
-      // manual API reconciliation again.
+      schemaTypes: ["page", "blogPost", "legalDocument"],
       allowCreateMetaDoc: true,
     }),
   ],
