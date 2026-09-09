@@ -3,7 +3,7 @@ import { HandHeart, ShieldCheck, Sparkle, Target, UsersThree } from "@phosphor-i
 import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/locales";
-import { getHomePage } from "@/lib/sanity";
+import { getHomePage, type HomePageCtaBannerSection } from "@/lib/sanity";
 
 import { ABOUT_PAGE_COPY, HOME_COPY, type AboutValue } from "../copy";
 import { ClosingCta } from "../sections/ClosingCta";
@@ -34,13 +34,16 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
  *
  * The closing CTA at the bottom is shared site-wide chrome, not
  * homepage-specific content -- it reuses the same Sanity `homePage`
- * singleton's closingHeadline/closingCta fields as the homepage itself,
- * rather than duplicating that text in a second place that could drift.
+ * singleton's ctaBannerBlock section as the homepage itself, rather than
+ * duplicating that text in a second place that could drift.
  */
 export default async function AboutPage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
   const copy = ABOUT_PAGE_COPY[params.locale];
   const home = await getHomePage(params.locale);
+  const ctaBanner = home?.sections.find(
+    (s): s is HomePageCtaBannerSection => s._type === "ctaBannerBlock",
+  );
 
   return (
     <>
@@ -101,7 +104,10 @@ export default async function AboutPage({ params }: { params: { locale: Locale }
           </div>
         </section>
 
-        <ClosingCta headline={home?.closingHeadline ?? ""} cta={home?.closingCta ?? ""} />
+        <ClosingCta
+          headline={ctaBanner?.headline ?? ""}
+          cta={ctaBanner?.cta ?? { label: "", href: null }}
+        />
       </main>
       <SiteFooter
         locale={params.locale}

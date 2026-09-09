@@ -5,10 +5,10 @@
 
 export * from "./tokens";
 
-export { ButtonPrimaryPill } from "./components/ButtonPrimaryPill";
+export { ButtonPrimaryPill, PRIMARY_PILL_CLASSNAME } from "./components/ButtonPrimaryPill";
 export type { ButtonPrimaryPillProps } from "./components/ButtonPrimaryPill";
 
-export { ButtonSecondary } from "./components/ButtonSecondary";
+export { ButtonSecondary, SECONDARY_CLASSNAME } from "./components/ButtonSecondary";
 export type { ButtonSecondaryProps } from "./components/ButtonSecondary";
 
 export { ButtonAccent } from "./components/ButtonAccent";

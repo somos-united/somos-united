@@ -51,48 +51,212 @@ export function portableTextToPlainParagraphs(blocks: TypedObject[]): string[] {
     .filter((paragraph) => paragraph !== "");
 }
 
+export interface ResolvedCta {
+  label: string;
+  // null when the editor picked "Bestimmtes Modul" but the reference is
+  // unset/unpublished, or "Eigene URL" with an empty field -- callers
+  // render the label without a link rather than a button to nowhere.
+  href: string | null;
+}
+
+export interface HomePageHeroSection {
+  _type: "heroBlock";
+  headline: string;
+  subtext?: string;
+  imageUrl?: string;
+  primaryCta: ResolvedCta;
+  secondaryCta?: ResolvedCta;
+}
+export interface HomePageModuleGridSection {
+  _type: "moduleGridBlock";
+  heading?: string;
+}
+export interface HomePageCourseGridSection {
+  _type: "courseGridBlock";
+  heading?: string;
+  subtext?: string;
+  ctaLabel: string;
+}
+export interface HomePageImageTextCtaSection {
+  _type: "imageTextCtaBlock";
+  imageUrl?: string;
+  heading: string;
+  body?: string;
+  cta: ResolvedCta;
+}
+export interface HomePageProcessStepsSection {
+  _type: "processStepsBlock";
+  heading?: string;
+  steps: { verb: string; body?: string }[];
+}
+export interface HomePageQuoteSection {
+  _type: "quoteBlock";
+  label?: string;
+  body?: string;
+  attribution?: string;
+}
+export interface HomePageCtaBannerSection {
+  _type: "ctaBannerBlock";
+  headline: string;
+  cta: ResolvedCta;
+}
+
+export type HomePageSection =
+  | HomePageHeroSection
+  | HomePageModuleGridSection
+  | HomePageCourseGridSection
+  | HomePageImageTextCtaSection
+  | HomePageProcessStepsSection
+  | HomePageQuoteSection
+  | HomePageCtaBannerSection;
+
 export interface SanityHomePageDoc {
-  heroHeadline: string;
-  heroSubtext?: string;
-  heroPrimaryCta?: string;
-  heroSecondaryCta?: string;
-  modulesHeading?: string;
-  coursesHeading?: string;
-  coursesSubtext?: string;
-  coursesCta?: string;
-  processHeading?: string;
-  processSteps: { verb: string; body?: string }[];
-  quoteLabel?: string;
-  quoteBody?: string;
-  quoteAttribution?: string;
-  closingHeadline?: string;
-  closingCta?: string;
+  sections: HomePageSection[];
+}
+
+interface RawCta {
+  label?: string;
+  linkType?: "modules" | "about" | "blog" | "module" | "custom";
+  moduleSlug?: string;
+  customUrl?: string;
+}
+
+interface RawSection {
+  _type: string;
+  headline?: string;
+  subtext?: string;
+  heading?: string;
+  body?: string;
+  label?: string;
+  attribution?: string;
+  imageUrl?: string;
+  primaryCta?: RawCta;
+  secondaryCta?: RawCta;
+  cta?: RawCta;
+  ctaLabel?: string;
+  steps?: { verb: string; body?: string }[];
+}
+
+// homePage.ts's ctaField stores *what* to link to (a fixed target, a
+// specific module reference, or a free-form URL/path/email) rather than
+// a raw href, so a module's own slug (translated per language, module.ts)
+// never has to be hand-typed into the homepage and go stale if it
+// changes. This is the one place that turns that choice into an actual
+// href.
+function resolveHref(raw: RawCta | undefined, locale: Locale): string | null {
+  if (!raw?.linkType) return null;
+  const base = `/preview/${locale}`;
+  switch (raw.linkType) {
+    case "modules":
+      return `${base}/module`;
+    case "about":
+      return `${base}/about`;
+    case "blog":
+      return `${base}/blog`;
+    case "module":
+      return raw.moduleSlug ? `${base}/module/${raw.moduleSlug}` : null;
+    case "custom": {
+      const url = raw.customUrl;
+      if (!url) return null;
+      if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("mailto:")) return url;
+      return `${base}${url.startsWith("/") ? url : `/${url}`}`;
+    }
+    default:
+      return null;
+  }
+}
+
+function resolveCta(raw: RawCta | undefined, locale: Locale): ResolvedCta {
+  return { label: raw?.label ?? "", href: resolveHref(raw, locale) };
 }
 
 // Singleton by convention (homePage.ts), not enforced by the schema --
 // `[0]` just takes whichever one exists rather than requiring a known
-// document ID, since there's supposed to be exactly one.
+// document ID, since there's supposed to be exactly one. `sections` is a
+// flexible, editor-ordered list of typed blocks (2026-09-09 rework --
+// Danny: "Homepage needs to be FLEXIBLE!!!! ... guide them sideways to
+// our topics", after the first flat-fields version couldn't support
+// images, configurable CTA destinations, or adding/removing a section).
 export async function getHomePage(locale: Locale): Promise<SanityHomePageDoc | null> {
-  return getSanityClient().fetch<SanityHomePageDoc | null>(
+  const ctaProjection = `{ "label": label[$locale], linkType, "moduleSlug": moduleRef->slug[$locale].current, customUrl }`;
+  const raw = await getSanityClient().fetch<{ sections: RawSection[] } | null>(
     `*[_type == "homePage"][0]{
-      "heroHeadline": heroHeadline[$locale],
-      "heroSubtext": heroSubtext[$locale],
-      "heroPrimaryCta": heroPrimaryCta[$locale],
-      "heroSecondaryCta": heroSecondaryCta[$locale],
-      "modulesHeading": modulesHeading[$locale],
-      "coursesHeading": coursesHeading[$locale],
-      "coursesSubtext": coursesSubtext[$locale],
-      "coursesCta": coursesCta[$locale],
-      "processHeading": processHeading[$locale],
-      "processSteps": processSteps[]{ "verb": verb[$locale], "body": body[$locale] },
-      "quoteLabel": quoteLabel[$locale],
-      "quoteBody": quoteBody[$locale],
-      "quoteAttribution": quoteAttribution[$locale],
-      "closingHeadline": closingHeadline[$locale],
-      "closingCta": closingCta[$locale]
+      "sections": sections[]{
+        _type,
+        "headline": headline[$locale],
+        "subtext": subtext[$locale],
+        "heading": heading[$locale],
+        "body": body[$locale],
+        "label": label[$locale],
+        "attribution": attribution[$locale],
+        "imageUrl": image.asset->url,
+        "primaryCta": primaryCta${ctaProjection},
+        "secondaryCta": secondaryCta${ctaProjection},
+        "cta": cta${ctaProjection},
+        "ctaLabel": ctaLabel[$locale],
+        "steps": steps[]{ "verb": verb[$locale], "body": body[$locale] }
+      }
     }`,
     { locale },
   );
+  if (!raw) return null;
+
+  // Any block type not listed here (e.g. one added in Sanity before a
+  // matching React renderer exists in page.tsx) is dropped rather than
+  // crashing the page -- same "don't render what you can't render"
+  // reasoning as an unfilled reference.
+  const sections: HomePageSection[] = raw.sections.flatMap((s): HomePageSection[] => {
+    switch (s._type) {
+      case "heroBlock":
+        return [
+          {
+            _type: "heroBlock",
+            headline: s.headline ?? "",
+            subtext: s.subtext,
+            imageUrl: s.imageUrl,
+            primaryCta: resolveCta(s.primaryCta, locale),
+            secondaryCta: s.secondaryCta ? resolveCta(s.secondaryCta, locale) : undefined,
+          },
+        ];
+      case "moduleGridBlock":
+        return [{ _type: "moduleGridBlock", heading: s.heading }];
+      case "courseGridBlock":
+        return [
+          {
+            _type: "courseGridBlock",
+            heading: s.heading,
+            subtext: s.subtext,
+            ctaLabel: s.ctaLabel ?? "",
+          },
+        ];
+      case "imageTextCtaBlock":
+        return [
+          {
+            _type: "imageTextCtaBlock",
+            imageUrl: s.imageUrl,
+            heading: s.heading ?? "",
+            body: s.body,
+            cta: resolveCta(s.cta, locale),
+          },
+        ];
+      case "processStepsBlock":
+        return [
+          {
+            _type: "processStepsBlock",
+            heading: s.heading,
+            steps: (s.steps ?? []).map((step) => ({ verb: step.verb, body: step.body })),
+          },
+        ];
+      case "quoteBlock":
+        return [{ _type: "quoteBlock", label: s.label, body: s.body, attribution: s.attribution }];
+      case "ctaBannerBlock":
+        return [{ _type: "ctaBannerBlock", headline: s.headline ?? "", cta: resolveCta(s.cta, locale) }];
+      default:
+        return [];
+    }
+  });
+
+  return { sections };
 }
 
 export interface SanityModuleDoc {
