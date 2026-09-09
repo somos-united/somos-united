@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { getPublishedCourses } from "@/lib/courses";
 import type { Locale } from "@/lib/locales";
 import { getAllModuleTeasers } from "@/lib/sanity";
 
@@ -16,10 +17,9 @@ import { SiteFooter } from "./sections/SiteFooter";
 /**
  * Full hand-built layout, matching the approved design direction. The 6
  * module teasers (ModuleBento below) come live from Sanity `module`
- * documents; everything else here is still app-level UI chrome/copy.ts
- * placeholder text (hero, process steps, quote, course listings) --
- * course listings specifically are meant to come from real Supabase
- * course_series once more exist, same as the module content did.
+ * documents, and the course listings (CoursesTeaser) come live from real
+ * Supabase course_series -- everything else here is still app-level UI
+ * chrome/copy.ts text (hero, process steps, quote).
  */
 export const dynamic = "force-dynamic";
 
@@ -30,7 +30,10 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
 
 export default async function PreviewHomePage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
-  const modules = await getAllModuleTeasers(params.locale);
+  const [modules, courses] = await Promise.all([
+    getAllModuleTeasers(params.locale),
+    getPublishedCourses(params.locale),
+  ]);
 
   return (
     <>
@@ -56,7 +59,7 @@ export default async function PreviewHomePage({ params }: { params: { locale: Lo
         <CoursesTeaser
           heading={t.courses.heading}
           subtext={t.courses.subtext}
-          courses={t.courses.items}
+          courses={courses}
           cta={t.courses.cta}
           locale={params.locale}
         />

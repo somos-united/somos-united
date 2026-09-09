@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { getPublishedCourses } from "@/lib/courses";
 import type { Locale } from "@/lib/locales";
 import { getAllModuleTeasers, getModuleBySlug, portableTextToPlainParagraphs } from "@/lib/sanity";
 
@@ -53,10 +54,10 @@ function shuffle<T>(items: T[]): T[] {
  * stay focused and don't dilute it with unrelated ones. Capped at 6
  * regardless of total catalog size ("prepare for a full roster").
  *
- * Still reading from the hardcoded copy.ts course list, not Supabase -
- * that rewiring (course teasers driven by real course_series, matching
- * the booking page's data source) is the next piece of this migration,
- * scoped separately from the module content itself.
+ * Reads from real Supabase course_series (getPublishedCourses), same
+ * source as the booking page -- only one real course exists today, so
+ * every topic still falls into the "mixed" branch below until more are
+ * scheduled.
  */
 const MIN_TOPIC_COURSES_TO_STAY_FOCUSED = 4;
 const MAX_COURSES_SHOWN = 6;
@@ -85,12 +86,15 @@ export default async function ModuleDetailPage({
     notFound();
   }
 
-  const allModules = await getAllModuleTeasers(params.locale);
+  const [allModules, allCourses] = await Promise.all([
+    getAllModuleTeasers(params.locale),
+    getPublishedCourses(params.locale),
+  ]);
   const otherModules = allModules.filter((m) => m.category !== module_.category);
   const descriptionParagraphs = portableTextToPlainParagraphs(module_.description);
 
   const { courses: displayedCourses, isMixed } = selectModuleCourses(
-    t.courses.items,
+    allCourses,
     module_.category,
   );
 
