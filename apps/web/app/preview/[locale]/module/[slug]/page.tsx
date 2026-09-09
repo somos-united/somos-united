@@ -20,7 +20,7 @@ import { SiteFooter } from "../../sections/SiteFooter";
  * `dynamic = "force-dynamic"`, so the two can't coexist for what this
  * page actually needs: the "mixed" fallback below has to be genuinely
  * random per visit, not frozen at build time (Danny: "refresh with
- * every load"). Invalid category values still 404 via the notFound()
+ * every load"). Invalid slug values still 404 via the notFound()
  * check below.
  */
 export const dynamic = "force-dynamic";
@@ -28,9 +28,9 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({
   params,
 }: {
-  params: { locale: Locale; category: string };
+  params: { locale: Locale; slug: string };
 }): Promise<Metadata> {
-  const module_ = await getModuleBySlug(params.category, params.locale);
+  const module_ = await getModuleBySlug(params.slug, params.locale);
   if (!module_) return {};
   return { title: module_.title, description: module_.teaser };
 }
@@ -75,12 +75,12 @@ function selectModuleCourses(
 export default async function ModuleDetailPage({
   params,
 }: {
-  params: { locale: Locale; category: string };
+  params: { locale: Locale; slug: string };
 }) {
   const t = HOME_COPY[params.locale];
   const copy = MODULE_PAGE_COPY[params.locale];
 
-  const module_ = await getModuleBySlug(params.category, params.locale);
+  const module_ = await getModuleBySlug(params.slug, params.locale);
   if (!module_) {
     notFound();
   }
@@ -157,7 +157,7 @@ export default async function ModuleDetailPage({
             {otherModules.map((other) => (
               <Link
                 key={other.category}
-                href={`/preview/${params.locale}/module/${other.category}`}
+                href={`/preview/${params.locale}/module/${other.slug}`}
                 className="rounded-lg border border-hairline p-lg transition-colors hover:border-primary"
               >
                 <span className="text-body font-semibold text-ink">{other.title}</span>

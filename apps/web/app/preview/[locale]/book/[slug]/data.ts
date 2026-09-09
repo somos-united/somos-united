@@ -1,7 +1,7 @@
 import type { ModuleCategory } from "@somos/types";
 
 import type { Locale } from "@/lib/locales";
-import { getModuleBySlug, portableTextToPlainParagraphs } from "@/lib/sanity";
+import { getModuleByModuleRef, portableTextToPlainParagraphs } from "@/lib/sanity";
 import { getSupabaseClient } from "@/lib/supabase";
 
 import type { BookingInstance, PlanOption, PriceTierRow } from "../copy";
@@ -38,9 +38,10 @@ function formatTime(iso: string, locale: Locale): string {
  * real business data (Supabase course_series/course_instances/price_tiers,
  * locations via the locations_public view) instead of the hardcoded
  * placeholders this page used before. `slug` is matched against both
- * Sanity's `module.slug` and Supabase's `course_series.module_ref` --
- * the same string identifies "this course" across both systems, which is
- * what module_ref is for (03-DATA-MODEL.md).
+ * Sanity's German `module.slug.de` and Supabase's `course_series.module_ref`
+ * -- the same fixed string identifies "this course" across both systems
+ * regardless of visitor locale, which is what module_ref is for
+ * (03-DATA-MODEL.md).
  *
  * Returns null if either half is missing -- a course only really exists
  * once it has both real content (Sanity) and real scheduling (Supabase);
@@ -53,7 +54,7 @@ export async function getBookingPageData(
   const supabase = getSupabaseClient();
 
   const [sanityModule, seriesResult] = await Promise.all([
-    getModuleBySlug(slug, locale),
+    getModuleByModuleRef(slug, locale),
     supabase
       .from("course_series")
       .select(

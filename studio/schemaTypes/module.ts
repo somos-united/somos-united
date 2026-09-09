@@ -63,6 +63,33 @@ function localizedText(name: string, title: string, rows: number) {
   });
 }
 
+// Localized slugs (one per language, not one shared value) so an English
+// visitor gets an English URL word instead of the German one -- standard
+// practice, and better for per-language SEO than a shared slug behind a
+// locale-prefixed path.
+function localizedSlug(name: string, title: string) {
+  return defineField({
+    name,
+    title,
+    type: "object",
+    options: { columns: 2 },
+    fields: LANGUAGES.map((lang) => {
+      const fieldName = LOCALE_FIELD_NAMES[lang.id];
+      return defineField({
+        name: fieldName,
+        title: lang.title,
+        type: "slug",
+        options: {
+          source: (doc) =>
+            (doc as { title?: Record<string, string> }).title?.[fieldName] ?? "",
+          maxLength: 96,
+        },
+        validation: (Rule) => Rule.required(),
+      });
+    }),
+  });
+}
+
 function localizedBlockContent(name: string, title: string) {
   return defineField({
     name,
@@ -85,18 +112,7 @@ export const moduleType = defineType({
   type: "document",
   fields: [
     localizedString("title", "Titel", { required: true }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      // Nested-path strings aren't supported by the Studio's default slug
-      // source resolver, hence the function form.
-      options: {
-        source: (doc) => (doc as { title?: { de?: string } }).title?.de ?? "",
-        maxLength: 96,
-      },
-      validation: (Rule) => Rule.required(),
-    }),
+    localizedSlug("slug", "Slug"),
     localizedString("teaser", "Teaser (Kurztext)", { max: 160 }),
     localizedBlockContent("description", "Beschreibung"),
     defineField({

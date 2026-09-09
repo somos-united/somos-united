@@ -86,7 +86,7 @@ function ModuleIndexCard({
 }) {
   return (
     <Link
-      href={`/preview/${locale}/module/${module.category}`}
+      href={`/preview/${locale}/module/${module.slug}`}
       className="flex flex-col overflow-hidden rounded-lg border border-hairline transition-colors hover:border-primary"
     >
       <div className="flex aspect-[3/1] items-center justify-center bg-[linear-gradient(135deg,var(--color-canvas-lavender)_0%,var(--color-canvas-mint)_100%)]">

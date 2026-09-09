@@ -11,6 +11,10 @@ export interface ModuleTeaserLike {
   category: ModuleCategory;
   title: string;
   teaser?: string;
+  // Optional because the grid-test sandbox below still feeds this from
+  // copy.ts's hardcoded placeholder data, which has no real per-locale
+  // slug -- real Sanity-backed callers always provide it.
+  slug?: string;
 }
 
 /**
@@ -114,7 +118,7 @@ export function ModuleBento({
             size={i === 0 ? "large" : "normal"}
             chip={i % 2 === 1 ? "coral" : "primary"}
             className={CELL_SPAN[i]}
-            href={`/preview/${locale}/module/${module.category}`}
+            href={`/preview/${locale}/module/${module.slug ?? module.category}`}
           />
         ))}
       </div>

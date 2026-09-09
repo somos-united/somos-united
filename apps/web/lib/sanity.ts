@@ -91,6 +91,7 @@ export async function getPageBySlug(
 export interface SanityModuleDoc {
   _id: string;
   title: string;
+  slug: string;
   teaser?: string;
   ageRange?: string;
   category: ModuleCategory;
@@ -115,9 +116,10 @@ export async function getModuleBySlug(
   locale: Locale,
 ): Promise<SanityModuleDoc | null> {
   return getSanityClient().fetch<SanityModuleDoc | null>(
-    `*[_type == "module" && slug.current == $slug && status == "published"][0]{
+    `*[_type == "module" && slug[$locale].current == $slug && status == "published"][0]{
       _id,
       "title": title[$locale],
+      "slug": slug[$locale].current,
       "teaser": teaser[$locale],
       "ageRange": ageRange[$locale],
       category,
@@ -127,16 +129,47 @@ export async function getModuleBySlug(
   );
 }
 
-// The 6 module topic-overview documents (Medienkompetenz, Respekt, ...)
-// deliberately use slug == category (see getModuleBySlug's callers in the
-// module index/detail pages and the homepage) so this is really just
-// getModuleBySlug called 6× — a dedicated query is only worth it because
-// callers want all 6 in one shot, in a stable, known order.
-export async function getAllModuleTeasers(locale: Locale): Promise<SanityModuleDoc[]> {
-  const modules = await getSanityClient().fetch<SanityModuleDoc[]>(
-    `*[_type == "module" && status == "published" && slug.current == category]{
+// Supabase's course_series.module_ref (03-DATA-MODEL.md) is a single
+// system-level join key across both languages, not a per-locale URL slug --
+// it was set once, to the module's German slug, when the course was
+// created. The booking flow (book/[slug]/data.ts) looks a module up by
+// that fixed value regardless of visitor locale, so it can't use
+// getModuleBySlug above (which now matches the visitor's own locale's
+// slug, per module.ts's localized slugs). Still returns locale-appropriate
+// title/teaser/description for display.
+export async function getModuleByModuleRef(
+  moduleRef: string,
+  locale: Locale,
+): Promise<SanityModuleDoc | null> {
+  return getSanityClient().fetch<SanityModuleDoc | null>(
+    `*[_type == "module" && slug.de.current == $moduleRef && status == "published"][0]{
       _id,
       "title": title[$locale],
+      "slug": slug[$locale].current,
+      "teaser": teaser[$locale],
+      "ageRange": ageRange[$locale],
+      category,
+      "description": description[$locale]
+    }`,
+    { moduleRef, locale },
+  );
+}
+
+// The 6 module topic-overview documents (Medienkompetenz, Respekt, ...)
+// deliberately use the German slug == category (see getModuleBySlug's
+// callers in the module index/detail pages and the homepage) so this is
+// really just getModuleBySlug called 6× — a dedicated query is only worth
+// it because callers want all 6 in one shot, in a stable, known order.
+// German specifically (not the requested locale) because it's the one
+// slug half that's guaranteed to equal the category code -- the English
+// slug is a real translated word (studio/schemaTypes/module.ts) and
+// wouldn't match.
+export async function getAllModuleTeasers(locale: Locale): Promise<SanityModuleDoc[]> {
+  const modules = await getSanityClient().fetch<SanityModuleDoc[]>(
+    `*[_type == "module" && status == "published" && slug.de.current == category]{
+      _id,
+      "title": title[$locale],
+      "slug": slug[$locale].current,
       "teaser": teaser[$locale],
       "ageRange": ageRange[$locale],
       category,
