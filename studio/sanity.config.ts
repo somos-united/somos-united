@@ -22,19 +22,20 @@ export default defineConfig({
   plugins: [
     structureTool(),
     visionTool(),
-    // i18n (01-ARCHITECTURE.md §6): page/blogPost/legalDocument get a
+    // i18n (01-ARCHITECTURE.md §6): blogPost/legalDocument get a
     // per-language document + a `translation.metadata` document linking the
     // language variants — that sixth schema from md/03-DATA-MODEL.md §1 is
     // registered by this plugin itself, not hand-authored in schemaTypes/.
     //
-    // `module` deliberately does NOT use this plugin (removed 2026-09-08):
-    // for short structured content like modules, two documents per item
-    // meant category/ageRange/slug were entered twice and could drift
-    // between languages with nothing to catch it. module.ts now holds one
-    // document per item with a field per language instead.
+    // `module`/`homePage` deliberately do NOT use this plugin: for short
+    // structured content, two documents per item meant fields like
+    // category/ageRange/slug were entered twice and could drift between
+    // languages with nothing to catch it (module.ts fixed 2026-09-08).
+    // `page` (the old generic Bento "Sections" type this plugin used to
+    // cover) was removed 2026-09-09 as dead content, replaced by homePage.
     documentInternationalization({
       supportedLanguages: LANGUAGES.map((lang) => ({ id: lang.id, title: lang.title })),
-      schemaTypes: ["page", "blogPost", "legalDocument"],
+      schemaTypes: ["blogPost", "legalDocument"],
       allowCreateMetaDoc: true,
     }),
   ],

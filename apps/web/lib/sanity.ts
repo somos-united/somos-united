@@ -4,16 +4,6 @@ import type { ModuleCategory } from "@somos/types";
 
 import type { Locale } from "./locales";
 
-/**
- * URL locales ("de"/"en", apps/web/lib/locales.ts) vs Sanity's `language`
- * field ("de-CH"/"en", studio/languages.ts) don't match 1:1 — this is the
- * one place that bridges them.
- */
-const SANITY_LANGUAGE_BY_LOCALE: Record<Locale, string> = {
-  de: "de-CH",
-  en: "en",
-};
-
 // Built lazily, not at module scope: `createClient` throws synchronously if
 // `projectId` is unset, which would crash Next's build-time "collect page
 // data" step (it imports every route module) even though this page is
@@ -61,30 +51,47 @@ export function portableTextToPlainParagraphs(blocks: TypedObject[]): string[] {
     .filter((paragraph) => paragraph !== "");
 }
 
-export interface SanitySection {
-  _key: string;
-  heading?: string;
-  layout?: "bento-large" | "bento-medium" | "bento-small";
-  body?: TypedObject[];
-  image?: { asset: { _ref: string; _type: "reference" } };
+export interface SanityHomePageDoc {
+  heroHeadline: string;
+  heroSubtext?: string;
+  heroPrimaryCta?: string;
+  heroSecondaryCta?: string;
+  modulesHeading?: string;
+  coursesHeading?: string;
+  coursesSubtext?: string;
+  coursesCta?: string;
+  processHeading?: string;
+  processSteps: { verb: string; body?: string }[];
+  quoteLabel?: string;
+  quoteBody?: string;
+  quoteAttribution?: string;
+  closingHeadline?: string;
+  closingCta?: string;
 }
 
-export interface SanityPageDoc {
-  _id: string;
-  title: string;
-  sections: SanitySection[];
-}
-
-export async function getPageBySlug(
-  slug: string,
-  locale: Locale,
-): Promise<SanityPageDoc | null> {
-  const language = SANITY_LANGUAGE_BY_LOCALE[locale];
-  return getSanityClient().fetch<SanityPageDoc | null>(
-    `*[_type == "page" && slug.current == $slug && language == $language][0]{
-      _id, title, sections
+// Singleton by convention (homePage.ts), not enforced by the schema --
+// `[0]` just takes whichever one exists rather than requiring a known
+// document ID, since there's supposed to be exactly one.
+export async function getHomePage(locale: Locale): Promise<SanityHomePageDoc | null> {
+  return getSanityClient().fetch<SanityHomePageDoc | null>(
+    `*[_type == "homePage"][0]{
+      "heroHeadline": heroHeadline[$locale],
+      "heroSubtext": heroSubtext[$locale],
+      "heroPrimaryCta": heroPrimaryCta[$locale],
+      "heroSecondaryCta": heroSecondaryCta[$locale],
+      "modulesHeading": modulesHeading[$locale],
+      "coursesHeading": coursesHeading[$locale],
+      "coursesSubtext": coursesSubtext[$locale],
+      "coursesCta": coursesCta[$locale],
+      "processHeading": processHeading[$locale],
+      "processSteps": processSteps[]{ "verb": verb[$locale], "body": body[$locale] },
+      "quoteLabel": quoteLabel[$locale],
+      "quoteBody": quoteBody[$locale],
+      "quoteAttribution": quoteAttribution[$locale],
+      "closingHeadline": closingHeadline[$locale],
+      "closingCta": closingCta[$locale]
     }`,
-    { slug, language },
+    { locale },
   );
 }
 
@@ -98,14 +105,15 @@ export interface SanityModuleDoc {
   description: TypedObject[];
 }
 
-// Unlike `page` (still one document per language via the
-// document-internationalization plugin, see getPageBySlug above), `module`
-// is a single document per item with a field per language (module.ts,
-// changed 2026-09-08: two documents per module let shared fields like
-// category/ageRange drift between languages with nothing to catch it).
-// `Locale` ("de"/"en") is used directly as the object key here because it
-// already matches the schema's field names (studio/languages.ts
-// LOCALE_FIELD_NAMES) -- no separate id mapping needed for this schema.
+// Unlike `blogPost`/`legalDocument` (still one document per language via
+// the document-internationalization plugin), `module` is a single document
+// per item with a field per language (module.ts, changed 2026-09-08: two
+// documents per module let shared fields like category/ageRange drift
+// between languages with nothing to catch it) -- same pattern as
+// `homePage` above. `Locale` ("de"/"en") is used directly as the object
+// key here because it already matches the schema's field names
+// (studio/languages.ts LOCALE_FIELD_NAMES) -- no separate id mapping
+// needed for this schema.
 //
 // `status == "published"` is the schema's own editorial flag on top of
 // Sanity's draft/publish mechanism, so a module can exist and be published

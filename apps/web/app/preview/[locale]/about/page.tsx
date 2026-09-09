@@ -3,6 +3,7 @@ import { HandHeart, ShieldCheck, Sparkle, Target, UsersThree } from "@phosphor-i
 import type { Metadata } from "next";
 
 import type { Locale } from "@/lib/locales";
+import { getHomePage } from "@/lib/sanity";
 
 import { ABOUT_PAGE_COPY, HOME_COPY, type AboutValue } from "../copy";
 import { ClosingCta } from "../sections/ClosingCta";
@@ -16,6 +17,8 @@ const VALUE_ICONS: Record<AboutValue["icon"], Icon> = {
   target: Target,
 };
 
+export const dynamic = "force-dynamic";
+
 export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
   const copy = ABOUT_PAGE_COPY[params.locale];
   return { title: copy.heading, description: copy.subtext };
@@ -28,10 +31,16 @@ export function generateMetadata({ params }: { params: { locale: Locale } }): Me
  * open), a story section, a values grid, and an honest placeholder for
  * team bios (no fabricated names/photos - same honesty rule as the
  * "[Illustration folgt]" placeholders elsewhere, see copy.ts).
+ *
+ * The closing CTA at the bottom is shared site-wide chrome, not
+ * homepage-specific content -- it reuses the same Sanity `homePage`
+ * singleton's closingHeadline/closingCta fields as the homepage itself,
+ * rather than duplicating that text in a second place that could drift.
  */
-export default function AboutPage({ params }: { params: { locale: Locale } }) {
+export default async function AboutPage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
   const copy = ABOUT_PAGE_COPY[params.locale];
+  const home = await getHomePage(params.locale);
 
   return (
     <>
@@ -92,7 +101,7 @@ export default function AboutPage({ params }: { params: { locale: Locale } }) {
           </div>
         </section>
 
-        <ClosingCta headline={t.closing.headline} cta={t.closing.cta} />
+        <ClosingCta headline={home?.closingHeadline ?? ""} cta={home?.closingCta ?? ""} />
       </main>
       <SiteFooter
         locale={params.locale}

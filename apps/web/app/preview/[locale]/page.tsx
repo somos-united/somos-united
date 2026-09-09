@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { getPublishedCourses } from "@/lib/courses";
 import type { Locale } from "@/lib/locales";
-import { getAllModuleTeasers } from "@/lib/sanity";
+import { getAllModuleTeasers, getHomePage } from "@/lib/sanity";
 
 import { HOME_COPY } from "./copy";
 import { ClosingCta } from "./sections/ClosingCta";
@@ -16,24 +17,35 @@ import { SiteFooter } from "./sections/SiteFooter";
 
 /**
  * Full hand-built layout, matching the approved design direction. The 6
- * module teasers (ModuleBento below) come live from Sanity `module`
- * documents, and the course listings (CoursesTeaser) come live from real
- * Supabase course_series -- everything else here is still app-level UI
- * chrome/copy.ts text (hero, process steps, quote).
+ * module teasers (ModuleBento) come live from Sanity `module` documents,
+ * course listings (CoursesTeaser) come live from real Supabase
+ * course_series, and the rest of the page's text (hero, process steps,
+ * quote, closing CTA) comes from the single Sanity `homePage` document --
+ * nav/footer chrome (site-wide, not homepage-specific) is still
+ * app-level copy.ts text.
  */
 export const dynamic = "force-dynamic";
 
-export function generateMetadata({ params }: { params: { locale: Locale } }): Metadata {
-  const t = HOME_COPY[params.locale];
-  return { title: t.hero.headline, description: t.hero.subtext };
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: Locale };
+}): Promise<Metadata> {
+  const home = await getHomePage(params.locale);
+  if (!home) return {};
+  return { title: home.heroHeadline, description: home.heroSubtext };
 }
 
 export default async function PreviewHomePage({ params }: { params: { locale: Locale } }) {
   const t = HOME_COPY[params.locale];
-  const [modules, courses] = await Promise.all([
+  const [home, modules, courses] = await Promise.all([
+    getHomePage(params.locale),
     getAllModuleTeasers(params.locale),
     getPublishedCourses(params.locale),
   ]);
+  if (!home) {
+    notFound();
+  }
 
   return (
     <>
@@ -50,26 +62,29 @@ export default async function PreviewHomePage({ params }: { params: { locale: Lo
       />
       <main>
         <Hero
-          headline={t.hero.headline}
-          subtext={t.hero.subtext}
-          primaryCta={t.hero.primaryCta}
-          secondaryCta={t.hero.secondaryCta}
+          headline={home.heroHeadline}
+          subtext={home.heroSubtext ?? ""}
+          primaryCta={home.heroPrimaryCta ?? ""}
+          secondaryCta={home.heroSecondaryCta ?? ""}
         />
-        <ModuleBento heading={t.modulesHeading} modules={modules} locale={params.locale} />
+        <ModuleBento heading={home.modulesHeading ?? ""} modules={modules} locale={params.locale} />
         <CoursesTeaser
-          heading={t.courses.heading}
-          subtext={t.courses.subtext}
+          heading={home.coursesHeading ?? ""}
+          subtext={home.coursesSubtext ?? ""}
           courses={courses}
-          cta={t.courses.cta}
+          cta={home.coursesCta ?? ""}
           locale={params.locale}
         />
-        <ProcessStrip heading={t.process.heading} steps={t.process.steps} />
-        <QuoteBlock
-          label={t.quote.label}
-          body={t.quote.body}
-          attribution={t.quote.attribution}
+        <ProcessStrip
+          heading={home.processHeading ?? ""}
+          steps={home.processSteps.map((step) => ({ verb: step.verb, body: step.body ?? "" }))}
         />
-        <ClosingCta headline={t.closing.headline} cta={t.closing.cta} />
+        <QuoteBlock
+          label={home.quoteLabel ?? ""}
+          body={home.quoteBody ?? ""}
+          attribution={home.quoteAttribution ?? ""}
+        />
+        <ClosingCta headline={home.closingHeadline ?? ""} cta={home.closingCta ?? ""} />
       </main>
       <SiteFooter
         locale={params.locale}

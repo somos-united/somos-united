@@ -5,11 +5,14 @@ import type { Locale } from "@/lib/locales";
 import type { CourseCardData } from "./sections/CoursesTeaser";
 
 /**
- * Placeholder copy for the Phase 1 design preview (/preview/[locale]).
- * Deliberately hardcoded here, not fetched from Sanity — this pass is
- * about nailing the layout/visual direction first. Once approved, this
- * moves into Sanity `page`/`module` documents (the fetch plumbing for
- * that already exists in lib/sanity.ts from the earlier pipeline proof).
+ * Nav/footer chrome (site-wide, not homepage-specific) plus the
+ * grid-test design sandbox's placeholder data. The homepage's own text
+ * (hero, module/course section headings, process steps, quote, closing
+ * CTA) moved into the Sanity `homePage` document 2026-09-09 -- see
+ * lib/sanity.ts's getHomePage. `modules`/`courses.items` here are
+ * grid-test/page.tsx's fixtures only (a design-review sandbox, not real
+ * content); `courses.cta` is kept because grid-test's course card demos
+ * reuse it as their button label.
  */
 
 export interface ModuleTeaser {
@@ -30,18 +33,11 @@ export interface HomeCopy {
     menuOpenLabel: string;
     menuCloseLabel: string;
   };
-  hero: { headline: string; subtext: string; primaryCta: string; secondaryCta: string };
-  modulesHeading: string;
   modules: ModuleTeaser[];
   courses: {
-    heading: string;
-    subtext: string;
     cta: string;
     items: CourseCardData[];
   };
-  process: { heading: string; steps: { verb: string; body: string }[] };
-  quote: { label: string; body: string; attribution: string };
-  closing: { headline: string; cta: string };
   footer: {
     tagline: string;
     contactLabel: string;
@@ -63,14 +59,6 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       menuOpenLabel: "Menü öffnen",
       menuCloseLabel: "Menü schliessen",
     },
-    hero: {
-      headline: "Stark ins Leben.",
-      subtext:
-        "Kurse für Kinder und Jugendliche zu Medienkompetenz, Respekt und mentaler Stärke.",
-      primaryCta: "Kurse entdecken",
-      secondaryCta: "Kontakt aufnehmen",
-    },
-    modulesHeading: "Unsere Module",
     modules: [
       {
         category: "medienkompetenz",
@@ -134,8 +122,6 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       },
     ],
     courses: {
-      heading: "Nächste Kurse",
-      subtext: "Eine Auswahl kommender Termine, Preise nach Buchungszeitpunkt gestaffelt.",
       cta: "Jetzt buchen",
       items: [
         {
@@ -231,23 +217,6 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
         },
       ],
     },
-    process: {
-      heading: "So läuft's ab",
-      steps: [
-        { verb: "Anmelden", body: "Kurs auswählen und Familie registrieren." },
-        { verb: "Teilnehmen", body: "Vor Ort oder online, in kleinen Gruppen." },
-        { verb: "Wachsen", body: "Neue Stärke für Schule, Freundschaften und Alltag." },
-      ],
-    },
-    quote: {
-      label: "Platzhalter",
-      body: "So könnte hier eine kurze Rückmeldung aus einer Familie stehen, sobald echte Stimmen vorliegen.",
-      attribution: "Elternteil, Zürich (Platzhalter)",
-    },
-    closing: {
-      headline: "Bereit für den nächsten Schritt?",
-      cta: "Kurse entdecken",
-    },
     footer: {
       tagline: "Mentale Stärkung für junge Menschen.",
       contactLabel: "Schreib uns",
@@ -267,13 +236,6 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       menuOpenLabel: "Open menu",
       menuCloseLabel: "Close menu",
     },
-    hero: {
-      headline: "Strong into life.",
-      subtext: "Courses for kids and teens on media literacy, respect, and mental strength.",
-      primaryCta: "Explore courses",
-      secondaryCta: "Get in touch",
-    },
-    modulesHeading: "Our modules",
     modules: [
       {
         category: "medienkompetenz",
@@ -337,8 +299,6 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
       },
     ],
     courses: {
-      heading: "Upcoming courses",
-      subtext: "A selection of upcoming dates, priced by how early you book.",
       cta: "Book now",
       items: [
         {
@@ -429,23 +389,6 @@ export const HOME_COPY: Record<Locale, HomeCopy> = {
           fomo: { kind: "urgency", label: "Price valid until Sep 30" },
         },
       ],
-    },
-    process: {
-      heading: "How it works",
-      steps: [
-        { verb: "Sign up", body: "Choose a course and register your family." },
-        { verb: "Take part", body: "In person or online, in small groups." },
-        { verb: "Grow", body: "New strength for school, friendships, and everyday life." },
-      ],
-    },
-    quote: {
-      label: "Placeholder",
-      body: "A short piece of feedback from a family could sit here once real voices are gathered.",
-      attribution: "Parent, Zurich (placeholder)",
-    },
-    closing: {
-      headline: "Ready for the next step?",
-      cta: "Explore courses",
     },
     footer: {
       tagline: "Mental strength for young people.",
