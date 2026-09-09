@@ -7,3 +7,13 @@ allowBuilds:
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - '@messagebird/sdk@0.52.0'
+overrides:
+  # SNYK-JS-GLOB-14040952 (command injection via glob's CLI -c/--cmd
+  # flag, patched in 10.5.0): pulled in transitively by @sanity/runtime-cli
+  # and @sanity/document-internationalization. Scoped to the vulnerable
+  # range only -- glob@7.2.3 elsewhere in the tree (eslint's chain, a much
+  # older, unrelated API) predates the affected feature and stays as-is.
+  # The alternative Snyk proposed (bumping `sanity` itself to v4) would
+  # break document-internationalization@3.2.0, whose peer range is
+  # `sanity: ^3.40.0` -- not touching that.
+  glob@>=10.3.7 <10.5.0: 10.5.0
